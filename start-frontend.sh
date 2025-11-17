@@ -7,7 +7,7 @@ trap 'echo -e "\033[33mFrontend process ended\033[0m"' EXIT
 echo -e "\033[36mStarting Frontend (Svelte)...\033[0m"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-FRONTEND_PATH="$SCRIPT_DIR/RestaurantMenu.App"
+FRONTEND_PATH="$SCRIPT_DIR/src/client"
 
 if [ ! -d "$FRONTEND_PATH" ]; then
     echo -e "\033[31mERROR: Frontend path not found: $FRONTEND_PATH\033[0m"
