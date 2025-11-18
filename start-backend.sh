@@ -7,7 +7,7 @@ trap 'echo -e "\033[33mBackend process ended\033[0m"' EXIT
 echo -e "\033[36mStarting Backend (C# .NET)...\033[0m"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BACKEND_PATH="$SCRIPT_DIR/RestaurantMenu.Core/RestaurantMenu.Core"
+BACKEND_PATH="$SCRIPT_DIR/src/server/RestaurantMenu.API"
 
 if [ ! -d "$BACKEND_PATH" ]; then
     echo -e "\033[31mERROR: Backend path not found: $BACKEND_PATH\033[0m"
