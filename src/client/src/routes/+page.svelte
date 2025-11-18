@@ -22,7 +22,7 @@
 	});
 </script>
 
-<h1>Welcome to Cafe Lek. can this asdasdasd live</h1>
+<h1>Welcome to Cafe Lek.</h1>
 <p>API URL: {getApiUrl()}</p>
 
 {#if loading}
