@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantMenu.API", "RestaurantMenu.API.csproj", "{FF38A576-4C96-4657-8C52-B8F212A74534}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantMenu.API.Tests", "..\RestaurantMenu.API.Tests\RestaurantMenu.API.Tests.csproj", "{AC53A781-22BA-49ED-8476-A67DA05ABE17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantMenu.Core", "..\RestaurantMenu.Core\RestaurantMenu.Core.csproj", "{5DB085FB-7B58-4977-AF9D-4F6E6ADC4810}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantMenu.Infrastructure", "..\RestaurantMenu.Infrastructure\RestaurantMenu.Infrastructure.csproj", "{2066D82D-5124-4A38-B859-954F48F7F310}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF38A576-4C96-4657-8C52-B8F212A74534}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF38A576-4C96-4657-8C52-B8F212A74534}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF38A576-4C96-4657-8C52-B8F212A74534}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF38A576-4C96-4657-8C52-B8F212A74534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC53A781-22BA-49ED-8476-A67DA05ABE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC53A781-22BA-49ED-8476-A67DA05ABE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC53A781-22BA-49ED-8476-A67DA05ABE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC53A781-22BA-49ED-8476-A67DA05ABE17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB085FB-7B58-4977-AF9D-4F6E6ADC4810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DB085FB-7B58-4977-AF9D-4F6E6ADC4810}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DB085FB-7B58-4977-AF9D-4F6E6ADC4810}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DB085FB-7B58-4977-AF9D-4F6E6ADC4810}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2066D82D-5124-4A38-B859-954F48F7F310}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2066D82D-5124-4A38-B859-954F48F7F310}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2066D82D-5124-4A38-B859-954F48F7F310}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2066D82D-5124-4A38-B859-954F48F7F310}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
