@@ -36,6 +36,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+//I realized AFTER the fact that im mapping a get and then inserting a model value :)
+//I can't think, code and speak at the same time :)
+//
 app.MapGet("/Menu", async 
 ([FromBody] MenuModel model,
  [FromServices] RestaurantDbContex context,
