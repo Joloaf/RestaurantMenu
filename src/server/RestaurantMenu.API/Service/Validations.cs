@@ -2,7 +2,7 @@ namespace RestaurantMenu.API.Service;
 
 public class Validations
 {
-    public bool ValidUsername(string username)
+    public bool ValidUserName(string username)
     {
         return true;
     }
