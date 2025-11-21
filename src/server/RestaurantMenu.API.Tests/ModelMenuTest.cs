@@ -23,9 +23,21 @@ public class ModelMenuTest
     }
 
 
-    [Fact]
-    public void MenuStandardName_ShouldBeNotNull()
+    [Theory]
+    [InlineData("", false)]
+    [InlineData(null, false)]
+    [InlineData("StandardMenu", true)]
+    [InlineData("           ", false)]
+    public void MenuStandardName_ShouldBeNotNull(string? name, bool expected)
     {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var res = sut.ValidMenuName(name);
+
+        //assert
+        Assert.Equal(res, expected);
         
     }
 }
