@@ -26,6 +26,7 @@
     <ItemGroup>
       <ProjectReference Include="..\RestaurantMenu.Core\RestaurantMenu.Core.csproj" />
       <ProjectReference Include="..\RestaurantMenu.Infrastructure\RestaurantMenu.Infrastructure.csproj" />
+      <ProjectReference Include="..\RestaurantMenu.API\RestaurantMenu.API.csproj"/>
     </ItemGroup>
 
 </Project>
