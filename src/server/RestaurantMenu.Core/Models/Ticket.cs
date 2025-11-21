@@ -6,5 +6,4 @@ public class Ticket
     public int TicketNumber { get; set; }
     public Menu Menu { get; set; }
     
-    
 }
