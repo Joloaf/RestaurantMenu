@@ -10,7 +10,7 @@ public class Validations
     {
         return true;
     }
-    public bool ValidId(int id)
+    public bool ValidId(int? id)
     {
         return true;
     }
