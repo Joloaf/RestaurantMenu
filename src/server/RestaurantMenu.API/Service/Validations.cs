@@ -1,4 +1,4 @@
-namespace server.Service;
+namespace RestaurantMenu.API.Service;
 
 public class Validations
 {
@@ -19,6 +19,10 @@ public class Validations
         return true;
     }
     public bool TicketValidIdNumber(int id)
+    {
+        return true;
+    }
+    public bool ValidMenuName(string username)
     {
         return true;
     }
