@@ -75,6 +75,186 @@ public class ModelMenuTest
         // Assert
         Assert.Equal(actual, expected);
     }
+    [Theory]
+    [InlineData(null)]
+    public void ValidId_NotNull(int id)
+    {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual =  sut.ValidId(id);
+
+        //Assert
+        Assert.False(actual);
+    }
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(-100)]
+    public void ValidId_NotNegative(int id)
+    {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual = sut.ValidId(id);
+
+        //Assert
+        Assert.False(actual);
+    }
+
+    [Fact]
+    public void ValidThemeName_NotNull(string? name)
+    {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual  = sut.ValidThemeName(name);
+
+        //assert
+        Assert.False(actual);
+    }
+    [Theory]
+    [InlineData("testName", false)]
+    [InlineData("TestName", true)]
+    public void ValidUserName_StartWithCapital(string? name, bool expected)
+    {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual  = sut.ValidThemeName(name);
+
+        //assert
+        Assert.Equal(actual, expected);
+    }
+
+    [Theory]
+    [InlineData("testName", false)]
+    [InlineData("TestName", false)]
+    [InlineData("Testname", true)]
+    public void ValidUserName_NoInWordCapital(string? name, bool expected)
+    {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual  = sut.ValidThemeName(name);
+
+        //assert
+        Assert.Equal(actual, expected);
+    }
+
+    [Theory]
+    [InlineData("Jr", true)]
+    [InlineData("Testname", true)]
+    [InlineData("J", false)]
+    [InlineData("", false)]
+    public void ValidUserName_UserNameMinLen(string? name, bool expected)
+    {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual  = sut.ValidThemeName(name);
+
+        //assert
+        Assert.Equal(actual, expected);
+    }
+
+    [Theory]
+    [InlineData("   Jr", false)]
+    [InlineData("Testname     ", false)]
+    [InlineData("    Jr    ", false)]
+    [InlineData("Testname", true)]
+    public void ValidUserName_UserNameMinLen(string? name, bool expected)
+    {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual  = sut.ValidThemeName(name);
+
+        //assert
+        Assert.Equal(actual, expected);
+    }
+
+    [Theory]
+    [InlineData("   Jr", false)]
+    [InlineData("Testname     ", false)]
+    [InlineData("    Jr    ", false)]
+    [InlineData("Tesname", true)]
+    public void ValidUserName_UserNameMinLen(string? name, bool expected)
+    {
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual  = sut.ValidThemeName(name);
+
+        //assert
+        Assert.Equal(actual, expected);
+    }
+
+    [Theory]
+    [InlineData("Jr.", false)]
+    [InlineData(",Testname", false)]
+    [InlineData("#Jr", false)]
+    [InlineData("Tesname", true)]
+    [InlineData("Tes//name",  false )]
+    [InlineData("Tes/?name",  false )]
+    [InlineData("Tes/!name",  false )]
+    [InlineData("Tes><>name", false )]
+    [InlineData("Tes|}name",  false )]
+    [InlineData("Tes{{?/name",false )]
+    [InlineData("Tesname🥷",  true )]
+    [InlineData("Tesn[ame",   false )]
+    [InlineData("Tesn{ame",   false )]
+    public void ValidUserName_NoSpecialCharacters(string? name, bool expected)
+    {
+
+        var c = ((char)a);
+
+
+        //arrange
+        var sut = new Validations();
+
+        //act
+        var actual  = sut.ValidThemeName(name);
+
+        //assert
+        Assert.Equal(actual, expected);
+    }
+}
+
+
+public class ISpecialCharacterTestData : IEnumerable<object[]>
+{
+
+    public List<object[]> _testData = [];
+
+    public ModelMenuTest()
+    {
+        _testData = TestDataGenerator();
+    }
+    public IEnumerator<object[]> GetEnumerator()
+    {
+        throw new NotImplementedException();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    private List<object[]> TestDataGenerator()
+    {
+       // int a = 65;
+       // int b = 90;
+       // int l = 97;
+       // int le = 122;
+    }
 }
 
 
