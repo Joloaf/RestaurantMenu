@@ -20,15 +20,29 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredLength = 8;
+            })
+            .AddEntityFrameworkStores<RestaurantDbContex>()
+            .AddDefaultTokenProviders();
+        
         // Add services to the container.
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+        builder.Services.AddEndpointsApiExplorer();
 
         // Configure Database
         builder.Services.AddDbContext<RestaurantDbContex>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddScoped<IValidations, Validations>();
+        builder.Services.AddScoped<IFactory<Menu>, MenuFactory>();
 
 
         // Add CORS for development

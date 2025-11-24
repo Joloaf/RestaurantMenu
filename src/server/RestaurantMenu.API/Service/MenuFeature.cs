@@ -11,8 +11,7 @@ public static class MenuFeatureExtension
 {
     public static RouteGroupBuilder AddMenuFeatures(this RouteGroupBuilder group)
     {
-        group.MapGet("/", AddHandler);
-        group.MapPost("/", CreateHandler);
+        group.MapPost("/", AddHandler);
         group.MapDelete("/", DeleteHandler);
         group.MapPatch("/", EditHandler);
         return group;
@@ -26,61 +25,71 @@ public static class MenuFeatureExtension
     /// <param name="httpcontext"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public static async Task<IResult> EditHandler([FromBody] EditMenuModel menuModel,
-                                                  [FromServices] RestaurantDbContex dbContext,
-                                                  [FromServices] HttpContext httpcontext)
+    public static async Task<Results<Ok<MenuModel>, NotFound>> EditHandler([FromBody] MenuModel menuModel,
+                                                  RestaurantDbContex dbContext,
+                                                  HttpContext httpcontext)
     {
-        throw new NotImplementedException();
+        return TypedResults.Ok(new MenuModel(1, "some", "else", "theme", "use_id"));
     }
     
 
-    public static async Task<IResult> DeleteHandler([FromRoute] int id,
+    public static async Task<IResult> DeleteHandler([FromBody] MenuModel model,
                                                     [FromServices] RestaurantDbContex dbcontext,
                                                     [FromServices] HttpContext httpcontext)
     {
 
         throw new NotImplementedException();
     }
-    public static async Task<IResult> CreateHandler([FromBody] AddMenuModel addMenuModel, 
+    public static async Task<IResult> GetHandler([FromBody] AddMenuModel addMenuModel, 
                                               [FromServices] RestaurantDbContex context,
                                               [FromServices] HttpContext httpContext)
     {
 
         throw new NotImplementedException();
     }
-    public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>>
-        AddHandler([FromBody] MenuModel model,
-                                    [FromServices] RestaurantDbContex context,
-                                    [FromServices] HttpContext provider)
+    public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>> AddHandler([FromBody] MenuModel model,
+                                    RestaurantDbContex context,
+                                    HttpContext provider)
     {
-        var validator  = provider.RequestServices.GetRequiredService<IValidations>();
+    //    var validator  = provider.RequestServices.GetRequiredService<IValidations>();
         var dbModelFactory = provider.RequestServices.GetRequiredService<IFactory<Menu>>();
         Menu modelItem = dbModelFactory.Create();
 
-        var user =  await context.Users.Where(x => x.Id == model.user_id)
+        var user =  await context.Users.Where(x => x.Id == model.User_id)
             .Include(x=> x.Menus)
             .SingleOrDefaultAsync();
     
        if(user == null) 
            return TypedResults.NotFound();
-       
-        modelItem.MenuName = model.menu_mame;
-        modelItem.UserName = model.user_name;
-        modelItem.Theme = model.theme;
+
+        
+        modelItem.MenuName = model.Menu_mame;
+        modelItem.UserName = model.User_name;
+        modelItem.Theme = model.Theme;
+        modelItem.User = user;
         modelItem.Dishes = [];
-        
+        modelItem.Id = null;
+        context.Add(modelItem);
         user.Menus.Add(modelItem);
-        
+
         try
         {
             await context.SaveChangesAsync();
+            context.Update(modelItem);
+            await context.SaveChangesAsync();
 
         }
-        catch(Exception _)
+        catch(Exception exc)
         {
             return TypedResults.InternalServerError();
         }
+        return TypedResults.Ok<MenuModel>(
+            new MenuModel(modelItem.Id,
+            modelItem.MenuName,
+            modelItem.UserName,
+            modelItem.Theme,
+            modelItem.User.Id)
+            );
 
-        return TypedResults.Ok<MenuModel>(model);
     }
 }
