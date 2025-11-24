@@ -14,65 +14,61 @@ using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.API.Service;
 
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-// Configure Database
-builder.Services.AddDbContext<RestaurantDbContex>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddScoped<IValidations, Validations>();
-
-
-// Add CORS for development
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy("AllowAll", policy =>
+    private static void Main(string[] args)
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
-});
+        var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+        // Add services to the container.
+        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        builder.Services.AddOpenApi();
 
-//I realized AFTER the fact that im mapping a get and then inserting a model value :)
-//I can't think, code and speak at the same time :)
-//
+        // Configure Database
+        builder.Services.AddDbContext<RestaurantDbContex>(options =>
+            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-app.MapEndpoints();
-
-app.MapGroup("/Menu")
-    .AddMenuFeatures();
+        builder.Services.AddScoped<IValidations, Validations>();
 
 
+        // Add CORS for development
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-    app.UseCors("AllowAll");
+        var app = builder.Build();
+
+        //I realized AFTER the fact that im mapping a get and then inserting a model value :)
+        //I can't think, code and speak at the same time :)
+        //
+
+
+        app.MapEndpoints();
+
+        app.MapGroup("/Menu")
+            .AddMenuFeatures();
+
+
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+            app.UseCors("AllowAll");
+        }
+
+        app.UseRouting();
+
+        app.UseHttpsRedirection();
+
+
+        app.Run();
+    }
 }
-
-app.UseRouting();
-
-app.UseHttpsRedirection();
-
-
-app.Run();
-
-
-
-
-
-
-
-
-
-
