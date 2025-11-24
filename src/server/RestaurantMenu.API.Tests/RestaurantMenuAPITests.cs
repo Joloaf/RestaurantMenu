@@ -10,24 +10,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Hosting;
 
 namespace RestaurantMenu.API.Tests
 {
-    internal class RestaurantMenuAPITests : IClassFixture<WebclassFixture<Program>>
+    public class RestaurantMenuAPITests : IClassFixture<WebclassFixture<Program>>
     {
         public const string base_url = "/Menu/";
-        public string UserGuid { get; set; }
+        private readonly WebclassFixture<Program> _fixture;
 
         public readonly HttpClient _client;
 
         public RestaurantMenuAPITests(WebclassFixture<Program> fixture)
         {
             _client = fixture.CreateClient();
-            UserGuid = fixture.UserGuid;
+            _fixture = fixture;
         }
+        [Fact]
         public async Task MenuAdd_ValidResponseCode()
         {
-            var obj = new MenuModel(null, "standard menu", "Sara", "spiderman", this.UserGuid);
+            var id = await _fixture.AddUsers(_fixture);
+            var obj = new MenuModel(0, "standard menu", "Sara", "spiderman", id);
             
             //act
             var created = await _client.PostAsJsonAsync(base_url, obj);
@@ -35,19 +38,20 @@ namespace RestaurantMenu.API.Tests
             //assert
             created.EnsureSuccessStatusCode();
         }
-
+        [Fact]
         public async Task MenuPatch_ValidResponseCode()
         {
+            var id = await _fixture.AddUsers(_fixture);
             //arrange
-            var obj = new MenuModel(null, "standard menu", "Sara", "spiderman", this.UserGuid);
+            var obj = new MenuModel(0, "standard menu", "Sara", "spiderman", id);
             var created = await _client.PostAsJsonAsync(base_url, obj);
             
             //act
             var res = await created.Content.ReadFromJsonAsync<MenuModel>();
-            var edit = new MenuModel(res.id, "SpidermanMenu", "Bartek", "Princess", res.user_id);
+            var edit = new MenuModel(res.Id, "SpidermanMenu", "Bartek", "Princess", res.User_id);
             
             //assert
-            var response = await _client.PutAsJsonAsync(base_url, edit);
+            var response = await _client.PatchAsJsonAsync(base_url, edit);
             response.EnsureSuccessStatusCode();
         }
         

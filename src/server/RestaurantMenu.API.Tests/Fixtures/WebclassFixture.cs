@@ -8,15 +8,16 @@ using RestaurantMenu.Core.Models;
 using Microsoft.AspNetCore.Identity;
 namespace RestaurantMenu.API.Tests.Fixtures
 {
-    internal class WebclassFixture<TProgram> : WebApplicationFactory<TProgram>  where TProgram : class
+    public class WebclassFixture<TProgram> : WebApplicationFactory<TProgram>  where TProgram : class
     {
         public WebclassFixture()
         {
         }
         public string UserGuid { get; set; }
-
-        private string AddUsers(UserManager<User> userManager)
+        public async Task<string> AddUsers(WebApplicationFactory<TProgram> host)
         {
+            var scope = host.Services.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             userManager.CreateAsync(new User
             {
                 UserName = "Bartek",
@@ -26,7 +27,10 @@ namespace RestaurantMenu.API.Tests.Fixtures
                 PhoneNumber = "+35988888888",
                 SecurityStamp = Guid.NewGuid().ToString()
             });
-            return userManager.FindByNameAsync("Bartek").Result.Id;
+            var us = await userManager.FindByEmailAsync("SomeEmail@Somewhere.org");
+            if (us.Id == null)
+                throw new NullReferenceException("Fuck you");
+            return us.Id.ToString();
         }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -68,8 +72,6 @@ namespace RestaurantMenu.API.Tests.Fixtures
             using var scope = host.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<RestaurantMenu.Infrastructure.Data.RestaurantDbContex>();
             db.Database.EnsureCreated();
-            AddUsers(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
-            
             return host;
         }
     }
