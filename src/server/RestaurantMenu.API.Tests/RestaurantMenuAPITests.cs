@@ -21,6 +21,7 @@ namespace RestaurantMenu.API.Tests
 
         public readonly HttpClient _client;
 
+        
         public RestaurantMenuAPITests(WebclassFixture<Program> fixture)
         {
             _client = fixture.CreateClient();
@@ -36,8 +37,14 @@ namespace RestaurantMenu.API.Tests
             var created = await _client.PostAsJsonAsync(base_url, obj);
             
             //assert
+            if (!created.IsSuccessStatusCode)
+            {
+                var errorContent = await created.Content.ReadAsStringAsync();
+                throw new Exception($"Failed with status {created.StatusCode}: {errorContent}");
+            }
             created.EnsureSuccessStatusCode();
         }
+
         [Fact]
         public async Task MenuPatch_ValidResponseCode()
         {
@@ -47,11 +54,21 @@ namespace RestaurantMenu.API.Tests
             var created = await _client.PostAsJsonAsync(base_url, obj);
             
             //act
+            if (!created.IsSuccessStatusCode)
+            {
+                var errorContent = await created.Content.ReadAsStringAsync();
+                throw new Exception($"POST Failed with status {created.StatusCode}: {errorContent}");
+            }
             var res = await created.Content.ReadFromJsonAsync<MenuModel>();
             var edit = new MenuModel(res.Id, "SpidermanMenu", "Bartek", "Princess", res.User_id);
             
             //assert
             var response = await _client.PatchAsJsonAsync(base_url, edit);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"PATCH Failed with status {response.StatusCode}: {errorContent}");
+            }
             response.EnsureSuccessStatusCode();
         }
         

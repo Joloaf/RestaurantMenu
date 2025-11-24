@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
+
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,8 +9,8 @@ namespace RestaurantMenu.Core.Models;
 // dotnet ef database update --startup-project "..\RestaurantMenu.API"
 public class Menu
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int? Id { get; set; }
+    //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
     public string MenuName { get; set; } // Menu name
     public string UserName { get; set; }  // Kids name
     public string Theme { get; set; }
