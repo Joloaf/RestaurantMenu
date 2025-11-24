@@ -1,18 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using RestaurantMenu.Infrastructure.Data;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Scalar.AspNetCore;
-using MinimalApi.Endpoint;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using RestaurantMenu.Core.Models;
-using Microsoft.AspNetCore.Routing.Matching;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MinimalApi.Endpoint.Extensions;
-using Microsoft.AspNetCore.Http.Connections.Features;
-using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.API.Service;
+using RestaurantMenu.API.Service.Interfaces;
+using RestaurantMenu.Core.Models;
+using RestaurantMenu.Infrastructure.Data;
+using Scalar.AspNetCore;
 
+namespace RestaurantMenu.API;
 
 public class Program
 {
@@ -23,13 +18,30 @@ public class Program
         // Add services to the container.
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
-
+        
         // Configure Database
         builder.Services.AddDbContext<RestaurantDbContex>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        builder.Services.AddScoped<IValidations, Validations>();
+        // Configure Identity
+        builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredLength = 8;
+            })
+            .AddEntityFrameworkStores<RestaurantDbContex>()
+            .AddDefaultTokenProviders();
 
+        builder.Services.AddAuthentication();
+        builder.Services.AddAuthorization();
+
+        builder.Services.AddScoped<IValidations, Validations>();
+        builder.Services.AddScoped<IFactory<Menu>, MenuFactory>();
+        
 
         // Add CORS for development
         builder.Services.AddCors(options =>
@@ -37,8 +49,8 @@ public class Program
             options.AddPolicy("AllowAll", policy =>
             {
                 policy.AllowAnyOrigin()
-                      .AllowAnyMethod()
-                      .AllowAnyHeader();
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
             });
         });
 
@@ -65,6 +77,9 @@ public class Program
         }
 
         app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.UseHttpsRedirection();
 

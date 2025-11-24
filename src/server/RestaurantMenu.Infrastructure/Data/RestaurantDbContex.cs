@@ -15,6 +15,8 @@ public class RestaurantDbContex : IdentityDbContext<User>
     public DbSet<Menu> Menus { get; set; }
     public DbSet<Dish> Dishes { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
+    
+    // dotnet ef database update --startup-project "..\RestaurantMenu.API"
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
