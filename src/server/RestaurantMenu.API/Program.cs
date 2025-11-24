@@ -31,6 +31,9 @@ public class Program
             })
             .AddEntityFrameworkStores<RestaurantDbContex>()
             .AddDefaultTokenProviders();
+
+        builder.Services.AddAuthentication();
+        builder.Services.AddAuthorization();
         
         // Add services to the container.
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -79,6 +82,9 @@ public class Program
         }
 
         app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.UseHttpsRedirection();
 

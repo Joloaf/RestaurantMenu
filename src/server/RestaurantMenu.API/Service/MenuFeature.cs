@@ -91,5 +91,7 @@ public static class MenuFeatureExtension
             modelItem.User.Id)
             );
 
+       // var createdModel = new MenuModel(modelItem.Id, modelItem.MenuName, modelItem.UserName, modelItem.Theme, model.user_id);
+       // return TypedResults.Ok<MenuModel>(createdModel);
     }
 }

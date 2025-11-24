@@ -28,8 +28,6 @@ namespace RestaurantMenu.API.Tests.Fixtures
                 SecurityStamp = Guid.NewGuid().ToString()
             });
             var us = await userManager.FindByEmailAsync("SomeEmail@Somewhere.org");
-            if (us.Id == null)
-                throw new NullReferenceException("Fuck you");
             return us.Id.ToString();
         }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -72,6 +70,7 @@ namespace RestaurantMenu.API.Tests.Fixtures
             using var scope = host.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<RestaurantMenu.Infrastructure.Data.RestaurantDbContex>();
             db.Database.EnsureCreated();
+            
             return host;
         }
     }
