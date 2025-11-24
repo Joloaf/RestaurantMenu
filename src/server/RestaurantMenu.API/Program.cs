@@ -56,10 +56,14 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
     app.UseCors("AllowAll");
 }
+<<<<<<< HEAD
 
 //app.UserRouting();
 
+=======
+>>>>>>> main
 app.UseHttpsRedirection();
+
 
 app.Run();
 
