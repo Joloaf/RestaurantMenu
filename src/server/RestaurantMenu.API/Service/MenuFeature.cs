@@ -11,9 +11,8 @@ public static class MenuFeatureExtension
 {
     public static RouteGroupBuilder AddMenuFeatures(this RouteGroupBuilder group)
     {
-        group.MapGet("/", AddHandler);
-        group.MapPost("/", CreateHandler);
-        group.MapDelete("/", DeleteHandler);
+        group.MapPost("/", AddHandler);
+        group.MapDelete("/{id}", DeleteHandler);
         group.MapPatch("/", EditHandler);
         return group;
     }
@@ -28,9 +27,23 @@ public static class MenuFeatureExtension
     /// <exception cref="NotImplementedException"></exception>
     public static async Task<IResult> EditHandler([FromBody] EditMenuModel menuModel,
                                                   [FromServices] RestaurantDbContex dbContext,
-                                                  [FromServices] HttpContext httpcontext)
+                                                  HttpContext httpContext)
     {
-        throw new NotImplementedException();
+        var menu = await dbContext.Menus
+            .Where(m => m.Id == menuModel.id)
+            .SingleOrDefaultAsync();
+            
+        if (menu == null)
+            return TypedResults.NotFound();
+            
+        menu.MenuName = menuModel.menu_name ?? menu.MenuName;
+        menu.UserName = menuModel.user_account_name ?? menu.UserName;
+        menu.Theme = menuModel.theme ?? menu.Theme;
+        
+        await dbContext.SaveChangesAsync();
+        
+        var updatedModel = new MenuModel(menu.Id, menu.MenuName, menu.UserName, menu.Theme, menuModel.user_id);
+        return TypedResults.Ok(updatedModel);
     }
     
 
@@ -51,10 +64,10 @@ public static class MenuFeatureExtension
     public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>>
         AddHandler([FromBody] MenuModel model,
                                     [FromServices] RestaurantDbContex context,
-                                    [FromServices] HttpContext provider)
+                                    HttpContext httpContext,
+                                    [FromServices] IValidations validator,
+                                    [FromServices] IFactory<Menu> dbModelFactory)
     {
-        var validator  = provider.RequestServices.GetRequiredService<IValidations>();
-        var dbModelFactory = provider.RequestServices.GetRequiredService<IFactory<Menu>>();
         Menu modelItem = dbModelFactory.Create();
 
         var user =  await context.Users.Where(x => x.Id == model.user_id)
@@ -81,6 +94,7 @@ public static class MenuFeatureExtension
             return TypedResults.InternalServerError();
         }
 
-        return TypedResults.Ok<MenuModel>(model);
+        var createdModel = new MenuModel(modelItem.Id, modelItem.MenuName, modelItem.UserName, modelItem.Theme, model.user_id);
+        return TypedResults.Ok<MenuModel>(createdModel);
     }
 }

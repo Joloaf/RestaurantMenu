@@ -8,7 +8,7 @@ using RestaurantMenu.Core.Models;
 using Microsoft.AspNetCore.Identity;
 namespace RestaurantMenu.API.Tests.Fixtures
 {
-    internal class WebclassFixture<TProgram> : WebApplicationFactory<TProgram>  where TProgram : class
+    public class WebclassFixture<TProgram> : WebApplicationFactory<TProgram>  where TProgram : class
     {
         public WebclassFixture()
         {
@@ -17,7 +17,7 @@ namespace RestaurantMenu.API.Tests.Fixtures
 
         private string AddUsers(UserManager<User> userManager)
         {
-            userManager.CreateAsync(new User
+            var user = new User
             {
                 UserName = "Bartek",
                 Email = "SomeEmail@Somewhere.org",
@@ -25,7 +25,8 @@ namespace RestaurantMenu.API.Tests.Fixtures
                 PhoneNumberConfirmed = true,
                 PhoneNumber = "+35988888888",
                 SecurityStamp = Guid.NewGuid().ToString()
-            });
+            };
+            userManager.CreateAsync(user).Wait();
             return userManager.FindByNameAsync("Bartek").Result.Id;
         }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -68,7 +69,7 @@ namespace RestaurantMenu.API.Tests.Fixtures
             using var scope = host.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<RestaurantMenu.Infrastructure.Data.RestaurantDbContex>();
             db.Database.EnsureCreated();
-            AddUsers(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
+            UserGuid = AddUsers(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
             
             return host;
         }
