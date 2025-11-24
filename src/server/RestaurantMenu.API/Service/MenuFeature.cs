@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
+using RestaurantMenu.API.Service.DTOs;
 using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.Core.Models;
 using RestaurantMenu.Infrastructure.Data;
@@ -14,8 +15,15 @@ public static class MenuFeatureExtension
         group.MapPatch("/", EditHandler);
         return group;
     }
-    public record AddMenuModel(string UserName, int UserId);
-
+    
+    /// <summary>
+    /// Bartek
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="dbContext"></param>
+    /// <param name="httpcontext"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public static async Task<IResult> EditHandler([FromBody] int id,
                                                   [FromServices] RestaurantDbContex dbContext,
                                                   [FromServices] HttpContext httpcontext)
