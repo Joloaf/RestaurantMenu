@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.AspNetCore.Mvc;
 using MinimalApi.Endpoint.Extensions;
 using Microsoft.AspNetCore.Http.Connections.Features;
+using RestaurantMenu.API.Service.Interfaces;
+using RestaurantMenu.API.Service;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +24,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<RestaurantDbContex>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IValidateMenu, ValidateMenu>();
+builder.Services.AddScoped<IValidations, Validations>();
 
 
 // Add CORS for development
@@ -45,8 +47,9 @@ var app = builder.Build();
 
 app.MapEndpoints();
 
-app.MapGet("/Menu", async 
-);
+app.MapGroup("/Menu")
+    .AddMenuFeatures();
+
 
 
 // Configure the HTTP request pipeline.
@@ -56,116 +59,20 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
     app.UseCors("AllowAll");
 }
-<<<<<<< HEAD
 
-//app.UserRouting();
+app.UseRouting();
 
-=======
->>>>>>> main
 app.UseHttpsRedirection();
 
 
 app.Run();
 
-public static class MenuFeatureExtension
-{
-    public static RouteGroupBuilder AddMenuFeatures(this RouteGroupBuilder group)
-    {
-        group.MapGet("/", AddHandler);
-        group.MapPost("/", CreateHandler);
-        group.MapDelete("/", DeleteHandler);
-        group.MapPatch("/", );
-    }
-    public record AddMenuModel(string UserName, int UserId);
-
-    public static async Task<IResult> EditHandler([FromBody] int id,
-                                                  [FromServices] RestaurantDbContex dbContext,
-                                                  [FromServices] HttpContext httpcontext)
-    {
-
-    }
-
-    public static async Task<IResult> DeleteHandler([FromBody] int id,
-                                                    [FromServices] RestaurantDbContex dbcontext,
-                                                    [FromServices] HttpContext httpcontext)
-    {
-
-    }
-    public static async Task<IResult> CreateHandler([FromBody] AddMenuModel addMenuModel, 
-                                              [FromServices] RestaurantDbContex context,
-                                              [FromServices] HttpContext httpContext)
-    {
-
-    }
-    public static async Task<IResult> AddHandler([FromBody] MenuModel model,
-                                    [FromServices] RestaurantDbContex context,
-                                    [FromServices] HttpContext provider)
-    {
-        var validator  = provider.RequestServices.GetRequiredService<IValidateMenu>();
-        var dbModelFactory = provider.RequestServices.GetRequiredService<IFactory<Menu>>();
-        Menu modelItem = dbModelFactory.Create();
-
-        if (validator.ValidateMenu(model))
-        {
-            modelItem.MenuName = model.name;
-            modelItem.UserName = model.userName;
-            modelItem.Id = model.id;
-            modelItem.Theme = model.theme;
-
-            context.Add(modelItem);
-            try
-            {
-                await context.SaveChangesAsync();
-
-            }
-            catch(Exception _)
-            {
-                return Results.InternalServerError();
-            }
-
-            return Results.Accepted();
-        }
-        return Results.BadRequest();
-    }
-}
-
-public interface IValidateMenu
-{
-    public bool ValidateMenu(string menuName);
-    public bool ValidateMenuName(string name);
-}
-
-public class MenuFactory : IFactory<Menu>
-{
-    public Menu Create()
-    {
-        //object creation.
-
-        //Mutate and insert default values here.
-
-        //insert default values here.
-        return new Menu();
-    }
-}
-
-public class ValidateMenu : IValidateMenu
-{
-    bool IValidateMenu.ValidateMenu(MenuModel model)
-    {
-        return true;
-    }
-}
-
-public record MenuModel(int id, string name, string userName, string? theme, int userId);
 
 
-public interface IFactory<T>
-{
-    T Create();
-}
 
 
-public class GetMenuEndPoint()
-{
 
-}
+
+
+
+

@@ -1,31 +1,40 @@
 using System.Text.RegularExpressions;
 
+using RestaurantMenu.API.Service.Interfaces;
 namespace RestaurantMenu.API.Service;
 
-public class Validations
+
+
+
+
+public class Validations : IValidations
 {
     public bool ValidUserName(string? username)
     {
-        if(string.IsNullOrEmpty(username)
+        if (string.IsNullOrEmpty(username)
            || string.IsNullOrWhiteSpace(username))
             return false;
-        
-        if(username.Length < 2)
+
+        if (username.Length < 2)
             return false;
-        
-        var UppRegex = new Regex(@"^[A-Z]{1}[a-z]+$");        
-        if(!UppRegex.IsMatch(username))
+
+
+        var UppRegex = new Regex(@"^[A-Z]{1}[a-z]+$");
+        if (!UppRegex.IsMatch(username))
             return false;
-        
+
+
         var regex = new Regex(@"^[\p{L}\p{So}\p{Sk}\s]*$");
         return regex.IsMatch(username);
     }
     public bool ValidDishName(string? username)
     {
-        if(string.IsNullOrEmpty(username)
-           || string.IsNullOrWhiteSpace(username)) 
+        if (string.IsNullOrEmpty(username)
+           || string.IsNullOrWhiteSpace(username))
+
             return false;
-            
+
+
         var regex = new Regex(@"^[\p{L}\p{So}\p{Sk}\s]*$");
         return regex.IsMatch(username);
     }
@@ -35,7 +44,7 @@ public class Validations
     }
     public bool ValidThemeName(string? username)
     {
-        if(string.IsNullOrEmpty(username)
+        if (string.IsNullOrEmpty(username)
            || string.IsNullOrWhiteSpace(username))
             return false;
 
@@ -48,7 +57,7 @@ public class Validations
     }
     public bool ValidMenuName(string? username)
     {
-        if(string.IsNullOrEmpty(username)
+        if (string.IsNullOrEmpty(username)
            || string.IsNullOrWhiteSpace(username))
             return false;
 
@@ -56,5 +65,9 @@ public class Validations
         var regex = new Regex(pattern);
         return regex.IsMatch(username);
     }
-    
+
+    public bool ValidId(int id)
+    {
+        throw new NotImplementedException();
+    }
 }
