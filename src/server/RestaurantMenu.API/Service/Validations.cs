@@ -30,7 +30,7 @@ public class Validations : IValidations
 
     public bool TicketValidIdNumber(int? id)
     {
-        throw new NotImplementedException();
+        return false;
     }
 
     public bool ValidDishName(string? username)
@@ -74,6 +74,6 @@ public class Validations : IValidations
 
     public bool ValidId(int id)
     {
-        throw new NotImplementedException();
+        return false;
     }
 }
