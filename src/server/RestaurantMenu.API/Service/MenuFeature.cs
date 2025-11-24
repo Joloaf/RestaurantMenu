@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.API.Service.DTOs;
+using RestaurantMenu.API.Service.DTOs.Models;
 using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.Core.Models;
 using RestaurantMenu.Infrastructure.Data;
@@ -24,12 +26,13 @@ public static class MenuFeatureExtension
     /// <param name="httpcontext"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public static async Task<IResult> EditHandler([FromBody] int id,
+    public static async Task<IResult> EditHandler([FromBody] EditMenuModel menuModel,
                                                   [FromServices] RestaurantDbContex dbContext,
                                                   [FromServices] HttpContext httpcontext)
     {
         throw new NotImplementedException();
     }
+    
 
     public static async Task<IResult> DeleteHandler([FromRoute] int id,
                                                     [FromServices] RestaurantDbContex dbcontext,
@@ -45,7 +48,8 @@ public static class MenuFeatureExtension
 
         throw new NotImplementedException();
     }
-    public static async Task<IResult> AddHandler([FromBody] MenuModel model,
+    public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>>
+        AddHandler([FromBody] MenuModel model,
                                     [FromServices] RestaurantDbContex context,
                                     [FromServices] HttpContext provider)
     {
@@ -53,26 +57,30 @@ public static class MenuFeatureExtension
         var dbModelFactory = provider.RequestServices.GetRequiredService<IFactory<Menu>>();
         Menu modelItem = dbModelFactory.Create();
 
-        if (validator.ValidMenuName(model.name))
+        var user =  await context.Users.Where(x => x.Id == model.user_id)
+            .Include(x=> x.Menus)
+            .SingleOrDefaultAsync();
+    
+       if(user == null) 
+           return TypedResults.NotFound();
+       
+        modelItem.MenuName = model.menu_mame;
+        modelItem.UserName = model.user_name;
+        modelItem.Theme = model.theme;
+        modelItem.Dishes = [];
+        
+        user.Menus.Add(modelItem);
+        
+        try
         {
-            modelItem.MenuName = model.name;
-            modelItem.UserName = model.userName;
-            modelItem.Id = model.id;
-            modelItem.Theme = model.theme;
+            await context.SaveChangesAsync();
 
-            context.Add(modelItem);
-            try
-            {
-                await context.SaveChangesAsync();
-
-            }
-            catch(Exception _)
-            {
-                return Results.InternalServerError();
-            }
-
-            return Results.Accepted();
         }
-        return Results.BadRequest();
+        catch(Exception _)
+        {
+            return TypedResults.InternalServerError();
+        }
+
+        return TypedResults.Ok<MenuModel>(model);
     }
 }
