@@ -40,7 +40,7 @@ public static class MenuFeatureExtension
 
         throw new NotImplementedException();
     }
-    public static async Task<IResult> GetHandler([FromBody] AddMenuModel addMenuModel, 
+    public static async Task<IResult> GetHandler([FromBody] MenuModel model, 
                                               [FromServices] RestaurantDbContex context,
                                               [FromServices] HttpContext httpContext)
     {
@@ -68,7 +68,7 @@ public static class MenuFeatureExtension
         modelItem.Theme = model.Theme;
         modelItem.User = user;
         modelItem.Dishes = [];
-        modelItem.Id = null;
+        
         context.Add(modelItem);
         user.Menus.Add(modelItem);
 
