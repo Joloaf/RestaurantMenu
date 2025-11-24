@@ -27,6 +27,12 @@ public class Validations : IValidations
         var regex = new Regex(@"^[\p{L}\p{So}\p{Sk}\s]*$");
         return regex.IsMatch(username);
     }
+
+    public bool TicketValidIdNumber(int? id)
+    {
+        throw new NotImplementedException();
+    }
+
     public bool ValidDishName(string? username)
     {
         if (string.IsNullOrEmpty(username)
