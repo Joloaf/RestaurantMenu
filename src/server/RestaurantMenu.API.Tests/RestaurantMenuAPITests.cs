@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantMenu.API.Tests
 {
-    internal class RestaurantMenuAPITests : IClassFixture<WebclassFixture<RestaurantMenu.API.Program>>
+    internal class RestaurantMenuAPITests : IClassFixture<WebclassFixture<RestaurantMenu.API.>>
     {
 
     }
