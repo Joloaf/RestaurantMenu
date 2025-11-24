@@ -4,7 +4,8 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using RestaurantMenu.Core.Models;
+using Microsoft.AspNetCore.Identity;
 namespace RestaurantMenu.API.Tests.Fixtures
 {
     internal class WebclassFixture<TProgram> : WebApplicationFactory<TProgram>  where TProgram : class
@@ -12,7 +13,21 @@ namespace RestaurantMenu.API.Tests.Fixtures
         public WebclassFixture()
         {
         }
+        public string UserGuid { get; set; }
 
+        private string AddUsers(UserManager<User> userManager)
+        {
+            userManager.CreateAsync(new User
+            {
+                UserName = "Bartek",
+                Email = "SomeEmail@Somewhere.org",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                PhoneNumber = "+35988888888",
+                SecurityStamp = Guid.NewGuid().ToString()
+            });
+            return userManager.FindByNameAsync("Bartek").Result.Id;
+        }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
@@ -53,7 +68,8 @@ namespace RestaurantMenu.API.Tests.Fixtures
             using var scope = host.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<RestaurantMenu.Infrastructure.Data.RestaurantDbContex>();
             db.Database.EnsureCreated();
-
+            AddUsers(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
+            
             return host;
         }
     }
