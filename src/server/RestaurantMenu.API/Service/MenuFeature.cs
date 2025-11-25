@@ -28,8 +28,10 @@ public static class MenuFeatureExtension
     /// <exception cref="NotImplementedException"></exception>
     public static async Task<Results<Ok<MenuModel>, NotFound>> EditHandler([FromBody] MenuModel menuModel,
                                                   RestaurantDbContex dbContext,
-                                                  HttpContext httpcontext)
+                                                  IEditModelValidator editModelValidator,
+                                                  IFactory<Menu> menuFactory)
     {
+        //if(editModelValidator.EditModelValid(menuModel))
         return TypedResults.Ok(new MenuModel(1, "some", "else", "theme", "use_id"));
     }
     
