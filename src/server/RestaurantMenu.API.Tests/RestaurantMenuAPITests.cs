@@ -71,6 +71,84 @@ namespace RestaurantMenu.API.Tests
             }
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task MenuDelete_RemoveExistingMenuForValidUser_ReceiveValidResponseCode()
+        {
+            var userId = await _fixture.AddUsers(_fixture);
+
+            //arrange
+            var obj = new MenuModel(0, "menu to delete", "Patrick", "spongebob", userId);
+            var created = await _client.PostAsJsonAsync(base_url, obj);
+            
+            if (!created.IsSuccessStatusCode)
+            {
+                var errorContent = await created.Content.ReadAsStringAsync();
+                throw new Exception($"POST Failed with status {created.StatusCode}: {errorContent}");
+            }
+            var createdMenu = await created.Content.ReadFromJsonAsync<MenuModel>();
+            
+            //act
+            var deleteResponse = await _client.DeleteAsync($"{base_url}{createdMenu.Id}?userId={userId}");
+            
+            //assert
+            if (!deleteResponse.IsSuccessStatusCode)
+            {
+                var errorContent = await deleteResponse.Content.ReadAsStringAsync();
+                throw new Exception($"DELETE Failed with status {deleteResponse.StatusCode}: {errorContent}");
+            }
+            deleteResponse.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task MenuDelete_NotFound_NonExistentMenu()
+        {
+            var userId = await _fixture.AddUsers(_fixture);
+
+            //arrange
+            var nonExistentMenuId = 99999;
+            
+            //act
+            var deleteResponse = await _client.DeleteAsync($"{base_url}{nonExistentMenuId}?userId={userId}");
+            
+            //assert
+            if (deleteResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                var errorContent = await deleteResponse.Content.ReadAsStringAsync();
+                throw new Exception($"Expected NotFound but got {deleteResponse.StatusCode}: {errorContent}");
+            }
+            Assert.Equal(System.Net.HttpStatusCode.NotFound, deleteResponse.StatusCode);
+        }
+
+        [Fact]
+        public async Task MenuDelete_NotFound_WrongUser()
+        {
+            var userId1 = await _fixture.AddUsers(_fixture);
+
+            //arrange
+            var obj = new MenuModel(0, "menu owned by user1", "Patrick", "spongebob", userId1);
+            var created = await _client.PostAsJsonAsync(base_url, obj);
+            
+            if (!created.IsSuccessStatusCode)
+            {
+                var errorContent = await created.Content.ReadAsStringAsync();
+                throw new Exception($"POST Failed with status {created.StatusCode}: {errorContent}");
+            }
+            var createdMenu = await created.Content.ReadFromJsonAsync<MenuModel>();
+
+            var wrongUserId = "wrong-user-id-123";
+            
+            //act
+            var deleteResponse = await _client.DeleteAsync($"{base_url}{createdMenu.Id}?userId={wrongUserId}");
+            
+            //assert
+            if (deleteResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                var errorContent = await deleteResponse.Content.ReadAsStringAsync();
+                throw new Exception($"Expected NotFound but got {deleteResponse.StatusCode}: {errorContent}");
+            }
+            Assert.Equal(System.Net.HttpStatusCode.NotFound, deleteResponse.StatusCode);
+        }
         
         [Fact]
         public async Task CanReadMenu()
