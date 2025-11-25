@@ -12,7 +12,7 @@ public static class MenuFeatureExtension
     public static RouteGroupBuilder AddMenuFeatures(this RouteGroupBuilder group)
     {
         group.MapPost("/", AddHandler);
-        group.MapDelete("/", DeleteHandler);
+        group.MapDelete("/{id}", DeleteHandler);
         group.MapPatch("/", EditHandler);
         group.MapGet("/", GetHandler);
         return group;
@@ -32,14 +32,38 @@ public static class MenuFeatureExtension
     {
         return TypedResults.Ok(new MenuModel(1, "some", "else", "theme", "use_id"));
     }
-    
 
-    public static async Task<IResult> DeleteHandler([FromBody] MenuModel model,
-                                                    [FromServices] RestaurantDbContex dbcontext,
-                                                    HttpContext httpcontext)
+    public static async Task<Results<NoContent, NotFound, InternalServerError>> DeleteHandler(
+                        [FromRoute] int id,
+                        [FromQuery] string userId,
+                        RestaurantDbContex dbContext,
+                        HttpContext httpContext)
     {
-        return Results.Ok();
+        var menuItem = await dbContext.Menus
+            .Where(m => m.Id == id)
+            .Include(m => m.User)
+            .SingleOrDefaultAsync();
+        
+        if (menuItem == null)
+            return TypedResults.NotFound();
+
+        if (menuItem.User.Id != userId)
+            return TypedResults.NotFound();
+        
+        dbContext.Remove(menuItem);
+        
+        try
+        {
+            await dbContext.SaveChangesAsync();
+        }
+        catch (Exception exc)
+        {
+            return TypedResults.InternalServerError();
+        }
+        
+        return TypedResults.NoContent();
     }
+    
     public static async Task<IResult> GetHandler([FromBody] MenuModel model, 
                                               [FromServices] RestaurantDbContex context,
                                                 HttpContext httpContext)
@@ -47,9 +71,10 @@ public static class MenuFeatureExtension
 
         throw new NotImplementedException();
     }
-    public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>> AddHandler([FromBody] MenuModel model,
-                                    RestaurantDbContex context,
-                                    HttpContext provider)
+    public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>> AddHandler(
+                        [FromBody] MenuModel model,
+                        RestaurantDbContex context,
+                        HttpContext provider)
     {
     //    var validator  = provider.RequestServices.GetRequiredService<IValidations>();
         var dbModelFactory = provider.RequestServices.GetRequiredService<IFactory<Menu>>();
