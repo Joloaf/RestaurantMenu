@@ -1,12 +1,41 @@
 using RestaurantMenu.Core.Models;
 using RestaurantMenu.API.Service;
+using RestaurantMenu.API.Service.DTOs.Models;
+using RestaurantMenu.API.Service.Interfaces;
+using RestaurantMenu.API.Tests.TestData;
 
 namespace RestaurantMenu.API.Tests;
 
 
+
+
 public class ModelMenuTest
 {
-
+    [Theory]
+    [ClassData(typeof(EditModelTestData))] //define
+    public void EditModelValid_ModelCombinations(MenuModel model, bool expected)
+    {
+       //arrange 
+       var sut = new EditModelValidator(new Validations());
+       
+       //act
+       var actual = sut.EditModelValid(model);
+       
+       //assert
+       Assert.Equal(actual, expected);
+    }
+    [Fact]
+    public void EditModelValid_Inline()
+    {
+        //arrange 
+        var sut = new EditModelValidator(new Validations());
+       
+        //act
+        var actual = sut.EditModelValid(new MenuModel(0, "StandardMenu", "Sara",Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+       
+        //assert
+        Assert.True(actual);
+    }
     [Theory]
     [InlineData("", false)]
     [InlineData(null, false)]
