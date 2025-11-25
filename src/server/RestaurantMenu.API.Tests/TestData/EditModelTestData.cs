@@ -29,7 +29,7 @@ public class EditModelTestData : IEnumerable<object[]>
 
     private MenuModel CreateInvalidModel()
     {
-        var rand = Random.Shared.Next(0, 4);
+        var rand = Random.Shared.Next(0, 5);
         switch (rand)
         {
             case 0:
@@ -37,19 +37,20 @@ public class EditModelTestData : IEnumerable<object[]>
                 .WithIdentityUserId(true)
                 .WithName(true)
                 .WithUserName(true)
-                .WithTheme(true)
+                .WithThemeName(true)
                 .Build();
             case 1:
                 return _builder.WithId(true)
                 .WithIdentityUserId(false)
                 .WithName(true)
                 .WithUserName(true)
-                .WithTheme(true)
+                .WithThemeName(true)
                 .Build();
             case 2:
                 return _builder.WithId(true)
                 .WithIdentityUserId(true)
                 .WithName(false)
+                .WithThemeName(true)
                 .WithUserName(true)
                 .Build();
             
@@ -57,8 +58,16 @@ public class EditModelTestData : IEnumerable<object[]>
                 return _builder.WithId(true)
                 .WithIdentityUserId(true)
                 .WithName(true)
+                .WithThemeName(true)
                 .WithUserName(false)
                 .Build();
+            case 4:
+                return _builder.WithId(true)
+                    .WithIdentityUserId(true)
+                    .WithName(true)
+                    .WithThemeName(false)
+                    .WithUserName(true)
+                    .Build();
             
         }
 
@@ -69,6 +78,7 @@ public class EditModelTestData : IEnumerable<object[]>
     {
         return _builder.WithId(true)
             .WithIdentityUserId(true)
+            .WithThemeName(true)
             .WithUserName(true)
             .WithName(true)
             .Build();
