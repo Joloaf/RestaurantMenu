@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantMenu.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using RestaurantMenu.Infrastructure.Data;
 namespace RestaurantMenu.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantDbContex))]
-    partial class RestaurantDbContexModelSnapshot : ModelSnapshot
+    [Migration("20251124143757_ExpandedMenus")]
+    partial class ExpandedMenus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");

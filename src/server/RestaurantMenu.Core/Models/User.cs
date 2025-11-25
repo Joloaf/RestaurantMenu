@@ -5,7 +5,5 @@ namespace RestaurantMenu.Core.Models;
 
 public class User : IdentityUser
 {
-    public Menu Menu { get; set; }
-    [ForeignKey(nameof(Menu.Id))]
-    public int MenuId { get; set; }
+    public ICollection<Menu> Menus { get; set; } = [];
 }

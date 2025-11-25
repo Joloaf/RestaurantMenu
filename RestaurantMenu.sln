@@ -1,0 +1,53 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{E6B48023-E680-40DA-9E17-319585C26937}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantMenu.API", "src\server\RestaurantMenu.API\RestaurantMenu.API.csproj", "{E719E727-B033-3836-176E-01B4164EAAAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantMenu.API.Tests", "src\server\RestaurantMenu.API.Tests\RestaurantMenu.API.Tests.csproj", "{F87214A1-03F6-2D4F-8421-2613CED9AC21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantMenu.Core", "src\server\RestaurantMenu.Core\RestaurantMenu.Core.csproj", "{2BC431A2-F147-0EAD-7AEC-63E84D32992E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantMenu.Infrastructure", "src\server\RestaurantMenu.Infrastructure\RestaurantMenu.Infrastructure.csproj", "{0ABA8A4B-E5E4-153F-1A47-F7D57B7392FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E719E727-B033-3836-176E-01B4164EAAAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E719E727-B033-3836-176E-01B4164EAAAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E719E727-B033-3836-176E-01B4164EAAAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E719E727-B033-3836-176E-01B4164EAAAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F87214A1-03F6-2D4F-8421-2613CED9AC21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F87214A1-03F6-2D4F-8421-2613CED9AC21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F87214A1-03F6-2D4F-8421-2613CED9AC21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F87214A1-03F6-2D4F-8421-2613CED9AC21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BC431A2-F147-0EAD-7AEC-63E84D32992E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BC431A2-F147-0EAD-7AEC-63E84D32992E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BC431A2-F147-0EAD-7AEC-63E84D32992E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BC431A2-F147-0EAD-7AEC-63E84D32992E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ABA8A4B-E5E4-153F-1A47-F7D57B7392FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ABA8A4B-E5E4-153F-1A47-F7D57B7392FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ABA8A4B-E5E4-153F-1A47-F7D57B7392FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ABA8A4B-E5E4-153F-1A47-F7D57B7392FA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E6B48023-E680-40DA-9E17-319585C26937} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{E719E727-B033-3836-176E-01B4164EAAAA} = {E6B48023-E680-40DA-9E17-319585C26937}
+		{F87214A1-03F6-2D4F-8421-2613CED9AC21} = {E6B48023-E680-40DA-9E17-319585C26937}
+		{2BC431A2-F147-0EAD-7AEC-63E84D32992E} = {E6B48023-E680-40DA-9E17-319585C26937}
+		{0ABA8A4B-E5E4-153F-1A47-F7D57B7392FA} = {E6B48023-E680-40DA-9E17-319585C26937}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9C4F931D-1DF0-4DD7-89AA-4DCCEC8CB3D0}
+	EndGlobalSection
+EndGlobal
