@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
+using RestaurantMenu.API.Tests.TestData;
 
 namespace RestaurantMenu.API.Tests
 {
@@ -26,6 +27,78 @@ namespace RestaurantMenu.API.Tests
         {
             _client = fixture.CreateClient();
             _fixture = fixture;
+        }
+         
+        [Theory]
+        [ClassData(typeof(PatchMenuNameTestData))]
+        public async Task Patch_ChangeMenuName(MenuModel model, string expectedMenuNameChange)
+        {
+            //arrange
+            var userId = await _fixture.AddUsers(_fixture);
+            var createModel = new MenuModel(model.Id, model.Menu_mame, model.User_name, model.Theme, userId);
+            var created = await _client.PostAsJsonAsync(base_url, createModel);
+            
+            //act
+            var result =  await created.Content.ReadFromJsonAsync<MenuModel>();
+            var modified = new MenuModel(result.Id, expectedMenuNameChange, result.User_name, result.Theme, result.User_id);
+            var actualResponse = await _client.PatchAsJsonAsync(base_url,  modified);
+            var actual = await actualResponse.Content.ReadFromJsonAsync<MenuModel>();
+            
+            //assert
+            created.EnsureSuccessStatusCode();
+            actualResponse.EnsureSuccessStatusCode();
+            Assert.Equal(modified.Id, actual.Id);
+            Assert.Equal(modified.User_id, actual.User_id);
+            Assert.Equal(expectedMenuNameChange, actual.Menu_mame);
+            Assert.Equal(modified.Theme, actual.Theme);
+        }
+        [Theory]
+        [ClassData(typeof(PatchThemeTestData))]
+        public async Task Patch_ChangeTheme(MenuModel model, string expectedThemeChange)
+        {
+            //arrange
+            var userId = await _fixture.AddUsers(_fixture);
+            var createModel = new MenuModel(model.Id, model.Menu_mame, model.User_name, model.Theme, userId);
+            var created = await _client.PostAsJsonAsync(base_url, createModel);
+            
+            //act
+            var result =  await created.Content.ReadFromJsonAsync<MenuModel>();
+            var modified = new MenuModel(result.Id, result.Menu_mame, result.User_name, expectedThemeChange, result.User_id);
+            var actualResponse = await _client.PatchAsJsonAsync(base_url,  modified);
+            var actual = await actualResponse.Content.ReadFromJsonAsync<MenuModel>();
+            
+            //assert
+            created.EnsureSuccessStatusCode();
+            actualResponse.EnsureSuccessStatusCode();
+            Assert.Equal(modified.Id, actual.Id);
+            Assert.Equal(modified.User_id, actual.User_id);
+            Assert.Equal(modified.Menu_mame, actual.Menu_mame);
+            Assert.Equal(actual.Theme, expectedThemeChange);
+        }
+        
+        
+        [Theory]
+        [ClassData(typeof(PatchUserNameTestData))]
+        public async Task Patch_ChangesUserName(MenuModel model, string nameChange)
+        {
+            //arrange
+            var userId = await _fixture.AddUsers(_fixture);
+            var createModel = new MenuModel(model.Id, model.Menu_mame, model.User_name, model.Theme, userId);
+            var created = await _client.PostAsJsonAsync(base_url, createModel);
+            
+            //act
+            var result =  await created.Content.ReadFromJsonAsync<MenuModel>();
+            var modified = new MenuModel(result.Id, result.Menu_mame, nameChange, result.Theme, result.User_id);
+            var actualResponse = await _client.PatchAsJsonAsync(base_url,  modified);
+            var actual = await actualResponse.Content.ReadFromJsonAsync<MenuModel>();
+            
+            //assert
+            created.EnsureSuccessStatusCode();
+            actualResponse.EnsureSuccessStatusCode();
+            Assert.Equal(modified.Id, actual.Id);
+            Assert.Equal(nameChange, actual.User_name);
+            Assert.Equal(modified.Theme, actual.Theme);
+            Assert.Equal(modified.User_id, actual.User_id);
         }
         [Fact]
         public async Task MenuAdd_ValidResponseCode()
@@ -60,7 +133,7 @@ namespace RestaurantMenu.API.Tests
                 throw new Exception($"POST Failed with status {created.StatusCode}: {errorContent}");
             }
             var res = await created.Content.ReadFromJsonAsync<MenuModel>();
-            var edit = new MenuModel(res.Id, "SpidermanMenu", "Bartek", "Princess", res.User_id);
+            var edit = new MenuModel(res.Id, "SpidermanMenu", "Bartek", Guid.NewGuid().ToString(), res.User_id);
             
             //assert
             var response = await _client.PatchAsJsonAsync(base_url, edit);
