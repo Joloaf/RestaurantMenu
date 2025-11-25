@@ -40,12 +40,19 @@ public static class MenuFeatureExtension
     {
         return Results.Ok();
     }
-    public static async Task<IResult> GetHandler([FromBody] MenuModel model, 
+    public static async Task<IResult> GetHandler(int id, 
                                               [FromServices] RestaurantDbContex context,
                                                 HttpContext httpContext)
     {
-
-        throw new NotImplementedException();
+        var menu = await context.Menus
+            .Include(m => m.User) 
+            .FirstOrDefaultAsync(m => m.Id == id);
+        
+        return menu != null ? Results.Ok(new MenuModel(menu.Id,
+            menu.MenuName,
+            menu.UserName,
+            menu.Theme,
+            menu.User.Id)) : Results.NotFound();
     }
     public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>> AddHandler([FromBody] MenuModel model,
                                     RestaurantDbContex context,
