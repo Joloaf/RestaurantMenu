@@ -14,6 +14,7 @@ public static class MenuFeatureExtension
         group.MapPost("/", AddHandler);
         group.MapDelete("/", DeleteHandler);
         group.MapPatch("/", EditHandler);
+        group.MapGet("/", GetHandler);
         return group;
     }
     
@@ -35,14 +36,13 @@ public static class MenuFeatureExtension
 
     public static async Task<IResult> DeleteHandler([FromBody] MenuModel model,
                                                     [FromServices] RestaurantDbContex dbcontext,
-                                                    [FromServices] HttpContext httpcontext)
+                                                    HttpContext httpcontext)
     {
-
-        throw new NotImplementedException();
+        return Results.Ok();
     }
     public static async Task<IResult> GetHandler([FromBody] MenuModel model, 
                                               [FromServices] RestaurantDbContex context,
-                                              [FromServices] HttpContext httpContext)
+                                                HttpContext httpContext)
     {
 
         throw new NotImplementedException();
@@ -74,10 +74,10 @@ public static class MenuFeatureExtension
 
         try
         {
+            
             await context.SaveChangesAsync();
             context.Update(modelItem);
             await context.SaveChangesAsync();
-
         }
         catch(Exception exc)
         {
