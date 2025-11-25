@@ -30,7 +30,7 @@ public class Validations : IValidations
 
     public bool TicketValidIdNumber(int? id)
     {
-        return false;
+        return ValidId(id);
     }
 
     public bool ValidDishName(string? username)
@@ -70,10 +70,5 @@ public class Validations : IValidations
         var pattern = @"^(?:[a-zA-Z0-9]|[\u00a9\u00ae]|[\u2000-\u3300]|[\ud83c-\ud83e][\ud800-\udfff])*$";
         var regex = new Regex(pattern);
         return regex.IsMatch(username);
-    }
-
-    public bool ValidId(int id)
-    {
-        return false;
     }
 }
