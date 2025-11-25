@@ -72,7 +72,7 @@ internal class MenuModelBuilder
         // int le = 122;
         var builder = new StringBuilder();
         builder.Append(LargeChar());
-        var len = Random.Shared.Next(0, 100);
+        var len = Random.Shared.Next(2, 100);
         for (int i = 0; i < len; i++)
             builder.Append(SmallChar());
         
@@ -87,18 +87,29 @@ internal class MenuModelBuilder
         return (char)Random.Shared.Next(97, 123);
     }
     
+    private string CreateValidThemeName()
+    {
+        return Guid.NewGuid().ToString();
+    }
+
+    private string CreateInvalidThemeName()
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 36; i++)
+            builder.Append((char)Random.Shared.Next(97, 122));
+        return builder.ToString();
+    }
     private string InvalidGuid()
     {
-        var build = new StringBuilder();
-        for(int i = Guid.NewGuid().ToString().Length; i > 0; i--)
-            build.Append((char)Random.Shared.Next(97, 122));
-        
-        return build.ToString();
+        return CreateInvalidThemeName();
     }
     public MenuModelBuilder WithId(bool valid)
     {
-        if(valid) 
+        if (valid)
+        {
             this.Model = ModelCreator(Field.Id, Random.Shared.Next(0, 5000));
+            return this;
+        }
         this.Model = ModelCreator(Field.Id, Random.Shared.Next(int.MinValue, 0));
         return this;
     }
@@ -107,47 +118,47 @@ internal class MenuModelBuilder
         if (valid)
         {
             this.Model = ModelCreator(Field.UsName, CreateValidUserName());
+            return this;
         }
+        
         this.Model = ModelCreator(Field.UsName, CreateInvalidUserName(false));
         return this;
     }
 
     public MenuModelBuilder WithIdentityUserId(bool valid)
     {
-        if(valid)
+        if (valid)
+        {
             this.Model = ModelCreator(Field.UsId, Guid.NewGuid().ToString());
+            return this;
+        }
+        
         this.Model = ModelCreator(Field.UsId, InvalidGuid());
         return this;
     }
     public MenuModelBuilder WithName(bool valid)
     {
-        if(valid)
+        if (valid)
+        {
             this.Model = ModelCreator(Field.MName, CreateValidUserName());
+            return this;
+        }
         this.Model = ModelCreator(Field.MName, CreateInvalidUserName(true));
         return this;
     }
 
-    public MenuModelBuilder WithTheme(bool valid)
+    public MenuModelBuilder WithThemeName(bool valid)
     {
-        if(valid)
+        if (valid)
+        {
             this.Model = ModelCreator(Field.Theme, CreateValidThemeName());
+            return this;
+        }
         this.Model = ModelCreator(Field.Theme, CreateInvalidThemeName());
         
         return this;
     }
 
-    public string CreateValidThemeName()
-    {
-        return Guid.NewGuid().ToString();
-    }
-
-    public string CreateInvalidThemeName()
-    {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 36; i++)
-            builder.Append((char)Random.Shared.Next(97, 122));
-        return builder.ToString();
-    }
 
     public MenuModel Build()
     {

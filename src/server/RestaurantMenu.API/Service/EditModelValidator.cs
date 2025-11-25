@@ -16,6 +16,7 @@ public class EditModelValidator : IEditModelValidator
         return (_v.ValidThemeName(model.Theme)
                 && _v.ValidUserName(model.User_name)
                 && _v.ValidMenuName(model.Menu_mame)
-                && _v.ValidId(model.Id));
+                && _v.ValidId(model.Id)
+                && _v.ValidThemeName(model.User_id));
     }
 }
