@@ -150,6 +150,31 @@ namespace RestaurantMenu.API.Tests
             Assert.Equal(System.Net.HttpStatusCode.NotFound, deleteResponse.StatusCode);
         }
         
+        [Fact]
+        public async Task CanReadMenu()
+        {
+            var id = await _fixture.AddUsers(_fixture);
+            //Arrange
+            var newMenu = new MenuModel(0, "Read test manu name", "Read test menu username", "Read test menu theme", id);
+
+        
+            var createResp = await _client.PostAsJsonAsync(base_url, newMenu);
+            var created = await createResp.Content.ReadFromJsonAsync<MenuModel>();
+
+            //Act
+            var getResp = await _client.GetAsync($"{base_url}?id={created.Id}");
+
+            //Assert
+            getResp.EnsureSuccessStatusCode();
+            var fetched = await getResp.Content.ReadFromJsonAsync<MenuModel>();
+            Assert.NotNull(fetched);
+            Assert.Equal(created.Id, fetched.Id);
+            Assert.Equal(created.Menu_mame, fetched.Menu_mame);
+            Assert.Equal(created.User_name, fetched.User_name);
+            Assert.Equal(created.Theme, fetched.Theme);
+      
+        }
+        
     }
 
 
