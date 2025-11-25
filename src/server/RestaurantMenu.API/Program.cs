@@ -45,6 +45,7 @@ public class Program
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddScoped<IValidations, Validations>();
+        builder.Services.AddScoped<IEditModelValidator, EditModelValidator>();
         builder.Services.AddScoped<IFactory<Menu>, MenuFactory>();
 
 
