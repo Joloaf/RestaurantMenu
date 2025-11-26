@@ -67,12 +67,12 @@ public class Program
         //
 
 
-        app.MapEndpoints();
 
-        app.MapGroup("/Menu")
+       app.MapGroup("/Menu")
             .AddMenuFeatures();
 
 
+       app.MapApplicationEndPoints();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
