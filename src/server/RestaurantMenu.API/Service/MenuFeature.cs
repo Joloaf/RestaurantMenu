@@ -14,7 +14,8 @@ public static class MenuFeatureExtension
         group.MapPost("/", AddHandler);
         group.MapDelete("/", DeleteHandler);
         group.MapPatch("/", EditHandler);
-        group.MapGet("/", GetHandler);
+        group.MapGet("/single", GetSingleHandler);
+        group.MapGet("/all", GetAllHandler);
         return group;
     }
     
@@ -40,7 +41,7 @@ public static class MenuFeatureExtension
     {
         return Results.Ok();
     }
-    public static async Task<IResult> GetHandler(int id, 
+    public static async Task<IResult> GetSingleHandler(int id, 
                                               [FromServices] RestaurantDbContex context,
                                                 HttpContext httpContext)
     {
@@ -53,6 +54,29 @@ public static class MenuFeatureExtension
             menu.UserName,
             menu.Theme,
             menu.User.Id)) : Results.NotFound();
+    }
+    
+    public static async Task<IResult> GetAllHandler(string userId, 
+        [FromServices] RestaurantDbContex context,
+        HttpContext httpContext)
+    {
+        var menus = await context.Menus
+            .Include(m => m.User)
+            .Where(m => m.User.Id == userId)
+            .ToListAsync();
+
+        List<MenuModel> menusToReturn = new List<MenuModel>();
+        foreach (var menu in menus)
+        {
+            var toAdd = new MenuModel(menu.Id,
+                menu.MenuName,
+                menu.UserName,
+                menu.Theme,
+                menu.User.Id);
+            menusToReturn.Add(toAdd);
+        }
+
+        return menusToReturn != null ? Results.Ok(menusToReturn) : Results.NotFound();
     }
     public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>> AddHandler([FromBody] MenuModel model,
                                     RestaurantDbContex context,
