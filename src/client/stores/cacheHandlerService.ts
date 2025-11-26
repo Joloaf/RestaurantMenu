@@ -162,7 +162,7 @@ export const cacheHandlerActions = {
             activeCache.menus = [];
             activeCache.currentMenu = null;
             activeCache.tickets = [];
-            activeCache.currentTicket = null;
+            activeCache.currentOrder = null;
             activeCache.lastFetch = null;
             activeCache.isStale = null;
         },
