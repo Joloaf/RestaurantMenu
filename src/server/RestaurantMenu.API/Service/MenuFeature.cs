@@ -13,8 +13,8 @@ public static class MenuFeatureExtension
     {
         group.MapPost("/", AddHandler);
         group.MapDelete("/{id}", DeleteHandler);
-        group.MapGet("/single", GetSingleHandler);
-        group.MapGet("/all", GetAllHandler);
+        group.MapGet("/single/{id}", GetSingleHandler);
+        group.MapGet("/all/{id}", GetAllHandler);
         return group;
     }
     

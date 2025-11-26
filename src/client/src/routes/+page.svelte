@@ -1,39 +1,51 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { apiFetch, getApiUrl } from '$lib/api';
+	import { MenuService } from '$lib/services/MenuService'
+	import { ApiService  } from '$lib/services/apiService';
+	import type { Menu } from '$lib/services/MenuService';
+	import { getAllUsersDev } from '$lib/services/devUsersService';
 
-	let weather: any[] = [];
+
+	let menus = {} as Menu
+
 	let loading = true;
 	let error = '';
+	let userguids :string[] = [];
 
 	onMount(async () => {
-		try {
-			const response = await apiFetch('/weatherforecast');
-			if (response.ok) {
-				weather = await response.json();
-			} else {
-				error = `Error: ${response.status}`;
-			}
-		} catch (e) {
-			error = `Failed to connect: ${e}`;
-		} finally {
-			loading = false;
+		let error = null;
+		let men = new MenuService(new ApiService())
+		try{
+
+			userguids = await getAllUsersDev();
+			console.log(userguids);
+			
+			if(userguids.length > 0)
+				menus = await men.getMenuByMenuId(1)
 		}
+		catch(exc){
+			error = exc;
+		}
+
 	});
 </script>
 
 <h1>Welcome to Cafe Lek.!!!!</h1>
-<p>API URL: {getApiUrl()}</p>
 
-{#if loading}
-	<p>Loading weather...</p>
-{:else if error}
-	<p style="color: red">{error}</p>
-{:else}
-	<h2>Weather Forecast</h2>
-	<ul>
-		{#each weather as day}
-			<li>{day.date}: {day.temperatureC}°C - {day.summary}</li>
-		{/each}
-	</ul>
+{#if userguids.length == 0}
+	<p>none yet</p>
 {/if}
+{#each userguids as guid}
+	<p>{guid}</p>
+{/each}
+
+{#if error != null}
+	<p style="color: red">{error}
+		{console.log(error)}
+	</p>
+{/if}
+<div>
+	<p>{menus.menu_mame}</p>
+	<p>{menus.id}</p>
+	<p>{menus.theme}:  - {menus.user_name}</p>
+</div>

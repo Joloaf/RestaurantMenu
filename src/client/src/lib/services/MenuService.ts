@@ -19,11 +19,16 @@ export interface ApiResponse{
 }
 
 export class MenuService {
-    constructor(private ApiService: any) {}
+    constructor(private ApiService: ApiService) {}
 
-    public async getMenusByUserId(userId: string): Promise<Menu[]> {
-        const response = await this.ApiService.get(`menus/${userId}`);
+    public async getUserMenusByUserId(userId: string): Promise<Menu[]> {
+        const response = await this.ApiService.get(`Menu/all/${userId}`);
         return response as Menu[];
+    }
+
+    public async getMenuByMenuId(userId: number): Promise<Menu> {
+        const response = await this.ApiService.get(`Menu/single/${userId}`);
+        return response as Menu;
     }
     public async createMenu(menu: Menu): Promise<Menu> {
         const response = await this.ApiService.post('menus', menu);

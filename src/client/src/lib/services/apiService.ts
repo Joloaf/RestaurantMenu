@@ -1,9 +1,11 @@
 
 import { goto } from '$app/navigation';
+import { PUBLIC_API_URL } from '$env/static/public'
 // import {isAuthenticated} from "$lib/stores/authStore";
 
 
-const apiUrl = import.meta.env.VITE_API_URL; // this one might fail
+//const apiDevUrl = import.meta.en // this one might fail
+const apiDevUrl = PUBLIC_API_URL;
 
 interface AppError {
     code: string;
@@ -21,9 +23,9 @@ function handleAuthError(resopnse: Response) {
 }
 
 export class ApiService {
-    public async post<T,D>(endpoint: string, data: unknown): Promise<T | AppError> {
+    public async post<T,D>(endpoint: string, data: D): Promise<T | AppError> {
         try{
-            const response = await fetch (`${apiUrl}/${endpoint}`, {
+            const response = await fetch (`${apiDevUrl}/${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -40,7 +42,7 @@ export class ApiService {
 				}
                 return {
                     code: 'API_ERROR',
-                    message: `Failed to post to ${apiUrl}/${endpoint}`,
+                    message: `Failed to post to ${apiDevUrl}}/${endpoint}`,
                     details: await response.text()
                 };
             }
@@ -50,7 +52,7 @@ export class ApiService {
         catch(error) {
             return {
                 code: 'NETWORK_ERROR',
-                message: `Network error while posting to ${apiUrl}/${endpoint}`,
+                message: `Network error while posting to ${apiDevUrl}}/${endpoint}`,
                 details: error
             };
         }
@@ -59,7 +61,7 @@ export class ApiService {
         params?: Record<string, string | number | undefined>
     ): Promise<T | AppError> {
         try{
-            let url = `${apiUrl}/${endpoint}`;
+            let url = `${apiDevUrl}/${endpoint}`;
             if(params) {
                 const quesry= Object.entries(params)
                 .filter(([_, value]) => value !== undefined)
@@ -67,9 +69,7 @@ export class ApiService {
                 .join('&');
                 url += `?${quesry}`;
             }
-			const response = await fetch(url, {
-				credentials: 'include'
-			});
+			const response = await fetch(url);
             if(!response.ok){
                 if(handleAuthError(response)) {
                     return {
@@ -81,30 +81,29 @@ export class ApiService {
                 if(response.status === 404) {
                     return {
                         code: 'NOT_FOUND',
-                        message: `Resource not found at ${apiUrl}/${endpoint}`,
+                        message: `Resource not found at ${apiDevUrl}/${endpoint}`,
                         details: response.status
                     };
                 }
                 return {
                     code: 'API_ERROR',
-                    message: `Failed to get from ${apiUrl}/${endpoint}`,
+                    message: `Failed to get from ${apiDevUrl}/${endpoint}`,
                     details: await response.text()
                 };
             }
-            const responseData = await response.json();
-            return responseData;
+            return await response.json();
         }
         catch(error) {
             return {
                 code: 'NETWORK_ERROR',
-                message: `Network error while getting from ${apiUrl}/${endpoint}`,
+                message: `Network error while getting from ${apiDevUrl}/${endpoint}`,
                 details: error
             };
         }
     }
     public async patch<T,D>(endpoint: string, data: D): Promise<T | AppError> {
     try{
-        const response = await fetch (`${apiUrl}/${endpoint}`, {
+        const response = await fetch (`${apiDevUrl}/${endpoint}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -122,7 +121,7 @@ export class ApiService {
             }
             return {
                 code: 'API_ERROR',
-                message: `Failed to patch to ${apiUrl}/${endpoint}`,
+                message: `Failed to patch to ${apiDevUrl}/${endpoint}`,
                 details: await response.text()
             };
         }
@@ -132,14 +131,14 @@ export class ApiService {
     } catch(error) {
         return {
             code: 'NETWORK_ERROR',
-            message: `Network error while patching to ${apiUrl}/${endpoint}`,
+            message: `Network error while patching to ${apiDevUrl}/${endpoint}`,
             details: error
         }
     }
     };
     public async delete<T>(endpoint: string): Promise<T | AppError> {
         try{
-            const response = await fetch (`${apiUrl}/${endpoint}`, {
+            const response = await fetch (`${apiDevUrl}/${endpoint}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -153,7 +152,7 @@ export class ApiService {
                 }
                 return {
                     code: 'API_ERROR',
-                    message: `Network error while patching to ${apiUrl}/${endpoint}`,
+                    message: `Network error while patching to ${apiDevUrl}/${endpoint}`,
                     details: await response.text()
                 };
             }
@@ -163,7 +162,7 @@ export class ApiService {
         catch(error) {
             return {
                 code: 'NETWORK_ERROR',
-                message: `Network error while deleting to ${apiUrl}/${endpoint}`,
+                message: `Network error while deleting to ${apiDevUrl}/${endpoint}`,
                 details: error
             }
         }
