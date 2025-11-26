@@ -1,4 +1,4 @@
-﻿public static class EndpointRegistration
+public static class Endpoints
 {
 
     public static void MapApplicationEndPoints(this IEndpointRouteBuilder config)
@@ -9,7 +9,11 @@
     public static void MapMenuEndpoints(this IEndpointRouteBuilder config)
     {
         var group = config.MapGroup("/Menu")
-            .MapEndPoint<MapPatch>();
+            .MapEndPoint<GetMenu>()
+            .MapEndPoint<GetAllMenus>()
+            .MapEndPoint<CreateMenu>()
+            .MapEndPoint<UpdateMenu>()
+            .MapEndPoint<DeleteMenu>();
 
     }
 
