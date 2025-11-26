@@ -1,10 +1,5 @@
 ﻿using RestaurantMenu.API.Tests.Fixtures;
-using RestaurantMenu.API;
 using RestaurantMenu.API.Service.DTOs.Models;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +14,7 @@ namespace RestaurantMenu.API.Tests
     {
         public const string base_url = "/Menu/";
         private readonly WebclassFixture<Program> _fixture;
-
         public readonly HttpClient _client;
-
         
         public RestaurantMenuAPITests(WebclassFixture<Program> fixture)
         {
@@ -100,21 +93,23 @@ namespace RestaurantMenu.API.Tests
             Assert.Equal(modified.Theme, actual.Theme);
             Assert.Equal(modified.User_id, actual.User_id);
         }
+        
         [Fact]
         public async Task MenuAdd_ValidResponseCode()
         {
             var id = await _fixture.AddUsers(_fixture);
             var obj = new MenuModel(0, "standard menu", "Sara", "spiderman", id);
-            
+
             //act
             var created = await _client.PostAsJsonAsync(base_url, obj);
-            
+
             //assert
             if (!created.IsSuccessStatusCode)
             {
                 var errorContent = await created.Content.ReadAsStringAsync();
                 throw new Exception($"Failed with status {created.StatusCode}: {errorContent}");
             }
+
             created.EnsureSuccessStatusCode();
         }
 
@@ -125,13 +120,14 @@ namespace RestaurantMenu.API.Tests
             //arrange
             var obj = new MenuModel(0, "standard menu", "Sara", "spiderman", id);
             var created = await _client.PostAsJsonAsync(base_url, obj);
-            
+
             //act
             if (!created.IsSuccessStatusCode)
             {
                 var errorContent = await created.Content.ReadAsStringAsync();
                 throw new Exception($"POST Failed with status {created.StatusCode}: {errorContent}");
             }
+
             var res = await created.Content.ReadFromJsonAsync<MenuModel>();
             var edit = new MenuModel(res.Id, "SpidermanMenu", "Bartek", Guid.NewGuid().ToString(), res.User_id);
             
@@ -142,6 +138,7 @@ namespace RestaurantMenu.API.Tests
                 var errorContent = await response.Content.ReadAsStringAsync();
                 throw new Exception($"PATCH Failed with status {response.StatusCode}: {errorContent}");
             }
+
             response.EnsureSuccessStatusCode();
         }
 
@@ -228,14 +225,13 @@ namespace RestaurantMenu.API.Tests
         {
             var id = await _fixture.AddUsers(_fixture);
             //Arrange
-            var newMenu = new MenuModel(0, "Read test manu name", "Read test menu username", "Read test menu theme", id);
-
-        
+            var newMenu = new MenuModel(0, "Read test manu name", "Read test menu username", "Read test menu theme",
+                id);
             var createResp = await _client.PostAsJsonAsync(base_url, newMenu);
             var created = await createResp.Content.ReadFromJsonAsync<MenuModel>();
 
             //Act
-            var getResp = await _client.GetAsync($"{base_url}?id={created.Id}");
+            var getResp = await _client.GetAsync($"{base_url}single?id={created.Id}");
 
             //Assert
             getResp.EnsureSuccessStatusCode();
@@ -245,10 +241,35 @@ namespace RestaurantMenu.API.Tests
             Assert.Equal(created.Menu_mame, fetched.Menu_mame);
             Assert.Equal(created.User_name, fetched.User_name);
             Assert.Equal(created.Theme, fetched.Theme);
-      
         }
-        
+
+        [Fact]
+        public async Task ReturnListOfMenu_ValidResponseCode()
+        {
+            var newListMenu = new List<MenuModel>();
+            var userId = await _fixture.AddUsers(_fixture);
+            
+            //Arrange
+            for (int i = 0; i < 3; i++)
+            {
+                var newMenu = new MenuModel(0, $"Read test manu name {i}", $"Read test menu username {i}", $"Read test menu theme {i}",
+                    userId);
+                
+                var createResp = await _client.PostAsJsonAsync(base_url, newMenu);
+                var created = await createResp.Content.ReadFromJsonAsync<MenuModel>();
+                newListMenu.Add(created);
+            }
+
+            //Act
+            var getResp = await _client.GetAsync($"{base_url}all?userId={userId}");
+
+            //Assert
+            getResp.EnsureSuccessStatusCode();
+            var fetched = await getResp.Content.ReadFromJsonAsync<List<MenuModel>>();
+            Assert.NotNull(fetched);
+            Assert.NotEmpty(fetched);
+            Assert.Equal(newListMenu.Count, fetched.Count);
+            
+        }
     }
-
-
 }
