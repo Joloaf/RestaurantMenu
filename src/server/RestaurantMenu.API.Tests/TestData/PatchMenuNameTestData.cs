@@ -31,7 +31,7 @@ public class  PatchMenuNameTestData: IEnumerable<object[]>
             .Build();
 
         var changeObject = builder.WithName(true).Build();
-        return  new[] { obj, (object)changeObject.Menu_mame };
+        return  new[] { obj, (object)changeObject.Menu_name };
     }
     
     public IEnumerator<object[]> GetEnumerator()
