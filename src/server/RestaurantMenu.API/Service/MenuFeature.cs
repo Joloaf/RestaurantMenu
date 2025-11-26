@@ -14,7 +14,8 @@ public static class MenuFeatureExtension
         group.MapPost("/", AddHandler);
         group.MapDelete("/{id}", DeleteHandler);
         group.MapPatch("/", EditHandler);
-        group.MapGet("/", GetHandler);
+        group.MapGet("/single", GetSingleHandler);
+        group.MapGet("/all", GetAllHandler);
         return group;
     }
     
@@ -26,14 +27,47 @@ public static class MenuFeatureExtension
     /// <param name="httpcontext"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public static async Task<Results<Ok<MenuModel>, NotFound>> EditHandler([FromBody] MenuModel menuModel,
-                                                  RestaurantDbContex dbContext,
+    public static async Task<Results<Ok<MenuModel>, NotFound, BadRequest<ValidationErrorModel>, InternalServerError>> EditHandler([FromBody] MenuModel menuModel,
+                                                  RestaurantDbContex ctx,
                                                   IEditModelValidator editModelValidator,
                                                   IFactory<Menu> menuFactory)
     {
-        //if(editModelValidator.EditModelValid(menuModel))
-        return TypedResults.Ok(new MenuModel(1, "some", "else", "theme", "use_id"));
+        if(!editModelValidator.EditModelValid(menuModel))
+            return TypedResults.BadRequest(new ValidationErrorModel(menuModel, "Not Yet Implemented"));
+        
+        try
+        {
+            
+            var usr = await ctx.Users.Where(x => x.Id == menuModel.User_id)
+                .Include(x => x.Menus)
+                .SingleOrDefaultAsync();
+            var item = usr.Menus.Where(x => x.Id == menuModel.Id).SingleOrDefault();
+            if(usr == null || item == null)
+                return TypedResults.NotFound();
+            
+            item.MenuName = menuModel.Menu_mame;
+            item.UserName = menuModel.User_name;
+            item.Theme = menuModel.Theme;
+            
+            ctx.Update(item);
+            await ctx.SaveChangesAsync();
+            ctx.Update(usr);
+            await ctx.SaveChangesAsync();
+            
+            return TypedResults.Ok<MenuModel>(new MenuModel(item.Id,
+                item.MenuName,
+                item.UserName,
+                item.Theme,
+                item.User.Id));
+            
+        }
+        catch (Exception exc)
+        {
+            return TypedResults.InternalServerError();
+        }
     }
+
+    public record ValidationErrorModel(MenuModel model, string reason);
 
     public static async Task<Results<NoContent, NotFound, InternalServerError>> DeleteHandler(
                         [FromRoute] int id,
@@ -65,9 +99,9 @@ public static class MenuFeatureExtension
         
         return TypedResults.NoContent();
     }
-    public static async Task<IResult> GetHandler(int id, 
-        [FromServices] RestaurantDbContex context,
-        HttpContext httpContext)
+    public static async Task<IResult> GetSingleHandler(int id, 
+                                              [FromServices] RestaurantDbContex context,
+                                                HttpContext httpContext)
     {
         var menu = await context.Menus
             .Include(m => m.User) 
@@ -79,10 +113,32 @@ public static class MenuFeatureExtension
             menu.Theme,
             menu.User.Id)) : Results.NotFound();
     }
-    public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>> AddHandler(
-                        [FromBody] MenuModel model,
-                        RestaurantDbContex context,
-                        HttpContext provider)
+    
+    public static async Task<IResult> GetAllHandler(string userId, 
+        [FromServices] RestaurantDbContex context,
+        HttpContext httpContext)
+    {
+        var menus = await context.Menus
+            .Include(m => m.User)
+            .Where(m => m.User.Id == userId)
+            .ToListAsync();
+
+        List<MenuModel> menusToReturn = new List<MenuModel>();
+        foreach (var menu in menus)
+        {
+            var toAdd = new MenuModel(menu.Id,
+                menu.MenuName,
+                menu.UserName,
+                menu.Theme,
+                menu.User.Id);
+            menusToReturn.Add(toAdd);
+        }
+
+        return menusToReturn != null ? Results.Ok(menusToReturn) : Results.NotFound();
+    }
+    public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>> AddHandler([FromBody] MenuModel model,
+                                    RestaurantDbContex context,
+                                    HttpContext provider)
     {
     //    var validator  = provider.RequestServices.GetRequiredService<IValidations>();
         var dbModelFactory = provider.RequestServices.GetRequiredService<IFactory<Menu>>();
