@@ -13,62 +13,11 @@ public static class MenuFeatureExtension
     {
         group.MapPost("/", AddHandler);
         group.MapDelete("/{id}", DeleteHandler);
-        group.MapPatch("/", EditHandler);
         group.MapGet("/single", GetSingleHandler);
         group.MapGet("/all", GetAllHandler);
         return group;
     }
     
-    /// <summary>
-    /// Bartek
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="dbContext"></param>
-    /// <param name="httpcontext"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public static async Task<Results<Ok<MenuModel>, NotFound, BadRequest<ValidationErrorModel>, InternalServerError>> EditHandler([FromBody] MenuModel menuModel,
-                                                  RestaurantDbContex ctx,
-                                                  IEditModelValidator editModelValidator,
-                                                  IFactory<Menu> menuFactory)
-    {
-        if(!editModelValidator.EditModelValid(menuModel))
-            return TypedResults.BadRequest(new ValidationErrorModel(menuModel, "Not Yet Implemented"));
-        
-        try
-        {
-            
-            var usr = await ctx.Users.Where(x => x.Id == menuModel.User_id)
-                .Include(x => x.Menus)
-                .SingleOrDefaultAsync();
-            var item = usr.Menus.Where(x => x.Id == menuModel.Id).SingleOrDefault();
-            if(usr == null || item == null)
-                return TypedResults.NotFound();
-            
-            item.MenuName = menuModel.Menu_mame;
-            item.UserName = menuModel.User_name;
-            item.Theme = menuModel.Theme;
-            
-            ctx.Update(item);
-            await ctx.SaveChangesAsync();
-            ctx.Update(usr);
-            await ctx.SaveChangesAsync();
-            
-            return TypedResults.Ok<MenuModel>(new MenuModel(item.Id,
-                item.MenuName,
-                item.UserName,
-                item.Theme,
-                item.User.Id));
-            
-        }
-        catch (Exception exc)
-        {
-            return TypedResults.InternalServerError();
-        }
-    }
-
-    public record ValidationErrorModel(MenuModel model, string reason);
-
     public static async Task<Results<NoContent, NotFound, InternalServerError>> DeleteHandler(
                         [FromRoute] int id,
                         [FromQuery] string userId,
