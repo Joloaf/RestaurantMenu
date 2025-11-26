@@ -24,10 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Endpoints\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\RestaurantMenu.Infrastructure\RestaurantMenu.Infrastructure.csproj" />
       
     </ItemGroup>
