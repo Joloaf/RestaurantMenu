@@ -1,6 +1,7 @@
 ﻿using RestaurantMenu.API.Service.DTOs.Models;
+using RestaurantMenu.API.Service.Interfaces;
 
-namespace RestaurantMenu.API.Service.Interfaces;
+namespace RestaurantMenu.API.Service.Validations;
 
 public class EditModelValidator : IEditModelValidator
 {

@@ -12,6 +12,7 @@ using MinimalApi.Endpoint.Extensions;
 using Microsoft.AspNetCore.Http.Connections.Features;
 using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.API.Service;
+using RestaurantMenu.API.Service.Validations;
 
 
 public class Program
@@ -72,6 +73,9 @@ public class Program
 
         app.MapGroup("/Menu")
             .AddMenuFeatures();
+
+        app.MapGroup("/Account")
+            .AddAccountFeatures();
 
 
 
