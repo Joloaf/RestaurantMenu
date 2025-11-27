@@ -10,12 +10,16 @@ public class EditModelValidator : IEditModelValidator
     {
         _v = validations;
     }
+
+    /*  TODO: Expand the validations to get more specific error messages.
+        We wanna make it easier to pinpoint what is wrong if we ever get an error. */
+
     public bool EditModelValid(MenuModel model)
     {
         
         return (_v.ValidThemeName(model.Theme)
                 && _v.ValidUserName(model.User_name)
-                && _v.ValidMenuName(model.Menu_mame)
+                && _v.ValidMenuName(model.Menu_name)
                 && _v.ValidId(model.Id)
                 && _v.ValidThemeName(model.User_id));
     }
