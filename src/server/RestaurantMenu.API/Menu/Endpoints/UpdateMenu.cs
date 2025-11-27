@@ -8,7 +8,7 @@ using RestaurantMenu.Core.Models;
 using RestaurantMenu.Infrastructure.Data;
 
 
-public class MapPatch : IEndpoint
+public class UpdateMenu : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder config) =>
         config.MapPatch("/", Handler);
@@ -19,7 +19,7 @@ public class MapPatch : IEndpoint
     
     public static async Task<IResult> Handler(
         [FromBody] MenuModel menuModel,
-        [FromServices] RestaurantDbContex ctx,
+        [FromServices] RestaurantDbContext context,
         [FromServices] IEditModelValidator editModelValidator,
         [FromServices] IFactory<Menu> factory)
     {
@@ -28,32 +28,35 @@ public class MapPatch : IEndpoint
         
         try
         {
-            
-            var usr = await ctx.Users.Where(x => x.Id == menuModel.User_id)
+            var user = await context.Users.Where(x => x.Id == menuModel.User_id)
                 .Include(x => x.Menus)
                 .SingleOrDefaultAsync();
-            var item = usr.Menus.Where(x => x.Id == menuModel.Id).SingleOrDefault();
-            if(usr == null || item == null)
+            if(user == null)     // Checking if user is null before trying to access it for item from user.Menus
                 return TypedResults.NotFound();
             
-            item.MenuName = menuModel.Menu_mame;
+            var item = user.Menus.Where(x => x.Id == menuModel.Id).SingleOrDefault();
+            if(item == null)
+                return TypedResults.NotFound();
+            
+            item.MenuName = menuModel.Menu_name;
             item.UserName = menuModel.User_name;
             item.Theme = menuModel.Theme;
-            
-            ctx.Update(item);
-            await ctx.SaveChangesAsync();
-            ctx.Update(usr);
-            await ctx.SaveChangesAsync();
+
+            // Updates should automatically be tracked, and we should only need the one save.
+            //context.Update(item);
+            //await context.SaveChangesAsync();
+            //context.Update(user);
+            await context.SaveChangesAsync();
             
             return TypedResults.Ok<MenuModel>(new MenuModel(item.Id,
                 item.MenuName,
                 item.UserName,
                 item.Theme,
                 item.User.Id));
-            
         }
-        catch (Exception exc)
+        catch (Exception e)
         {
+            Console.WriteLine($"Error updating menu: {e.Message}");
             return TypedResults.InternalServerError();
         }
     }

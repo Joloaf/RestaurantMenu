@@ -11,6 +11,8 @@ namespace RestaurantMenu.API.Tests;
 
 public class ModelMenuTest
 {
+    /*  TODO: This test is flaky AF and will sometimes fail, probably due to mutation.
+        Due to its random nature, this is also difficult to track... ;) */
     [Theory]
     [ClassData(typeof(EditModelTestData))] //define
     public void EditModelValid_ModelCombinations(MenuModel model, bool expected)

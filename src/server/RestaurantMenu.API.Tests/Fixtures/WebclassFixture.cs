@@ -36,7 +36,7 @@ namespace RestaurantMenu.API.Tests.Fixtures
             {
                 //Step 1: remove real services from our web application to avoid manipulation of real database during testing
                 var descriptor = services.SingleOrDefault(d =>
-                    d.ServiceType == typeof(RestaurantMenu.Infrastructure.Data.RestaurantDbContex));
+                    d.ServiceType == typeof(RestaurantMenu.Infrastructure.Data.RestaurantDbContext));
                 if (descriptor != null)
                     services.Remove(descriptor);
 
@@ -55,7 +55,7 @@ namespace RestaurantMenu.API.Tests.Fixtures
                     return connection;
                 });
 
-                services.AddDbContext<RestaurantMenu.Infrastructure.Data.RestaurantDbContex>((container, options) =>
+                services.AddDbContext<RestaurantMenu.Infrastructure.Data.RestaurantDbContext>((container, options) =>
                 {
                     var connection = container.GetRequiredService<SqliteConnection>();
                     object value = options.UseSqlite(connection);
@@ -68,7 +68,7 @@ namespace RestaurantMenu.API.Tests.Fixtures
             var host = base.CreateHost(builder);
 
             using var scope = host.Services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<RestaurantMenu.Infrastructure.Data.RestaurantDbContex>();
+            var db = scope.ServiceProvider.GetRequiredService<RestaurantMenu.Infrastructure.Data.RestaurantDbContext>();
             db.Database.EnsureCreated();
             
             return host;

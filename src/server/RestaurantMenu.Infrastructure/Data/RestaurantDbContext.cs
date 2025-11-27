@@ -5,9 +5,9 @@ using RestaurantMenu.Core.Models;
 
 namespace RestaurantMenu.Infrastructure.Data;
 
-public class RestaurantDbContex : IdentityDbContext<User>
+public class RestaurantDbContext : IdentityDbContext<User>
 {
-    public RestaurantDbContex(DbContextOptions<RestaurantDbContex> options) : base(options)
+    public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options) : base(options)
     {
     }
     

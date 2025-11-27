@@ -19,15 +19,15 @@ internal class MenuModelBuilder
         switch (field)
         {
             case Field.Id:
-                return new MenuModel((int)value, Model.Menu_mame, Model.User_name, Model.Theme, Model.User_id); 
+                return new MenuModel((int)value, Model.Menu_name, Model.User_name, Model.Theme, Model.User_id); 
             case Field.UsId:
-                return new MenuModel(Model.Id, Model.Menu_mame, Model.User_name, Model.Theme, (string)value);
+                return new MenuModel(Model.Id, Model.Menu_name, Model.User_name, Model.Theme, (string)value);
             case Field.MName:
                 return new MenuModel(Model.Id, (string)value, Model.User_name, Model.Theme, Model.User_id);
             case Field.Theme:
-                return new MenuModel(Model.Id, Model.Menu_mame, Model.User_name, (string)value, Model.User_id);
+                return new MenuModel(Model.Id, Model.Menu_name, Model.User_name, (string)value, Model.User_id);
             case Field.UsName:
-                return new MenuModel(Model.Id, Model.Menu_mame, (string)value, Model.Theme, Model.User_id);
+                return new MenuModel(Model.Id, Model.Menu_name, (string)value, Model.Theme, Model.User_id);
         }
 
         throw new AbandonedMutexException();

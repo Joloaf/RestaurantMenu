@@ -10,7 +10,7 @@ using RestaurantMenu.Infrastructure.Data;
 
 namespace RestaurantMenu.Infrastructure.Migrations
 {
-    [DbContext(typeof(RestaurantDbContex))]
+    [DbContext(typeof(RestaurantDbContext))]
     [Migration("20251119130158_firstbuild")]
     partial class firstbuild
     {
