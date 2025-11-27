@@ -28,8 +28,8 @@ namespace RestaurantMenu.API.Tests
         public async Task Patch_ChangeMenuName(MenuModel model, string expectedMenuNameChange)
         {
             //arrange
-            var userId = await _fixture.AddUsers(_fixture);
-            var createModel = new MenuModel(model.Id, model.Menu_mame, model.User_name, model.Theme, userId);
+            var userId = await _fixture.AddUsers();
+            var createModel = new MenuModel(model.Id, model.Menu_name, model.User_name, model.Theme, userId);
             var created = await _client.PostAsJsonAsync(base_url, createModel);
             
             //act
@@ -43,7 +43,7 @@ namespace RestaurantMenu.API.Tests
             actualResponse.EnsureSuccessStatusCode();
             Assert.Equal(modified.Id, actual.Id);
             Assert.Equal(modified.User_id, actual.User_id);
-            Assert.Equal(expectedMenuNameChange, actual.Menu_mame);
+            Assert.Equal(expectedMenuNameChange, actual.Menu_name);
             Assert.Equal(modified.Theme, actual.Theme);
         }
         [Theory]
@@ -51,13 +51,13 @@ namespace RestaurantMenu.API.Tests
         public async Task Patch_ChangeTheme(MenuModel model, string expectedThemeChange)
         {
             //arrange
-            var userId = await _fixture.AddUsers(_fixture);
-            var createModel = new MenuModel(model.Id, model.Menu_mame, model.User_name, model.Theme, userId);
+            var userId = await _fixture.AddUsers();
+            var createModel = new MenuModel(model.Id, model.Menu_name, model.User_name, model.Theme, userId);
             var created = await _client.PostAsJsonAsync(base_url, createModel);
             
             //act
             var result =  await created.Content.ReadFromJsonAsync<MenuModel>();
-            var modified = new MenuModel(result.Id, result.Menu_mame, result.User_name, expectedThemeChange, result.User_id);
+            var modified = new MenuModel(result.Id, result.Menu_name, result.User_name, expectedThemeChange, result.User_id);
             var actualResponse = await _client.PatchAsJsonAsync(base_url,  modified);
             var actual = await actualResponse.Content.ReadFromJsonAsync<MenuModel>();
             
@@ -66,7 +66,7 @@ namespace RestaurantMenu.API.Tests
             actualResponse.EnsureSuccessStatusCode();
             Assert.Equal(modified.Id, actual.Id);
             Assert.Equal(modified.User_id, actual.User_id);
-            Assert.Equal(modified.Menu_mame, actual.Menu_mame);
+            Assert.Equal(modified.Menu_name, actual.Menu_name);
             Assert.Equal(actual.Theme, expectedThemeChange);
         }
         
@@ -76,13 +76,13 @@ namespace RestaurantMenu.API.Tests
         public async Task Patch_ChangesUserName(MenuModel model, string nameChange)
         {
             //arrange
-            var userId = await _fixture.AddUsers(_fixture);
-            var createModel = new MenuModel(model.Id, model.Menu_mame, model.User_name, model.Theme, userId);
+            var userId = await _fixture.AddUsers();
+            var createModel = new MenuModel(model.Id, model.Menu_name, model.User_name, model.Theme, userId);
             var created = await _client.PostAsJsonAsync(base_url, createModel);
             
             //act
             var result =  await created.Content.ReadFromJsonAsync<MenuModel>();
-            var modified = new MenuModel(result.Id, result.Menu_mame, nameChange, result.Theme, result.User_id);
+            var modified = new MenuModel(result.Id, result.Menu_name, nameChange, result.Theme, result.User_id);
             var actualResponse = await _client.PatchAsJsonAsync(base_url,  modified);
             var actual = await actualResponse.Content.ReadFromJsonAsync<MenuModel>();
             
@@ -98,8 +98,8 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuAdd_ValidResponseCode()
         {
-            var id = await _fixture.AddUsers(_fixture);
-            var obj = new MenuModel(0, "standard menu", "Sara", "spiderman", id);
+            var id = await _fixture.AddUsers();
+            var obj = new MenuModel(0, "standard menu", "Sara", Guid.NewGuid().ToString(), id);
 
             //act
             var created = await _client.PostAsJsonAsync(base_url, obj);
@@ -117,9 +117,9 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuPatch_ValidResponseCode()
         {
-            var id = await _fixture.AddUsers(_fixture);
+            var id = await _fixture.AddUsers();
             //arrange
-            var obj = new MenuModel(0, "standard menu", "Sara", "spiderman", id);
+            var obj = new MenuModel(0, "standard menu", "Sara", Guid.NewGuid().ToString(), id);
             var created = await _client.PostAsJsonAsync(base_url, obj);
 
             //act
@@ -146,10 +146,10 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuDelete_RemoveExistingMenuForValidUser_ReceiveValidResponseCode()
         {
-            var userId = await _fixture.AddUsers(_fixture);
+            var userId = await _fixture.AddUsers();
 
             //arrange
-            var obj = new MenuModel(0, "menu to delete", "Patrick", "spongebob", userId);
+            var obj = new MenuModel(0, "menu to delete", "Patrick", Guid.NewGuid().ToString(), userId);
             var created = await _client.PostAsJsonAsync(base_url, obj);
             
             if (!created.IsSuccessStatusCode)
@@ -174,7 +174,7 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuDelete_NotFound_NonExistentMenu()
         {
-            var userId = await _fixture.AddUsers(_fixture);
+            var userId = await _fixture.AddUsers();
 
             //arrange
             var nonExistentMenuId = 99999;
@@ -194,10 +194,10 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuDelete_NotFound_WrongUser()
         {
-            var userId1 = await _fixture.AddUsers(_fixture);
+            var userId1 = await _fixture.AddUsers();
 
             //arrange
-            var obj = new MenuModel(0, "menu owned by user1", "Patrick", "spongebob", userId1);
+            var obj = new MenuModel(0, "menu owned by user1", "Patrick", Guid.NewGuid().ToString(), userId1);
             var created = await _client.PostAsJsonAsync(base_url, obj);
             
             if (!created.IsSuccessStatusCode)
@@ -224,9 +224,9 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task CanReadMenu()
         {
-            var id = await _fixture.AddUsers(_fixture);
+            var id = await _fixture.AddUsers();
             //Arrange
-            var newMenu = new MenuModel(0, "Read test manu name", "Read test menu username", "Read test menu theme",
+            var newMenu = new MenuModel(0, "Readtestmanuname", "Readtestmenuusername", Guid.NewGuid().ToString(),
                 id);
             var createResp = await _client.PostAsJsonAsync(base_url, newMenu);
             var created = await createResp.Content.ReadFromJsonAsync<MenuModel>();
@@ -239,7 +239,7 @@ namespace RestaurantMenu.API.Tests
             var fetched = await getResp.Content.ReadFromJsonAsync<MenuModel>();
             Assert.NotNull(fetched);
             Assert.Equal(created.Id, fetched.Id);
-            Assert.Equal(created.Menu_mame, fetched.Menu_mame);
+            Assert.Equal(created.Menu_name, fetched.Menu_name);
             Assert.Equal(created.User_name, fetched.User_name);
             Assert.Equal(created.Theme, fetched.Theme);
         }

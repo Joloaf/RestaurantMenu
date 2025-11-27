@@ -20,58 +20,65 @@ public class EditModelTestData : IEnumerable<object[]>
         for (int i = 0; i < 10; i++)
         {
             if (i % 2 == 0)
-                models.Add([(object)CreateInvalidModel(), (object)false]);
+            {
+                foreach (var menuModel in CreateInvalidModel())
+                {
+                   models.Add([(object)menuModel, (object)false]); 
+                }
+            }
             models.Add([(object)CreateValidModel(), (object)true]);
         }
 
         return models;
     }
 
-    private MenuModel CreateInvalidModel()
+    private IEnumerable<MenuModel> CreateInvalidModel()
     {
-        var rand = Random.Shared.Next(0, 5);
-        switch (rand)
-        {
-            case 0:
-                return _builder.WithId(false)
-                .WithIdentityUserId(true)
-                .WithName(true)
-                .WithUserName(true)
-                .WithThemeName(true)
-                .Build();
-            case 1:
-                return _builder.WithId(true)
-                .WithIdentityUserId(false)
-                .WithName(true)
-                .WithUserName(true)
-                .WithThemeName(true)
-                .Build();
-            case 2:
-                return _builder.WithId(true)
-                .WithIdentityUserId(true)
-                .WithName(false)
-                .WithThemeName(true)
-                .WithUserName(true)
-                .Build();
-            
-            case 3:
-                return _builder.WithId(true)
-                .WithIdentityUserId(true)
-                .WithName(true)
-                .WithThemeName(true)
-                .WithUserName(false)
-                .Build();
-            case 4:
-                return _builder.WithId(true)
+        for(int i = 0; i < 5; i++)
+            switch (i)
+            {
+                case 0:
+                    yield return _builder.WithId(false)
                     .WithIdentityUserId(true)
                     .WithName(true)
-                    .WithThemeName(false)
+                    .WithUserName(true)
+                    .WithThemeName(true)
+                    .Build();
+                    break;
+                case 1:
+                    yield return _builder.WithId(true)
+                    .WithIdentityUserId(false)
+                    .WithName(true) 
+                    .WithUserName(true)
+                    .WithThemeName(true)
+                    .Build();
+                    break;
+                case 2:
+                    yield return _builder.WithId(true)
+                    .WithIdentityUserId(true)
+                    .WithName(false, Spaces.Ending | Spaces.Start)
+                    .WithThemeName(true)
                     .WithUserName(true)
                     .Build();
+                    break;
+                case 3:
+                    yield return _builder.WithId(true)
+                    .WithIdentityUserId(true)
+                    .WithName(true)
+                    .WithThemeName(true)
+                    .WithUserName(false)
+                    .Build();
+                    break;
+                case 4:
+                    yield return _builder.WithId(true)
+                        .WithIdentityUserId(true)
+                        .WithName(true)
+                        .WithThemeName(false)
+                        .WithUserName(true)
+                        .Build();
+                    break;
             
         }
-
-        return null;
     }
 
     private MenuModel CreateValidModel()
