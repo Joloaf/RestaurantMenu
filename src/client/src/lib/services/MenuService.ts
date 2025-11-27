@@ -19,20 +19,37 @@ export interface ApiResponse{
 }
 
 export class MenuService {
-    constructor(private ApiService: any) {}
+    constructor(private ApiService: ApiService) {}
 
-    public async getMenusByUserId(userId: string): Promise<Menu[]> {
-        const response = await this.ApiService.get(`menus/${userId}`);
+    public async getMenusByUserId(): Promise<Menu[]> {
+        const response: any = await this.ApiService.get('Menu/all');
+
+        const menus = response?.menu || response;
+
+        if (Array.isArray(response)) {
+            const arrayMenus = menus.map((menu: any) => ({
+                menuId: menu.menuId,
+                menuName: menu.menuName,
+                userName: menu.userName,
+                theme: menu.theme,
+                userId: menu.userId,
+                dishes: menu.dishes || []
+            }));
+            return arrayMenus;
+        }
         return response as Menu[];
     }
+
     public async createMenu(menu: Menu): Promise<Menu> {
         const response = await this.ApiService.post('menus', menu);
         return response as Menu;
     }
+
     public async updateMenu(menu: Menu): Promise<Menu> {
         const response = await this.ApiService.patch(`menus/${menu.menuId}`, menu);
         return response as Menu;
     }
+
     public async deleteMenu(menuId: number): Promise<ApiResponse> {
         const response = await this.ApiService.delete(`menus/${menuId}`);
         return response as ApiResponse;
