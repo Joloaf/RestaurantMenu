@@ -18,7 +18,7 @@ public class MapGetAllUsersDevelopment : IDevelopmentEndPoint
     }
 
     private static async Task<IResult> Handler(
-        [FromServices] RestaurantDbContex ctx,
+        [FromServices] RestaurantDbContext ctx,
         [FromServices] IWebHostEnvironment env)
     {
         if (!env.IsDevelopment())

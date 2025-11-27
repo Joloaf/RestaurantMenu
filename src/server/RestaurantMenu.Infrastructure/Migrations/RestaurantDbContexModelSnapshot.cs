@@ -9,7 +9,7 @@ using RestaurantMenu.Infrastructure.Data;
 
 namespace RestaurantMenu.Infrastructure.Migrations
 {
-    [DbContext(typeof(RestaurantDbContex))]
+    [DbContext(typeof(RestaurantDbContext))]
     partial class RestaurantDbContexModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

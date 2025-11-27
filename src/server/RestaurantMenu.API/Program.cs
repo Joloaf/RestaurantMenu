@@ -30,7 +30,7 @@ public class Program
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequiredLength = 8;
             })
-            .AddEntityFrameworkStores<RestaurantDbContex>()
+            .AddEntityFrameworkStores<RestaurantDbContext>()
             .AddDefaultTokenProviders();
 
         builder.Services.AddAuthentication();
@@ -42,13 +42,13 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
 
         // Configure Database
-        builder.Services.AddDbContext<RestaurantDbContex>(options =>
+        builder.Services.AddDbContext<RestaurantDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddScoped<IValidations, Validations>();
         builder.Services.AddScoped<IEditModelValidator, EditModelValidator>();
         builder.Services.AddScoped<IFactory<Menu>, MenuFactory>();
-        builder.Services.AddTransient(typeof(DevelopmentSeedService));
+        builder.Services.AddTransient<IDevelopmentSeedService, DevelopmentSeedService>();
 
 
         // Add CORS for development
@@ -63,16 +63,6 @@ public class Program
         });
 
         var app = builder.Build();
-
-        //I realized AFTER the fact that im mapping a get and then inserting a model value :)
-        //I can't think, code and speak at the same time :)
-        //
-
-
-
-       app.MapGroup("/Menu")
-            .AddMenuFeatures();
-
 
        app.MapApplicationEndPoints();
 
