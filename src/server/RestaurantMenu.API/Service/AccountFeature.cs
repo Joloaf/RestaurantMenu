@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantMenu.Core.Models;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
-namespace RestaurantMenu.API.Features;
+namespace RestaurantMenu.API.Service;
 
 public static class AccountFeatureExtension
 {
@@ -15,14 +14,6 @@ public static class AccountFeatureExtension
         return group;
     }
 
-    public record RegisterRequest(string Username, string Email, string Password);
-
-    public record LoginRequest(string Username, string Password);
-
-    public record UserResponse(string Id, string Username, string Email);
-
-    public record ErrorResponse(string Message);
-
     public static async Task<Results<Ok<UserResponse>, BadRequest<ErrorResponse>>> RegisterHandler(
         [FromBody] RegisterRequest request,
         UserManager<User> userManager)
@@ -30,8 +21,9 @@ public static class AccountFeatureExtension
         var user = new User
         {
             UserName = request.Username,
-            Email = request.Email,
+            Email = request.Email
         };
+
         var result = await userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
@@ -40,7 +32,7 @@ public static class AccountFeatureExtension
             return TypedResults.BadRequest(new ErrorResponse(errors));
         }
 
-        return TypedResults.Ok((new UserResponse(user.Id, user.UserName!, user.Email!)));
+        return TypedResults.Ok(new UserResponse(user.Id, user.UserName!, user.Email!));
     }
 
     public static async Task<Results<Ok<UserResponse>, BadRequest<ErrorResponse>>> LoginHandler(
@@ -49,14 +41,24 @@ public static class AccountFeatureExtension
         SignInManager<User> signInManager)
     {
         var user = await userManager.FindByNameAsync(request.Username);
+        
         if (user == null)
+        {
             return TypedResults.BadRequest(new ErrorResponse("Invalid username or password"));
+        }
+
         var result = await signInManager.PasswordSignInAsync(user, request.Password, isPersistent: false, lockoutOnFailure: false);
 
         if (!result.Succeeded)
         {
             return TypedResults.BadRequest(new ErrorResponse("Invalid username or password"));
         }
-        return TypedResults.Ok(new UserResponse(user.Id, user.UserName!,  user.Email!));
+
+        return TypedResults.Ok(new UserResponse(user.Id, user.UserName!, user.Email!));
     }
+
+    public record RegisterRequest(string Username, string Email, string Password);
+    public record LoginRequest(string Username, string Password);
+    public record UserResponse(string Id, string Username, string Email);
+    public record ErrorResponse(string Message);
 }
