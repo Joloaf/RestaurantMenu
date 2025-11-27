@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.API.Service.DTOs;
@@ -114,10 +116,16 @@ public static class MenuFeatureExtension
             menu.User.Id)) : Results.NotFound();
     }
     
-    public static async Task<IResult> GetAllHandler(string userId, 
+    public static async Task<IResult> GetAllHandler(string userId,
         [FromServices] RestaurantDbContex context,
         HttpContext httpContext)
     {
+        /*var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if(userId == null)
+        {
+            return TypedResults.Unauthorized();
+        }*/
+        
         var menus = await context.Menus
             .Include(m => m.User)
             .Where(m => m.User.Id == userId)

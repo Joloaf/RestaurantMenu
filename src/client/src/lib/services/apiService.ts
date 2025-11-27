@@ -2,8 +2,13 @@
 import { goto } from '$app/navigation';
 // import {isAuthenticated} from "$lib/stores/authStore";
 
+const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
 
-const apiUrl = import.meta.env.VITE_API_URL; // this one might fail
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+
+// Debug: log the API URL
+console.log('API URL:', apiUrl);
+console.log('All env vars:', import.meta.env);
 
 interface AppError {
     code: string;

@@ -4,6 +4,7 @@ import { playwright } from '@vitest/browser-playwright';
 import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
+	envPrefix: 'PUBLIC_',
 	server: {
 		host: '0.0.0.0',
 		port: 5173
