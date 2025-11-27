@@ -1,8 +1,11 @@
-﻿using System.Text;
+﻿using System.Reflection.Metadata.Ecma335;
+using System.Text;
 using RestaurantMenu.API.Service.DTOs.Models;
 
 namespace RestaurantMenu.API.Tests.TestData;
 
+[Flags]
+public enum Spaces {Start =1, Ending =2, Internal =4 }
 internal class MenuModelBuilder
 {
     private enum Field { Id, UsId, MName, Theme, UsName }
@@ -18,19 +21,60 @@ internal class MenuModelBuilder
     {
         switch (field)
         {
-            case Field.Id:
-                return new MenuModel((int)value, Model.Menu_mame, Model.User_name, Model.Theme, Model.User_id); 
             case Field.UsId:
-                return new MenuModel(Model.Id, Model.Menu_mame, Model.User_name, Model.Theme, (string)value);
+                return new MenuModel(Model.Id, Model.Menu_name, Model.User_name, Model.Theme, (string)value);
+            case Field.Theme:
+                return new MenuModel(Model.Id, Model.Menu_name, Model.User_name, (string)value, Model.User_id);
+            case Field.UsName:
+                return new MenuModel(Model.Id, Model.Menu_name, (string)value, Model.Theme, Model.User_id);
             case Field.MName:
                 return new MenuModel(Model.Id, (string)value, Model.User_name, Model.Theme, Model.User_id);
-            case Field.Theme:
-                return new MenuModel(Model.Id, Model.Menu_mame, Model.User_name, (string)value, Model.User_id);
-            case Field.UsName:
-                return new MenuModel(Model.Id, Model.Menu_mame, (string)value, Model.Theme, Model.User_id);
+            case Field.Id:
+                return new MenuModel((int)value, Model.Menu_name, Model.User_name, Model.Theme, Model.User_id); 
         }
 
         throw new AbandonedMutexException();
+    }
+    private string CreateInvalidMenuName(Spaces spaces)
+    {
+        //this is still valid....
+        //like... the only thing making a menu name invalid is... spaces :)
+        // and an Umbrella emoji. 
+        var builder = new StringBuilder();
+        var len = Random.Shared.Next(0, 100);
+        for (int i = 0; i < len; i++)
+        {
+            if (Random.Shared.Next(0, 100) > 50)
+            {
+                builder.Append(SmallChar());
+                continue;
+            }
+            builder.Append(LargeChar());
+        }
+        
+        if(builder.Length == 0)
+            return builder.ToString();
+        
+        var space = spaces;
+        if (space.HasFlag(Spaces.Start))
+        {
+            builder.Insert(0, " ", Random.Shared.Next(2, 10));
+            space &= ~Spaces.Start;
+        }
+
+        if (space.HasFlag(Spaces.Ending))
+        {
+            builder.Append(" ");
+            space &= ~Spaces.Ending;
+        }
+
+        if (space.HasFlag(Spaces.Internal))
+        {
+            //i fucking hate you rider
+            builder.Insert((int)(builder.Length-1/2), " ",  Random.Shared.Next(2, 10));
+            space &= ~Spaces.Internal;
+        }
+        return builder.ToString();
     }
 
     private string CreateInvalidUserName(bool spaces)
@@ -136,14 +180,14 @@ internal class MenuModelBuilder
         this.Model = ModelCreator(Field.UsId, InvalidGuid());
         return this;
     }
-    public MenuModelBuilder WithName(bool valid)
+    public MenuModelBuilder WithName(bool valid, Spaces? spaces = null)
     {
         if (valid)
         {
             this.Model = ModelCreator(Field.MName, CreateValidUserName());
             return this;
         }
-        this.Model = ModelCreator(Field.MName, CreateInvalidUserName(true));
+        this.Model = ModelCreator(Field.MName, CreateInvalidMenuName(spaces ?? Spaces.Internal));
         return this;
     }
 

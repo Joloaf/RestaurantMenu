@@ -1,8 +1,11 @@
+using Newtonsoft.Json;
 using RestaurantMenu.Core.Models;
 using RestaurantMenu.API.Service;
 using RestaurantMenu.API.Service.DTOs.Models;
 using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.API.Tests.TestData;
+using System.Text.Json;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace RestaurantMenu.API.Tests;
 
@@ -11,18 +14,63 @@ namespace RestaurantMenu.API.Tests;
 
 public class ModelMenuTest
 {
+    /// <summary>
+    /// Trailing and leading whitespaces will not be allowed.
+    /// neither will more than one space between words.
+    ///
+    /// The menu name needs to have atleast one character now too
+    ///
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="expected"></param>
     [Theory]
     [ClassData(typeof(EditModelTestData))] //define
     public void EditModelValid_ModelCombinations(MenuModel model, bool expected)
+    /*
+     * Fixed the Generation, issue wasn't actually the generation but the addition of
+     * whitespaces characters inside the range of allowed characters
+     * (:trustNothingButMe:)
+     *
+     * the larger issue wasnt the testdatas random nature but the fact that
+     *  the reason why the test failed wasn't visible, not a helpful test.
+     *      fixed that with a true assertion with a helper message.
+     *  
+     */
     {
+        
        //arrange 
        var sut = new EditModelValidator(new Validations());
        
        //act
        var actual = sut.EditModelValid(model);
-       
+
+       #region smallPoem
+        //RIDER GAVE ME A MENTAL BREAKDOWN
+        // I ACTUALLY CRIED
+        //  IT CACHES TEST DATA 
+        //      me happily coding along
+        //      me running testcases...
+        //      me getting wrong test results
+        //      me going through the pain of debugging the generation
+        //          rider happily ignoring my changes to the generation algo...
+        //      me tearing my hair out for an hour
+        //          me finally deciding to debug the generation by stepping through
+        //              tests magically working...
+        //      me crying myself to sleep.
+
+       #endregion
        //assert
-       Assert.Equal(actual, expected);
+       Assert.True(actual == expected,
+           $"Validation Failed: \n" +
+           $"\texpected:\t{expected} |\n \tactual:\t${actual} \n" +
+           $"\tTestObject:\t {System.Text.Json.JsonSerializer.Serialize(model)}");
+    }
+
+    public class localModel(MenuModel model, bool exp, bool act)
+    {
+        public MenuModel model { get; set; } = model;
+        public bool expected { get; set; } = exp;
+        public bool actual { get; set; } = act;
     }
     [Fact]
     public void EditModelValid_Inline()
@@ -135,12 +183,13 @@ public class ModelMenuTest
     }
 
     [Theory]
-    [InlineData("ada650cd-8835-40eb-9e15-7dc9d2f362a5")]
-    [InlineData("e7c265e6-cd31-468b-a619-5c10210866dd")]
-    [InlineData("74e51634-1cfe-4ab3-9a8b-5054b8aa84c6")]
-    [InlineData("f72f3330-82e5-4dbe-ac5a-03cd9b25fe84")]
+    [InlineData("ada650cd-8835-40eb-9e15-7dc9d2f362a5", true)]
+    [InlineData("e7c265e6-cd31-468b-a619-5c10210866dd", true)]
+    [InlineData("74e51634-1cfe-4ab3-9a8b-5054b8aa84c6", true)]
+    [InlineData("f72f3330-82e5-4dbe-ac5a-03cd9b25fe84", true)]
+    [InlineData("j72f3330-82e5-4dbe-ac5a-03cd9b25fe84", false)]
 
-    public void ValidThemeName_NotNull(string theme)
+    public void ValidThemeName_IsValidGuid(string? theme, bool expected)
     {
         //arrange
         var sut = new Validations();
@@ -149,7 +198,7 @@ public class ModelMenuTest
         var actual  = sut.ValidThemeName(theme);
 
         //assert
-        Assert.True(actual);
+        Assert.Equal(expected, actual);
     }
 
 
@@ -185,7 +234,7 @@ public class ModelMenuTest
         //assert
         Assert.Equal(actual, expected);
     }
-
+    
     [Theory]
     [InlineData("   Jr", false)]
     [InlineData("Testname     ", false)]
@@ -230,6 +279,35 @@ public class ModelMenuTest
 
         //assert
         Assert.Equal(actual, expected);
+    }
+    /// <summary>
+    /// Added cus since the last push where whitespace was added to the regex,
+    /// the menuname could suddenly be start with a bunch of
+    ///  whitespace and the regex would pass, this was also why the generation
+    ///  tests were failing... when doing a debug of the tests the testdata showed
+    ///   eg: menu_name: "     sdfsdfsdfs" expected: false, actual: true
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="expected"></param>
+    [Theory]
+    [InlineData("sdkfj   ", false)]
+    [InlineData("    sdkfj", false)]
+    [InlineData("    sdkfj sdkfjs", false)]
+    [InlineData("    sdkfj sdkfjs      ", false)]
+    [InlineData("sd   kfj", false)]
+    [InlineData("sdkfj", true)]
+    [InlineData("sdkfj dlkfjs", true)]
+    [InlineData("sdkfj dlkfjs ", false)]
+    [InlineData("sdkfj dlkfjs   ", false)]
+    [InlineData("sdkfj    dlkfjs   ", false)]
+    public void MenuName_TrimmedOfWhiteSpaces(string? name,  bool expected)
+    {
+        
+        //arange
+        var sut = new Validations();
+        
+        //assert
+        Assert.Equal(expected, sut.ValidMenuName(name));
     }
 }
 
