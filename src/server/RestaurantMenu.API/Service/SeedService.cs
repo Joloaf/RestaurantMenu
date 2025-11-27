@@ -6,13 +6,13 @@ using RestaurantMenu.Infrastructure.Data;
 
 namespace RestaurantMenu.API.Service;
 
-public class DevelopmentSeedService
+public class DevelopmentSeedService : IDevelopmentSeedService
 {
-    private readonly RestaurantDbContex _ctx;
+    private readonly RestaurantDbContext _ctx;
     private readonly UserManager<User> _userManager;
     private readonly ILogger<DevelopmentSeedService> _logger;
     
-    public DevelopmentSeedService(RestaurantDbContex context,
+    public DevelopmentSeedService(RestaurantDbContext context,
         UserManager<User> userManager,
         ILogger<DevelopmentSeedService> logger, 
         IWebHostEnvironment appbuilder)
