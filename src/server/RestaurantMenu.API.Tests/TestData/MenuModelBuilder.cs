@@ -41,7 +41,7 @@ internal class MenuModelBuilder
         //like... the only thing making a menu name invalid is... spaces :)
         // and an Umbrella emoji. 
         var builder = new StringBuilder();
-        var len = Random.Shared.Next(0, 100);
+        var len = Random.Shared.Next(0, 50);
         for (int i = 0; i < len; i++)
         {
             if (Random.Shared.Next(0, 100) > 50)
@@ -77,33 +77,51 @@ internal class MenuModelBuilder
         return builder.ToString();
     }
 
-    private string CreateInvalidUserName(bool spaces)
+    private string CreateInvalidUserName()
     {
         // int a = 65;
         // int b = 90;
         // int l = 97;
-        // int le = 122;
+        // int le = 123;
+        
         var builder = new StringBuilder();
         var len = Random.Shared.Next(0, 100);
+        int[] lottery = new int[4];
+        
+        //flag wether there will any leading whitespace
+        if((lottery[0] = Random.Shared.Next(0, 3)) == 1)
+            builder.Insert(0, " ", Random.Shared.Next(1, 100));
+        
         for (int i = 0; i < len; i++)
         {
-            if (spaces && i ==0)
+            int curr = Random.Shared.Next(0, 7);
+            if (curr < 4)
             {
-                if(Random.Shared.Next(0, 2) == 0)
-                    builder.Insert(0, " ", Random.Shared.Next(0, 10));
-                else
-                    builder.Append("      ");
+                //flag that the name is created with a capitalized letter at 0th index
+                if (i == 0)
+                    lottery[2] = -1;
                 
-            }
-            
-            if (Random.Shared.Next(0, 6) > 3)
-            {
+                //flag that the name has a capitalized letter at any other index
+                if (i > 0)
+                    lottery[3] = 1;
+                    
                 builder.Append(LargeChar());
                 continue;
             }
-
+            
             builder.Append(SmallChar());
         }
+        //flag wether there'll be trailing whitespace
+        if((lottery[1] = Random.Shared.Next(0, 3)) == 2)
+            builder.Append("      ");
+        
+        //mitigation of winning the lottery and creating a valid username even though
+        //a faulty one is expected
+        if(lottery[0] != 1
+           && lottery[1] != 2 
+           && lottery[2] == -1
+           && lottery[3] != 1)
+            builder.Insert(0, SmallChar());
         
         return builder.ToString();
     }
@@ -151,7 +169,7 @@ internal class MenuModelBuilder
     {
         if (valid)
         {
-            this.Model = ModelCreator(Field.Id, Random.Shared.Next(0, 5000));
+            this.Model = ModelCreator(Field.Id, Random.Shared.Next(0, int.MaxValue));
             return this;
         }
         this.Model = ModelCreator(Field.Id, Random.Shared.Next(int.MinValue, 0));
@@ -165,7 +183,7 @@ internal class MenuModelBuilder
             return this;
         }
         
-        this.Model = ModelCreator(Field.UsName, CreateInvalidUserName(false));
+        this.Model = ModelCreator(Field.UsName, CreateInvalidUserName());
         return this;
     }
 
