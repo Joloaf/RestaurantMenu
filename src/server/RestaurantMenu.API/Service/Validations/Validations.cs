@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-
 using RestaurantMenu.API.Service.Interfaces;
-namespace RestaurantMenu.API.Service;
+
+namespace RestaurantMenu.API.Service.Validations;
 
 
 
