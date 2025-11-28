@@ -44,21 +44,6 @@ public class ModelMenuTest
        //act
        var actual = sut.EditModelValid(model);
 
-       #region smallPoem
-        //RIDER GAVE ME A MENTAL BREAKDOWN
-        // I ACTUALLY CRIED
-        //  IT CACHES TEST DATA 
-        //      me happily coding along
-        //      me running testcases...
-        //      me getting wrong test results
-        //      me going through the pain of debugging the generation
-        //          rider happily ignoring my changes to the generation algo...
-        //      me tearing my hair out for an hour
-        //          me finally deciding to debug the generation by stepping through
-        //              tests magically working...
-        //      me crying myself to sleep.
-
-       #endregion
        //assert
        Assert.True(actual == expected,
            $"Validation Failed: \n" +

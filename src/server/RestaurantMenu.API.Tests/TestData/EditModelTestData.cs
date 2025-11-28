@@ -17,7 +17,7 @@ public class EditModelTestData : IEnumerable<object[]>
     public List<object[]> GetTestData()
     {
         List<object[]> models = [];
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10_000; i++)
         {
             if (i % 2 == 0)
             {
