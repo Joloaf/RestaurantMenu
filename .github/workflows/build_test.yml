@@ -1,0 +1,35 @@
+name: Build dotnet
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-buld:
+    runs-on: ${{matrix.os}}
+    
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+    steps:
+      - name: Checkout_repo
+        uses: action/checkout@v5
+        
+      - name: Setup_dotnet
+        uses: actions/setup-dotnet@v5
+        
+      - name: Run_build
+        run: "dotnet build"
+        
+      - name: Run_test
+        if: success()
+        run: "dotnet test"
+
+      - name: Run_Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+
+      #- name: Install_Dependecies
+        #run:  
