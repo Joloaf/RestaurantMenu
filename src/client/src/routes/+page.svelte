@@ -14,5 +14,6 @@ onMount(async () => {
 </script>
 
 <h1>Welcome to Cafe Lek!!!!</h1>
-
+<a href="/login">Login</a>
+<a href="/register">Register</a>
 

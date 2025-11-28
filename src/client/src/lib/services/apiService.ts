@@ -33,6 +33,7 @@ export class ApiService {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify(data)
             });
             if(!response.ok) {
@@ -115,7 +116,7 @@ export class ApiService {
                 'Content-Type': 'application/json'
             },
             credentials: 'include',
-		body: JSON.stringify(data)
+            body: JSON.stringify(data)
         });
         if(!response.ok) {
             if(handleAuthError(response)){
