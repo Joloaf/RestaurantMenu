@@ -13,6 +13,10 @@ public static class AccountFeatureExtension
         group.MapPost("/login", LoginHandler);
         return group;
     }
+    public record RegisterRequest(string Username, string Email, string Password);
+    public record LoginRequest(string Username, string Password);
+    public record UserResponse(string Id, string Username, string Email);
+    public record ErrorResponse(string Message);
 
     public static async Task<Results<Ok<UserResponse>, BadRequest<ErrorResponse>>> RegisterHandler(
         [FromBody] RegisterRequest request,
@@ -57,8 +61,4 @@ public static class AccountFeatureExtension
         return TypedResults.Ok(new UserResponse(user.Id, user.UserName!, user.Email!));
     }
 
-    public record RegisterRequest(string Username, string Email, string Password);
-    public record LoginRequest(string Username, string Password);
-    public record UserResponse(string Id, string Username, string Email);
-    public record ErrorResponse(string Message);
 }
