@@ -50,6 +50,9 @@ public class Validations : IValidations
     }
     public bool ValidThemeName(string? username)
     {
+        if (username == null)
+            return false;
+        
         if (string.IsNullOrEmpty(username)
            || string.IsNullOrWhiteSpace(username))
             return false;
@@ -67,7 +70,11 @@ public class Validations : IValidations
            || string.IsNullOrWhiteSpace(username))
             return false;
 
-        var pattern = @"^(?:[a-zA-Z0-9\s]|[\u00a9\u00ae]|[\u2000-\u3300]|[\ud83c-\ud83e][\ud800-\udfff])*$";
+        if (username.StartsWith(" ") || username.EndsWith(" "))
+            return false;
+
+        var pattern = @"^((?:[a-zA-Z0-9]|[\u00a9\u00ae]|[\u2000-\u3300]|[\ud83c-\ud83e][\ud800-\udfff])+(?: ){0,1})*$";
+        //var pattern = @"^(?:[a-zA-Z0-9\s]|[\u00a9\u00ae]|[\u2000-\u3300]|[\ud83c-\ud83e][\ud800-\udfff])*$";
         var regex = new Regex(pattern);
         return regex.IsMatch(username);
     }

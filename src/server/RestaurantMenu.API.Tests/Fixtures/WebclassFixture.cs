@@ -4,8 +4,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RestaurantMenu.Core.Models;
-using Microsoft.AspNetCore.Identity;
+
 namespace RestaurantMenu.API.Tests.Fixtures
 {
     public class WebclassFixture<TProgram> : WebApplicationFactory<TProgram>  where TProgram : class
@@ -14,24 +13,11 @@ namespace RestaurantMenu.API.Tests.Fixtures
         {
         }
         public string UserGuid { get; set; }
-        public async Task<string> AddUsers(WebApplicationFactory<TProgram> host)
-        {
-            var scope = host.Services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            userManager.CreateAsync(new User
-            {
-                UserName = "Bartek",
-                Email = "SomeEmail@Somewhere.org",
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true,
-                PhoneNumber = "+35988888888",
-                SecurityStamp = Guid.NewGuid().ToString()
-            });
-            var us = await userManager.FindByEmailAsync("SomeEmail@Somewhere.org");
-            return us.Id.ToString();
-        }
+
+        
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.DeclawSeeder();
             builder.ConfigureServices(services =>
             {
                 //Step 1: remove real services from our web application to avoid manipulation of real database during testing
@@ -73,5 +59,6 @@ namespace RestaurantMenu.API.Tests.Fixtures
             
             return host;
         }
+
     }
 }

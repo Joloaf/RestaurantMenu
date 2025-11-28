@@ -20,12 +20,15 @@ public class RestaurantMenuGetAllTests : IClassFixture<WebclassFixture<Program>>
     {
         var newListMenu = new List<MenuModel>();
          
-        var userId = await _fixture.AddUsers(_fixture);
+        var userId = await _fixture.AddUsers();
             
         //Arrange
         for (int i = 0; i < 3; i++)
         {
-            var newMenu = new MenuModel(0, $"Read test manu name {i}", $"Read test menu username {i}", $"Read test menu theme {i}",
+            var newMenu = new MenuModel(0,
+                $"Read test manu name {i}",
+                $"Skdjfsl",
+                Guid.NewGuid().ToString(),
                 userId);
                 
             var createResp = await _client.PostAsJsonAsync(base_url, newMenu);
