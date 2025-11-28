@@ -23,8 +23,6 @@ namespace RestaurantMenu.API.Tests.Fixtures
                 //Step 1: remove real services from our web application to avoid manipulation of real database during testing
                 var descriptor = services.SingleOrDefault(d =>
                     d.ServiceType == typeof(RestaurantMenu.Infrastructure.Data.RestaurantDbContext));
-
-                
                 if (descriptor != null)
                     services.Remove(descriptor);
 
