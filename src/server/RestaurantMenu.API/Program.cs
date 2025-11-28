@@ -10,13 +10,14 @@ using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.AspNetCore.Mvc;
 using MinimalApi.Endpoint.Extensions;
 using Microsoft.AspNetCore.Http.Connections.Features;
+using RestaurantMenu.API.EndPoints.Menu;
 using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.API.Service;
 
 
 public class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,7 @@ public class Program
         builder.Services.AddScoped<IValidations, Validations>();
         builder.Services.AddScoped<IEditModelValidator, EditModelValidator>();
         builder.Services.AddScoped<IFactory<Menu>, MenuFactory>();
+        builder.Services.AddTransient<IDevelopmentSeedService, DevelopmentSeedService>();
 
 
         // Add CORS for development
@@ -67,9 +69,16 @@ public class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
+            MapGetAllUsersDevelopment
+            .MapDevEndPoint(
+            app.MapGroup("/Development"),
+                  app.Environment);
+            
             app.MapOpenApi();
             app.MapScalarApiReference();
             app.UseCors("AllowAll");
+            //app.UseCors("*");
+            await app.Seed();
         }
 
         app.UseRouting();
@@ -79,7 +88,7 @@ public class Program
 
         app.UseHttpsRedirection();
 
-
+        //
         app.Run();
     }
 }

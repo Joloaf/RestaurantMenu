@@ -28,7 +28,7 @@ namespace RestaurantMenu.API.Tests
         public async Task Patch_ChangeMenuName(MenuModel model, string expectedMenuNameChange)
         {
             //arrange
-            var userId = await _fixture.AddUsers(_fixture);
+            var userId = await _fixture.AddUsers();
             var createModel = new MenuModel(model.Id, model.Menu_name, model.User_name, model.Theme, userId);
             var created = await _client.PostAsJsonAsync(base_url, createModel);
             
@@ -51,7 +51,7 @@ namespace RestaurantMenu.API.Tests
         public async Task Patch_ChangeTheme(MenuModel model, string expectedThemeChange)
         {
             //arrange
-            var userId = await _fixture.AddUsers(_fixture);
+            var userId = await _fixture.AddUsers();
             var createModel = new MenuModel(model.Id, model.Menu_name, model.User_name, model.Theme, userId);
             var created = await _client.PostAsJsonAsync(base_url, createModel);
             
@@ -76,7 +76,7 @@ namespace RestaurantMenu.API.Tests
         public async Task Patch_ChangesUserName(MenuModel model, string nameChange)
         {
             //arrange
-            var userId = await _fixture.AddUsers(_fixture);
+            var userId = await _fixture.AddUsers();
             var createModel = new MenuModel(model.Id, model.Menu_name, model.User_name, model.Theme, userId);
             var created = await _client.PostAsJsonAsync(base_url, createModel);
             
@@ -98,7 +98,7 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuAdd_ValidResponseCode()
         {
-            var id = await _fixture.AddUsers(_fixture);
+            var id = await _fixture.AddUsers();
             var obj = new MenuModel(0, "standard menu", "Sara", Guid.NewGuid().ToString(), id);
 
             //act
@@ -117,7 +117,7 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuPatch_ValidResponseCode()
         {
-            var id = await _fixture.AddUsers(_fixture);
+            var id = await _fixture.AddUsers();
             //arrange
             var obj = new MenuModel(0, "standard menu", "Sara", Guid.NewGuid().ToString(), id);
             var created = await _client.PostAsJsonAsync(base_url, obj);
@@ -146,7 +146,7 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuDelete_RemoveExistingMenuForValidUser_ReceiveValidResponseCode()
         {
-            var userId = await _fixture.AddUsers(_fixture);
+            var userId = await _fixture.AddUsers();
 
             //arrange
             var obj = new MenuModel(0, "menu to delete", "Patrick", Guid.NewGuid().ToString(), userId);
@@ -174,7 +174,7 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuDelete_NotFound_NonExistentMenu()
         {
-            var userId = await _fixture.AddUsers(_fixture);
+            var userId = await _fixture.AddUsers();
 
             //arrange
             var nonExistentMenuId = 99999;
@@ -194,7 +194,7 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task MenuDelete_NotFound_WrongUser()
         {
-            var userId1 = await _fixture.AddUsers(_fixture);
+            var userId1 = await _fixture.AddUsers();
 
             //arrange
             var obj = new MenuModel(0, "menu owned by user1", "Patrick", Guid.NewGuid().ToString(), userId1);
@@ -224,7 +224,7 @@ namespace RestaurantMenu.API.Tests
         [Fact]
         public async Task CanReadMenu()
         {
-            var id = await _fixture.AddUsers(_fixture);
+            var id = await _fixture.AddUsers();
             //Arrange
             var newMenu = new MenuModel(0, "Readtestmanuname", "Readtestmenuusername", Guid.NewGuid().ToString(),
                 id);
