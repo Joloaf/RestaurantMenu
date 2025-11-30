@@ -3,7 +3,7 @@
   "appName": "cafe lek",
   "webDir": "build",
   "server": {
-    "url": "http://192.168.0.190:5173",
+    "url": "http://192.168.1.195:5173",
     "cleartext": true
   }
 }
