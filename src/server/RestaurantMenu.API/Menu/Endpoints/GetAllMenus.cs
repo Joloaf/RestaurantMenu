@@ -7,7 +7,7 @@ using RestaurantMenu.Infrastructure.Data;
 public class GetAllMenus : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder config) =>
-        config.MapGet("/all", Handler);
+        config.MapGet("/all/{userId}", Handler);
 
     public static async Task<Results<Ok<List<MenuModel>>, InternalServerError>> Handler(
         string userId,

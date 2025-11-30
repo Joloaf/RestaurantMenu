@@ -25,8 +25,8 @@ export class MenuService {
         const response = await this.ApiService.get(`Menu/single/${userId}`);
         return response as Menu;
     }
-    public async getMenusByUserId(): Promise<Menu[]> {
-        const response: any = await this.ApiService.get('Menu/all');
+    public async getMenusByUserId(uid :string): Promise<Menu[]> {
+        const response: any = await this.ApiService.get(`Menu/all/${uid}`);
 
         const menus = response?.menu || response;
 
