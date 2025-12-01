@@ -46,6 +46,42 @@
         return quantities[dishId] || 0;
     }
 </script>
+<div>
+    {#if active}
+        {#each dishes as dish}
+            {#if !edit}
+                <!-- View mode: show dish with +/- quantity controls -->
+                <div class='row'>
+                    <img src={dish.foodPicture} alt={dish.name} class="dish-image" />
+                    <p class="dish-name">{dish.name}</p>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick={() => decrementQuantity(dish.id)}>-</button>
+                        <span>{getQuantity(dish.id)}</span>
+                        <button class="quantity-btn" onclick={() => incrementQuantity(dish.id)}>+</button>
+                    </div>
+                    {@render children?.()}
+                </div>
+            {:else}
+                <!-- Edit mode: show dish with editable name, image, and remove button -->
+                <div class='row'>
+                    <img 
+                        src={dish.foodPicture} 
+                        alt={dish.name} 
+                        class="dish-image" 
+                        onclick={() => onImageClick(dish.id)}
+                        style="cursor: pointer;"
+                    />
+                    <input type="text" bind:value={dish.name} class="dish-name" placeholder="Dish name" />
+                    <button class="remove-btn" onclick={() => onClickDelete(dish.id)}>Remove</button>
+                </div>
+            {/if}
+        {/each}
+        
+        {#if edit}
+            <button class="add-dish-btn" onclick={addDish}>+ Add Dish</button>
+        {/if}
+    {/if}
+</div>
 <style>
     .row {
         display: flex;
@@ -117,39 +153,3 @@
     }
 </style>
 
-<div>
-    {#if active}
-        {#each dishes as dish}
-            {#if !edit}
-                <!-- View mode: show dish with +/- quantity controls -->
-                <div class='row'>
-                    <img src={dish.foodPicture} alt={dish.name} class="dish-image" />
-                    <p class="dish-name">{dish.name}</p>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn" onclick={() => decrementQuantity(dish.id)}>-</button>
-                        <span>{getQuantity(dish.id)}</span>
-                        <button class="quantity-btn" onclick={() => incrementQuantity(dish.id)}>+</button>
-                    </div>
-                    {@render children?.()}
-                </div>
-            {:else}
-                <!-- Edit mode: show dish with editable name, image, and remove button -->
-                <div class='row'>
-                    <img 
-                        src={dish.foodPicture} 
-                        alt={dish.name} 
-                        class="dish-image" 
-                        onclick={() => onImageClick(dish.id)}
-                        style="cursor: pointer;"
-                    />
-                    <input type="text" bind:value={dish.name} class="dish-name" placeholder="Dish name" />
-                    <button class="remove-btn" onclick={() => onClickDelete(dish.id)}>Remove</button>
-                </div>
-            {/if}
-        {/each}
-        
-        {#if edit}
-            <button class="add-dish-btn" onclick={addDish}>+ Add Dish</button>
-        {/if}
-    {/if}
-</div>
