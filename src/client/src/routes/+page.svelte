@@ -1,58 +1,34 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
-	import { MenuService } from '$lib/services/MenuService';
-	import {ApiService} from '$lib/services/apiService.ts';
-	import type { MemoryCache, Ticket, Order } from '../../stores/cacheHandlerService.ts';
-	import Admin from '$lib/compunents/menuSwitches/admin.svelte';
-	import Everymenu from '$lib/compunents/menuSwitches/everymenu.svelte';
-	import Orders from '$lib/compunents/menuSwitches/orders.svelte';
-	import TicketView from '$lib/compunents/menuSwitches/ticketView.svelte';
+	import Admin from '$lib/components/menuSwitches/admin.svelte';
+	import Everymenu from '$lib/components/menuSwitches/everymenu.svelte';
+	import Orders from '$lib/components/menuSwitches/orders.svelte';
+	import TicketView from '$lib/components/menuSwitches/ticketView.svelte';
 	
-	const ApiServices = new ApiService();
-	const menuService = new MenuService(ApiServices);
+	let { data } = $props();
 	
-	let menu: any = null
-	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = 'everymenu';
-	
-
-onMount(async () => {
-	const menu = await menuService.getMenusByUserId();
-	console.log(menu);
-});
-
-
-
+	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
 </script>
-
 <h1>Welcome to Cafe Lek!!!!</h1>
 <a href="/login">Login</a>
 <a href="/register">Register</a>
 
 <div class="navigation">
-	<button on:click={() => currentView = 'admin'} class:active={currentView === 'admin'}>Admin</button>
-	<button on:click={() => currentView = 'everymenu'} class:active={currentView === 'everymenu'}>Everymenu</button>
-	<button on:click={() => currentView = 'orders'} class:active={currentView === 'orders'}>Orders</button>
-	<button on:click={() => currentView = 'tickets'} class:active={currentView === 'tickets'}>Tickets</button>
+	<button onclick={() => currentView = 'admin'} class:active={currentView === 'admin'}>Admin</button>
+	<button onclick={() => currentView = 'everymenu'} class:active={currentView === 'everymenu'}>Everymenu</button>
+	<button onclick={() => currentView = 'orders'} class:active={currentView === 'orders'}>Orders</button>
+	<button onclick={() => currentView = 'tickets'} class:active={currentView === 'tickets'}>Tickets</button>
 </div>
 <div>
 <div>{currentView}</div>
 
 {#if currentView === 'admin'}
-<Admin>
-
-</Admin>
+	<Admin menus={data.menus} currentMenu={data.currentMenu} />
 {:else if currentView === 'orders'}
-<Orders>
-
-</Orders>
+	<Orders currentMenu={data.currentMenu} />
 {:else if currentView === 'tickets'}
-<TicketView>
-	
-</TicketView>
+	<TicketView orders={data.orders} />
 {:else if currentView === 'everymenu'}
-<Everymenu>
-
-</Everymenu>
+	<Everymenu menus={data.menus} currentMenu={data.currentMenu} />
 {/if}
 
 

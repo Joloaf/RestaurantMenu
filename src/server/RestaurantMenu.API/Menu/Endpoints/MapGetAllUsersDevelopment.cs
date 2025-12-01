@@ -14,7 +14,6 @@ public class MapGetAllUsersDevelopment : IDevelopmentEndPoint
 
        config.MapGroup("/Users")
            .MapGet("/GetAll", Handler);
-
     }
 
     private static async Task<IResult> Handler(
