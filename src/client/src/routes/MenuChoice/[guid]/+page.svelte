@@ -19,7 +19,7 @@
     let menuDelete : Menu[] = []
     let selectedMenu: Menu | null = null;
 
-    export const load: PageLoad = async ({ params }) =>{
+/*     export const load: PageLoad = async ({ params }) =>{
         console.log(guid)
         locg = params.guid;
         menus = await (new MenuService(new ApiService())).getMenusByUserId(page.params.guid)
@@ -37,7 +37,8 @@
                 } as Menu)
             }
         }
-    }
+} */
+
     onMount(async ()=>{
         menus = await (new MenuService(new ApiService())).getMenusByUserId(page.params.guid)
         console.log(`menus::: ${menus}`)
@@ -88,6 +89,8 @@
         let settledDelete = [];
         const toAdd = menus?.filter((x,y) => toUpdade.findIndex((z,f) => z.menuId == x.menuId) == -1) ?? []
 
+        let settled = await Promise.allSettled(updateProimses);
+
         console.log(deletePromises)
         for(let z =0; z < menuDelete.length; z++){
             deletePromises.push(new MenuService(new ApiService()).deleteMenu(menuDelete[z].menuId, menuDelete[z].userId))
@@ -103,7 +106,6 @@
             {
                 updateProimses.push(new MenuService(new ApiService()).updateMenu(toUpdade[k]))
             }
-        let settled = await Promise.allSettled(updateProimses);
         if(toAdd.length != 0)
             for(let z = 0; z < toAdd.length; z++)
         {
@@ -179,7 +181,8 @@
         flex-direction: row;
         flex-flow: row-reverse;
     }
-    </style>
+</style>
+
 <p>Menuchoice</p>
 <div >
     <button onclick={onClickEdit}>edit</button>
