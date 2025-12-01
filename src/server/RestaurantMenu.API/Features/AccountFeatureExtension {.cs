@@ -11,7 +11,7 @@ public static class AccountFeatureExtension
     public static RouteGroupBuilder AddAccountFeatures(this RouteGroupBuilder group)
     {
         group.MapPost("/register", RegisterHandler);
-        group.MapPost("/login", LoginHandler);
+        group.MapPost("/Login", LoginHandler);
         return group;
     }
 
@@ -46,17 +46,20 @@ public static class AccountFeatureExtension
     public static async Task<Results<Ok<UserResponse>, BadRequest<ErrorResponse>>> LoginHandler(
         [FromBody] LoginRequest request,
         UserManager<User> userManager,
-        SignInManager<User> signInManager)
+        SignInManager<User> signInManager,
+        ILogger<UserResponse> logger)
     {
         var user = await userManager.FindByNameAsync(request.Username);
         if (user == null)
             return TypedResults.BadRequest(new ErrorResponse("Invalid username or password"));
         var result = await signInManager.PasswordSignInAsync(user, request.Password, isPersistent: false, lockoutOnFailure: false);
-
+        
         if (!result.Succeeded)
         {
             return TypedResults.BadRequest(new ErrorResponse("Invalid username or password"));
         }
-        return TypedResults.Ok(new UserResponse(user.Id, user.UserName!,  user.Email!));
+        Console.WriteLine(user.Id);
+        logger.LogInformation(user.Id.ToString());
+        return TypedResults.Ok(new UserResponse(user.Id.ToString(), user.UserName!,  user.Email!));
     }
 }

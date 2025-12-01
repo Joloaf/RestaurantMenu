@@ -19,7 +19,6 @@ export interface MemoryCache {
     menus: Menu[];
     currentMenu: Menu | null;
     orders: Order[];
-    currentOrder: Order | null;
     isLoading: boolean;
     lastFetch: number | null;
     cacheExpiry: number;
@@ -34,7 +33,6 @@ const activeCache: MemoryCache = {
     menus: [],
     currentMenu: null,
     orders: [],
-    currentOrder: [] as unknown as Order | null,
     isLoading: false,
     lastFetch: null,
     cacheExpiry: CacheDuration,
@@ -162,18 +160,17 @@ export const cacheHandlerActions = {
             activeCache.menus = [];
             activeCache.currentMenu = null;
             activeCache.orders = [];
-            activeCache.currentOrder = null;
             activeCache.lastFetch = null;
             activeCache.isStale = null;
         },
-        removeCurrentOrder: (menuId: number) => {
+/*         removeCurrentOrder: (menuId: number) => {
             const index = activeCache.orders.findIndex(o => o.menuId === menuId);
             if (index !== -1) {
                 activeCache.orders[index].ticket = [];
                 saveToCache(activeCache.menus);
                 activeCache.currentOrder = null;
             }
-        },
+        }, */
         
         getActiveCache: () => activeCache // call this to get the current cache state
 };
