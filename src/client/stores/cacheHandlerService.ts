@@ -18,7 +18,7 @@ interface Order {
 export interface MemoryCache {
     menus: Menu[];
     currentMenu: Menu | null;
-    orders: Order[];
+    orders: Order[]; 
     currentOrder: Order | null;
     isLoading: boolean;
     lastFetch: number | null;
