@@ -37,7 +37,7 @@ public class RestaurantMenuGetAllTests : IClassFixture<WebclassFixture<Program>>
         }
 
         //Act
-        var getResp = await _client.GetAsync($"{base_url}all?userId={userId}");
+        var getResp = await _client.GetAsync($"{base_url}all/{userId}");
 
         //Assert
         getResp.EnsureSuccessStatusCode();

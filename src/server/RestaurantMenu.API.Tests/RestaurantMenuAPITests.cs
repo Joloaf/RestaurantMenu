@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using RestaurantMenu.API.Tests.TestData;
 
 namespace RestaurantMenu.API.Tests
@@ -35,7 +36,7 @@ namespace RestaurantMenu.API.Tests
             //act
             var result =  await created.Content.ReadFromJsonAsync<MenuModel>();
             var modified = new MenuModel(result.Id, expectedMenuNameChange, result.User_name, result.Theme, result.User_id);
-            var actualResponse = await _client.PatchAsJsonAsync(base_url,  modified);
+            var actualResponse = await _client.PatchAsJsonAsync(base_url+$"{result.Id}",  modified);
             var actual = await actualResponse.Content.ReadFromJsonAsync<MenuModel>();
             
             //assert
@@ -58,7 +59,7 @@ namespace RestaurantMenu.API.Tests
             //act
             var result =  await created.Content.ReadFromJsonAsync<MenuModel>();
             var modified = new MenuModel(result.Id, result.Menu_name, result.User_name, expectedThemeChange, result.User_id);
-            var actualResponse = await _client.PatchAsJsonAsync(base_url,  modified);
+            var actualResponse = await _client.PatchAsJsonAsync(base_url+$"{result.Id}",  modified);
             var actual = await actualResponse.Content.ReadFromJsonAsync<MenuModel>();
             
             //assert
@@ -83,7 +84,7 @@ namespace RestaurantMenu.API.Tests
             //act
             var result =  await created.Content.ReadFromJsonAsync<MenuModel>();
             var modified = new MenuModel(result.Id, result.Menu_name, nameChange, result.Theme, result.User_id);
-            var actualResponse = await _client.PatchAsJsonAsync(base_url,  modified);
+            var actualResponse = await _client.PatchAsJsonAsync(base_url+$"{result.Id}",  modified);
             var actual = await actualResponse.Content.ReadFromJsonAsync<MenuModel>();
             
             //assert
@@ -133,7 +134,7 @@ namespace RestaurantMenu.API.Tests
             var edit = new MenuModel(res.Id, "SpidermanMenu", "Bartek", Guid.NewGuid().ToString(), res.User_id);
             
             //assert
-            var response = await _client.PatchAsJsonAsync(base_url, edit);
+            var response = await _client.PatchAsJsonAsync(base_url+$"{res.Id}", edit);
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
@@ -232,7 +233,7 @@ namespace RestaurantMenu.API.Tests
             var created = await createResp.Content.ReadFromJsonAsync<MenuModel>();
 
             //Act
-            var getResp = await _client.GetAsync($"{base_url}single?id={created.Id}");
+            var getResp = await _client.GetAsync($"{base_url}single/{created.Id}");
 
             //Assert
             getResp.EnsureSuccessStatusCode();
