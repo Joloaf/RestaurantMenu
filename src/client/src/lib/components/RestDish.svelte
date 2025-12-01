@@ -4,6 +4,7 @@ import { type Dish } from "$lib/services/DishService";
         dishes = $bindable([]), 
         active,
         edit,
+        children
     } = $props()
     
 
@@ -64,6 +65,7 @@ import { type Dish } from "$lib/services/DishService";
     {#if !edit}
     <div class='row'>
         <img src={dish.foodPicture} alt="oops.."/>
+        {@render children?.()}
         <p>{dish.name}</p>
     </div>
     {/if}

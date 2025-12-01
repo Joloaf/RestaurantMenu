@@ -3,7 +3,12 @@
   "appName": "cafe lek",
   "webDir": "build",
   "server": {
-    "url": "http://192.168.1.195:5173",
+    "url": "http://192.168.56.1:5173",
     "cleartext": true
+  },
+  "plugins": {
+    "CapacitorCookies": {
+      "enabled": true
+    }
   }
 }
