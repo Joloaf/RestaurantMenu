@@ -6,15 +6,17 @@
     let { 
         menuItem,
         isEditMode,
-        remove
+        remove,
+        selectedCB,
+        children
     } = $props()
 
     function onClickImage(){
         
     }
     function onClickMenu(){
-        //evargs.eventTarget.setClass(".highlight");
-        //render the boxes for the dishes
+
+        selectedCB(menuItem);
         if(!clicked){
             clicked = true;
             return;
@@ -30,7 +32,7 @@
 
 
 	function onClickDelete(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
-        remove(menuItem.Id)
+        remove(menuItem.menuId)
 	}
 </script>
 <style>
@@ -66,6 +68,10 @@
 </div>
 {#if clicked}
 <div class="column">
-    <RestDish dishes = {menuItem.dishes} active = {clicked} edit={isEditMode}/>
+    <RestDish 
+        dishes   = {menuItem.dishes}
+        active   = {clicked}
+        edit     = {isEditMode}
+        children = {children}/>
 </div>
 {/if}

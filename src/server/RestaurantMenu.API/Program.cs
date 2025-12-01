@@ -61,6 +61,16 @@ public class Program
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials();
+                
+                policy.WithOrigins("http://localhost:5173/MenuChoice/*", "http://192.168.0.190:5173")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+
+              // policy.AllowAnyOrigin()
+              //     .AllowAnyMethod()
+              //     .AllowAnyHeader();
+
             });
         });
 

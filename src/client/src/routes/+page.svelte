@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { MenuService } from '$lib/services/MenuService';
 	import {ApiService} from '$lib/services/apiService.ts';
+	import { CapacitorCookies } from '@capacitor/core'
 	
 	const ApiServices = new ApiService();
 	const menuService = new MenuService(ApiServices);
