@@ -3,13 +3,13 @@ import type { Menu } from '../src/lib/services/MenuService';
 
 
 
-interface Ticket {
+export interface Ticket {
     id: number;
     dishes: Dish;    
     quantity: number;
 }
 
-interface Order {
+export interface Order {
     ticket: Ticket[];
     ticketNumber: number;
     menuId: number;
@@ -29,6 +29,7 @@ export interface MemoryCache {
 const CacheDuration = 1000 * 60 * 15; // 15 minutes
 const CACHE_KEY = 'menuCache'; // This is the Cache name, 
 
+
 const activeCache: MemoryCache = {
     menus: [],
     currentMenu: null,
@@ -41,8 +42,7 @@ const activeCache: MemoryCache = {
 };
 
 // When updating the cache, always update database. First database, then cache.
-//  Can api calls for database be in here? <-- Emanuell 
-// No since we want to seperate code and have reusable code mixing logic is not reusable and hard to test. <-- Marcus
+
 
 function saveToCache(menus: Menu[]) {
     try{
