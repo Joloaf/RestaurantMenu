@@ -37,25 +37,6 @@
         remove(menuItem.menuId)
 	}
 </script>
-<style>
-    .row{
-        display: flex;
-        flex-direction: row;
-        gap: 1.125rem;
-    }
-    .highlight{
-        box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-        -webkit-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-        -moz-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-    }
-    .highlight-img{
-        outline-color: chocolate;
-    }
-    .column{
-        display: flex;
-        flex-direction: column;
-    }
-</style>
 
 <div class="row" onclick={onClickMenu} >
     {#if !isEditMode}
@@ -72,10 +53,29 @@
 {#if clicked}
 <div class="column">
     <RestDish 
-        dishes   = {menuItem.dishes}
-        active   = {clicked}
-        edit     = {isEditMode}
-        children = {children}/>
+    dishes   = {menuItem.dishes}
+    active   = {clicked}
+    edit     = {isEditMode}
+    children = {children}/>
 </div>
 {/if}
 
+    <style>
+        .row{
+            display: flex;
+            flex-direction: row;
+            gap: 1.125rem;
+        }
+        .highlight{
+            box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+            -webkit-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+            -moz-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+        }
+        .highlight-img{
+            outline-color: chocolate;
+        }
+        .column{
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
