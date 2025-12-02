@@ -8,9 +8,11 @@
 	
 	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
 </script>
+
+
 <h1>Welcome to Cafe Lek!!!!</h1>
 <a href="/login">Login</a>
-<a href="/register">Register</a>
+<a href="/register">Register</a> <!-- This could be moved into layout?? or in admin only? -->
 
 <div class="navigation">
 	<button onclick={() => currentView = 'admin'} class:active={currentView === 'admin'}>Admin</button>
