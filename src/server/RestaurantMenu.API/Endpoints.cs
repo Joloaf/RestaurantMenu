@@ -13,7 +13,7 @@ public static class Endpoints
     public static void MapMenuEndpoints(this IEndpointRouteBuilder config)
     {
         var group = config.MapGroup("/Menu")
-            
+            .RequireAuthorization()
             .MapEndPoint<GetMenu>()
             .MapEndPoint<GetAllMenus>()
             .MapEndPoint<CreateMenu>()
