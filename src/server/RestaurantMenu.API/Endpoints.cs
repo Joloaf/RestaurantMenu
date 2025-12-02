@@ -1,3 +1,4 @@
+using RestaurantMenu.API.Dish.Endpoints;
 using RestaurantMenu.API.Features;
 
 public static class Endpoints
@@ -6,7 +7,7 @@ public static class Endpoints
     public static void MapApplicationEndPoints(this IEndpointRouteBuilder config)
     {
         config.MapMenuEndpoints();
-        config.MapDishEndpoint();
+        config.MapDishEndpoints();
         config.AccountEndpoints();
         
     }
@@ -18,6 +19,19 @@ public static class Endpoints
             .MapEndPoint<CreateMenu>()
             .MapEndPoint<UpdateMenu>()
             .MapEndPoint<DeleteMenu>();
+
+    }
+    
+    public static void MapDishEndpoints(this IEndpointRouteBuilder config)
+    {
+        var group = config.MapGroup("/Dish")
+            .MapEndPoint<RemoveDish>()
+            .MapEndPoint<UpdateDish>()
+            .MapEndPoint<GetAllDishes>();
+        
+        
+        
+
 
     }
 
