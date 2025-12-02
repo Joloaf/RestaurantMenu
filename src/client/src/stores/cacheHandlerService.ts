@@ -1,9 +1,9 @@
-import type {  Dish } from '../src/lib/services/DishService';
-import type { Menu } from '../src/lib/services/MenuService';
+import type { Dish } from '../lib/services/DishService';
+import type { Menu }  from '../lib/services/MenuService' 
 
 
 
-export interface Ticket {
+export default interface Ticket {
     id: number;
     dishes: Dish;    
     quantity: number;
@@ -42,19 +42,22 @@ const activeCache: MemoryCache = {
 // When updating the cache, always update database. First database, then cache.
 
 
-function saveToCache(menus: Menu[]) {
+function saveToCache(cache: MemoryCache) {
     try{
         const cacheData = {
-            menus,
+            menus: cache.menus,
+            currentMenu: cache.currentMenu,
+            orders: cache.orders,
             timestamp: Date.now()
         };
         localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
     } catch (error) {
+/*      might need to implement a clearing here if data exceeded limit*/
         console.error('Error saving to cache:', error);
     }     
 }
 
-function loadFromCache(): { menus: Menu[]; isStale: boolean } | null {
+function loadFromCache(): Partial<MemoryCache> | null {
     try {
         const cached = localStorage.getItem(CACHE_KEY);
         if (!cached) return null;
@@ -63,7 +66,13 @@ function loadFromCache(): { menus: Menu[]; isStale: boolean } | null {
         const age = Date.now() - cachedData.timestamp;
         const isStale = age > CacheDuration;
 
-        return { menus: cachedData.menus, isStale };
+        return {
+            menus: cachedData.menus || [],
+            currentMenu: cachedData.currentMenu || null,
+            orders: cachedData.orders || null,
+            isStale,
+            lastFetch: cachedData.lastFetch
+        };
     }
     catch (error) {
         console.error('Error loading from cache:', error);
@@ -83,10 +92,12 @@ export const cacheHandlerActions = {
     initializeCache: () => {
         const cached = loadFromCache();
         if (cached) {
-            activeCache.menus = cached.menus;
-            activeCache.isStale = cached.isStale;
-            activeCache.lastFetch = Date.now() - (cached.isStale ? CacheDuration + 1 : 0);
-            }
+            activeCache.menus = cached.menus || [];
+            activeCache.currentMenu = cached.currentMenu || null;
+            activeCache.orders = cached.orders || [];
+            activeCache.isStale = cached.isStale ?? null;
+            activeCache.lastFetch = cached.lastFetch ?? null;
+        }
         },
 
         setLoading(loading: boolean) {
@@ -97,32 +108,36 @@ export const cacheHandlerActions = {
             activeCache.menus = menus;
             activeCache.lastFetch = Date.now();
             activeCache.isStale = false;
-            saveToCache(menus);
+            saveToCache(activeCache);
         },
 
         setCurrentMenu(menu: Menu | null) {
             activeCache.currentMenu = menu;
+            saveToCache(activeCache);
         },
 
         addMenu(menu: Menu) {
             activeCache.menus.push(menu);
-            this.setCurrentMenu(menu);
-            saveToCache(activeCache.menus);
+            saveToCache(activeCache);
         },
 
         addDish(menuId: number, dish: Dish) {
             const menu = activeCache.menus.find(m => m.menuId === menuId);
-            if (menu) {
+            if(menu) {
                 menu.dishes.push(dish);
-                saveToCache(activeCache.menus);
+                saveToCache(activeCache);            
             }
+            else {
+                console.warn(`Could not find menu in cache with id: ${menuId}`);
+            }
+
         },
 
         updateMenu(updatedMenu: Menu) {
             const index = activeCache.menus.findIndex(m => m.menuId === updatedMenu.menuId);
             if(index !== -1){
                 activeCache.menus[index] = updatedMenu;
-                saveToCache(activeCache.menus);
+                saveToCache(activeCache);
             }   
         },
 
@@ -134,21 +149,35 @@ export const cacheHandlerActions = {
                 if(index !== -1) // findIndex returns -1 if not found
                     {
                     menu.dishes[index] = updatedDish;
-                    saveToCache(activeCache.menus);
+                    saveToCache(activeCache);
                 }
             }                
         },
 
         removeDish(menuId: number, dishId: number) {
-            const menu = activeCache.menus.find(m => m.menuId === menuId);
-            if(menu) {
-                menu.dishes = menu.dishes.filter(d => d.id !== dishId);
-                saveToCache(activeCache.menus);
+            const menu = activeCache.menus.find(f => f.menuId === menuId);
+            if(!menu) {
+                console.warn(`Could not find menu in cache with id: ${menuId}`);
+                return;
             }
+
+            const initialLength = menu.dishes.length;
+            menu.dishes = menu.dishes.filter(p => p.id !== dishId);
+
+            if(menu.dishes.length === initialLength) {
+                console.warn(`Dish with id ${dishId} not found in menu ${menuId}`);
+            }
+            saveToCache(activeCache);
         },
         removeMenu(menuId: number) {
-            activeCache.menus = activeCache.menus.filter(m => m.menuId !== menuId);
-            saveToCache(activeCache.menus);
+            const menuExist = activeCache.menus.some(s => s.menuId === menuId);
+            if(!menuExist) {
+                console.warn(`Could not find menu in cache with id: ${menuId}`)
+                return;
+            }
+
+            activeCache.menus = activeCache.menus.filter(f => f.menuId !== menuId);
+            saveToCache(activeCache);
         },
 
         isCacheStale: (): boolean => {
@@ -171,6 +200,9 @@ export const cacheHandlerActions = {
                 activeCache.currentOrder = null;
             }
         }, */
+
+        //TODO •  addOrder(order: Order)    updateOrder(menuId: number, updatedOrder: Order)    removeOrder(menuId: number)
+
         
         getActiveCache: () => activeCache // call this to get the current cache state
 };
