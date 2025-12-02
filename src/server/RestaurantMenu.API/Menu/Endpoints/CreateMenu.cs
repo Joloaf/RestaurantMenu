@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,24 +14,35 @@ public class CreateMenu : IEndpoint
 
     public record ValidationErrorModel(MenuModel model, string reason);
 
-    public static async Task<Results<Created<MenuModel>, NotFound, BadRequest<ValidationErrorModel>, InternalServerError>> Handler(
+    public static async Task<IResult> Handler(
         [FromBody] MenuModel model,
         [FromServices] RestaurantDbContext context,
         [FromServices] IEditModelValidator editModelValidator,
-        [FromServices] IFactory<Menu> factory)
+        [FromServices] IFactory<Menu> factory,
+        HttpContext httpContext)
     {
-        if(!editModelValidator.EditModelValid(model))
-            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));
+        /*if(!editModelValidator.EditModelValid(model))
+            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));*/
 
         try
         {
-            var user = await context.Users.Where(x => x.Id == model.User_id)
+            var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                Console.WriteLine("Error: User not authenticated");
+                return TypedResults.Unauthorized();
+            }
+            
+            var user = await context.Users.Where(x => x.Id == userId)
                 .Include(x => x.Menus)
                 .SingleOrDefaultAsync();
-
-            if(user == null)
+            
+            if (user == null)
+            {
+                Console.WriteLine($"Error: User {userId} not found in database");
                 return TypedResults.NotFound();
-
+            }
+            
             Menu menuItem = factory.Create();
             menuItem.MenuName = model.Menu_name;
             menuItem.UserName = model.User_name;
@@ -46,17 +58,11 @@ public class CreateMenu : IEndpoint
             //context.Update(menuItem);
             await context.SaveChangesAsync();
 
-            return TypedResults.Created($"/Menu/{menuItem.Id}", new MenuModel(
-                menuItem.Id,
-                menuItem.MenuName,
-                menuItem.UserName,
-                menuItem.Theme,
-                menuItem.User.Id));
+            return TypedResults.Ok("Created menu");
         }
         catch(Exception e)
         {
             Console.WriteLine($"Error creating menu: {e.Message}");
-            return TypedResults.InternalServerError();
-        }
+            return TypedResults.Problem($"An internal error occurred while retrieving menus: {e.Message}");        }
     }
 }
