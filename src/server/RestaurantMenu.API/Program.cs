@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Http.Connections.Features;
 using RestaurantMenu.API.EndPoints.Menu;
 using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.API.Service;
+
 using RestaurantMenu.API.Service.Validations;
 
 
@@ -21,6 +23,12 @@ public class Program
     private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        
+        builder.Services.Configure<JsonOptions>(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            options.JsonSerializerOptions.MaxDepth = 32;
+        });
         //TODO change requires after dev
         builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
@@ -33,6 +41,12 @@ public class Program
             })
             .AddEntityFrameworkStores<RestaurantDbContext>()
             .AddDefaultTokenProviders();
+
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
 
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
@@ -76,29 +90,29 @@ public class Program
 
         var app = builder.Build();
 
-       app.MapApplicationEndPoints();
-
         // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+            await app.Seed();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseRouting();
+        app.UseCors("AllowAll");
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapApplicationEndPoints();
+        
         if (app.Environment.IsDevelopment())
         {
             MapGetAllUsersDevelopment
             .MapDevEndPoint(
             app.MapGroup("/Development"),
                   app.Environment);
-            
-            app.MapOpenApi();
-            app.MapScalarApiReference();
-            app.UseCors("AllowAll");
-            //app.UseCors("*");
-            await app.Seed();
         }
-
-        app.UseRouting();
-
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        app.UseHttpsRedirection();
 
         //
         app.Run();
