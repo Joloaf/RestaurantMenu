@@ -72,7 +72,7 @@
                 <!-- Edit mode: show dish with editable name, image, and remove button -->
                 <div class='row'>
                     <img 
-                        src={dish.foodPicture} 
+                        src={dish.foodPicture.length > 0 ? dish.foodPicture : '/pictures/taco-8029161_640.png'}
                         alt={dish.name} 
                         class="dish-image" 
                         onclick={() => onImageClick(dish.id)}
@@ -145,15 +145,7 @@
         background: #cc0000;
     }
 
-    .remove-dish-btn {
-        margin-top: 1rem;
-        padding: 0.5rem 1rem;
-        background: #4CAF50;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 4px;
-    }
+
     .add-dish-btn {
         margin-top: 1rem;
         padding: 0.5rem 1rem;
