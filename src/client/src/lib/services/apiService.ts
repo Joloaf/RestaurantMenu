@@ -50,7 +50,7 @@ export class ApiService {
                     details: await response.text()
                 };
             }
-            const responseData = await response.json();
+            const responseData = await response.json() as T;
             return responseData;
         }
         catch(error) {
