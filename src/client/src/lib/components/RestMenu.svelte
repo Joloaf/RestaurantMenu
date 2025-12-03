@@ -1,9 +1,11 @@
 <script lang='ts'>
     import { type Menu } from '$lib/services/MenuService'
+	import type { Component } from 'svelte';
     import RestDish from './RestDish.svelte';
     import { cacheHandlerActions } from '../../stores/cacheHandlerService';
 
     let clicked = $state(false);
+
     let { 
         menuItem: initialMenuItem,
         isEditMode,
@@ -47,6 +49,7 @@
 <div class="row" onclick={onClickMenu} >
     {#if !isEditMode}
     <img src="{menuItem.theme}">
+    <!--{@html render(children)}-->
     <p>{menuItem.menuName}</p>
     {/if}
     {#if isEditMode}
