@@ -186,9 +186,6 @@ namespace RestaurantMenu.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -196,8 +193,6 @@ namespace RestaurantMenu.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Menus");
                 });
@@ -350,13 +345,9 @@ namespace RestaurantMenu.Infrastructure.Migrations
             modelBuilder.Entity("RestaurantMenu.Core.Models.Menu", b =>
                 {
                     b.HasOne("RestaurantMenu.Core.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Menus")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.ClientCascade);
-
-                    b.HasOne("RestaurantMenu.Core.Models.User", null)
-                        .WithMany("Menus")
-                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });

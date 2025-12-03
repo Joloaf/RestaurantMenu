@@ -20,7 +20,7 @@ public class RestaurantMenuGetAllTests : IClassFixture<WebclassFixture<Program>>
     {
         var newListMenu = new List<MenuModel>();
          
-        var userId = await _fixture.AddUsers();
+        var signedInClient = await _fixture.CreateSignedInClient();
             
         //Arrange
         for (int i = 0; i < 3; i++)
@@ -29,15 +29,15 @@ public class RestaurantMenuGetAllTests : IClassFixture<WebclassFixture<Program>>
                 $"Read test manu name {i}",
                 $"Skdjfsl",
                 Guid.NewGuid().ToString(),
-                userId);
+                signedInClient.uid);
                 
-            var createResp = await _client.PostAsJsonAsync(base_url, newMenu);
+            var createResp = await signedInClient.client.PostAsJsonAsync(base_url, newMenu);
             var created = await createResp.Content.ReadFromJsonAsync<MenuModel>();
             newListMenu.Add(created);
         }
 
         //Act
-        var getResp = await _client.GetAsync($"{base_url}all?userId={userId}");
+        var getResp = await signedInClient.client.GetAsync($"{base_url}all");
 
         //Assert
         getResp.EnsureSuccessStatusCode();

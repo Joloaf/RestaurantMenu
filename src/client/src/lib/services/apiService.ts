@@ -50,7 +50,7 @@ export class ApiService {
                     details: await response.text()
                 };
             }
-            const responseData = await response.json();
+            const responseData = await response.json() as T;
             return responseData;
         }
         catch(error) {
@@ -73,7 +73,9 @@ export class ApiService {
                 .join('&');
                 url += `?${quesry}`;
             }
-			const response = await fetch(url);
+			const response = await fetch(url, {
+				credentials: 'include'
+			});
             if(!response.ok){
                 if(handleAuthError(response)) {
                     return {
