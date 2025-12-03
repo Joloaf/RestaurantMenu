@@ -4,14 +4,14 @@
     import { ApiService } from "$lib/services/apiService";
     import { MenuService } from "$lib/services/MenuService";
     import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
-    
+
     
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
 
     let { menus, currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
 
-    function createNewMenu() {
+   async function createNewMenu() {
         const newMenu: Menu = {
             menuId: null, // Temporary ID
             menuName: "",
@@ -19,9 +19,10 @@
             theme: "",
             dishes: []
         };
-        menuService.createMenu(newMenu);
-        cacheHandlerActions.addMenu(newMenu);
-        // TODO: update cache
+        const menu = await menuService.createMenu(newMenu);
+        
+        cacheHandlerActions.addMenu(menu);
+
     }
 </script>
 

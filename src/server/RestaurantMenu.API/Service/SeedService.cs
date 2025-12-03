@@ -22,6 +22,7 @@ public class DevelopmentSeedService : IDevelopmentSeedService
         _ctx = context;
         _userManager = userManager;
         _logger = logger;
+        _passwordHasher =  passwordHasher;
         
         if(!appbuilder.IsDevelopment())
             throw new Exception("Development environment not set, do you want to kill the db?");
@@ -39,17 +40,20 @@ public class DevelopmentSeedService : IDevelopmentSeedService
        var use =  await _userManager.CreateAsync(new User()
         {
             EmailConfirmed = true,
+            Email = "Test@Test.com",
             PhoneNumberConfirmed = true,
-            PhoneNumber = "+460732019353",
-            Email = "someemail@somewhere.com",
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = "SomeUserName",
         });
         if (!use.Succeeded)
             throw new Exception(use.Errors.Select(x=> x.Description).Aggregate((x, y) => x + ", " + y));
         var re = await _userManager.AddPasswordAsync(
-            await _userManager.FindByEmailAsync("someemail@somewhere.com"),
+            await _userManager.FindByEmailAsync("Test@Test.com"),
             "sdfs");
+        
+        var users = _userManager.FindByNameAsync("SomeUserName").GetAwaiter().GetResult();
+        await _userManager.AddPasswordAsync(users, "asdasd");
+        
         var user = await _ctx.Users
             .Include(x=> x.Menus)
             .ThenInclude(x=> x.Dishes)
@@ -65,7 +69,25 @@ public class DevelopmentSeedService : IDevelopmentSeedService
                 MenuName = "Seedingmenu",
                 User = user,
                 Theme = Guid.NewGuid().ToString(),
-                UserName = "Someusername"
+                UserName = "Someusername",
+                Dishes = new List<Core.Models.Dish>()
+                {
+                    new Core.Models.Dish()
+                    {
+                        Name = "SeedingDish1",
+                        FoodPicture = "taco-8029161_640.png"
+                    },
+                    new Core.Models.Dish()
+                    {
+                        Name = "SeedingDish2",
+                        FoodPicture = "taco-8029161_640.png"
+                    },
+                    new Core.Models.Dish()
+                    {
+                        Name = "SeedingDish3",
+                        FoodPicture = "taco-8029161_640.png"
+                    }
+                }
             });
             await _ctx.SaveChangesAsync();
         }
