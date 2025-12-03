@@ -50,7 +50,7 @@
         console.log(userResponse)
 
         try {
-            await goto(`/MenuChoice/${userResponse.Id}`);
+            await goto(`/..`);
         } catch (e) {
             console.error('Navigation error:', e);
         }

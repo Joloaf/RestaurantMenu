@@ -4,7 +4,7 @@ import { ApiService } from './apiService';
 import type { APIResponse } from 'playwright';
 
 export interface Menu {
-    menuId: number | null;
+    menuId: string | null;
     menuName: string;
     userName: string;
     theme: string;
@@ -59,7 +59,7 @@ export class MenuService {
         return response as Menu;
     }
 
-    public async deleteMenu(menuId: number): Promise<ApiResponse> {
+    public async deleteMenu(menuId: string): Promise<ApiResponse> {
         const response = await this.ApiService.delete(`Menu/${menuId}`);
         return response as ApiResponse;
     }
@@ -73,7 +73,7 @@ class MenuModel{
         this.theme = menu.theme;
         this.menu_name = menu.menuName;
     }
-    public id: number | null;
+    public id: string | null;
     public menu_name: string;
     public user_name: string;
     public theme: string;

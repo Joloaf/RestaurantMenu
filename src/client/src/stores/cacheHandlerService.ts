@@ -12,7 +12,7 @@ export default interface Ticket {
 export interface Order {
     ticket: Ticket[];
     ticketNumber: number;
-    menuId: number;
+    menuId: string;
 }
 
 export interface MemoryCache {
@@ -129,7 +129,7 @@ export const cacheHandlerActions = {
             saveToCache(activeCache);
         },
 
-        addDish(menuId: number, dish: Dish) {
+        addDish(menuId: string, dish: Dish) {
             const menu = activeCache.menus.find(m => m.menuId === menuId);
             if(menu) {
                 menu.dishes.push(dish);
@@ -150,10 +150,10 @@ export const cacheHandlerActions = {
         },
 
 
-        updateDish(menuId: number, updatedDish: Dish) {
+        updateDish(menuId: string, updatedDish: Dish) {
             const menu = activeCache.menus.find(m => m.menuId === menuId);
             if(menu){
-                const index = menu.dishes.findIndex(d => d.id === updatedDish.id);
+                const index = menu.dishes.findIndex(d => d.Id === updatedDish.Id);
                 if(index !== -1) // findIndex returns -1 if not found
                     {
                     menu.dishes[index] = updatedDish;
@@ -162,7 +162,7 @@ export const cacheHandlerActions = {
             }                
         },
 
-        removeDish(menuId: number, dishId: number) {
+        removeDish(menuId: string, dishId: number) {
             const menu = activeCache.menus.find(f => f.menuId === menuId);
             if(!menu) {
                 console.warn(`Could not find menu in cache with id: ${menuId}`);
@@ -170,14 +170,14 @@ export const cacheHandlerActions = {
             }
 
             const initialLength = menu.dishes.length;
-            menu.dishes = menu.dishes.filter(p => p.id !== dishId);
+            menu.dishes = menu.dishes.filter(p => p.Id !== dishId);
 
             if(menu.dishes.length === initialLength) {
                 console.warn(`Dish with id ${dishId} not found in menu ${menuId}`);
             }
             saveToCache(activeCache);
         },
-        removeMenu(menuId: number) {
+        removeMenu(menuId: string) {
             const menuExist = activeCache.menus.some(s => s.menuId === menuId);
             if(!menuExist) {
                 console.warn(`Could not find menu in cache with id: ${menuId}`)
@@ -200,7 +200,7 @@ export const cacheHandlerActions = {
             activeCache.lastFetch = null;
             activeCache.isStale = null;
         },
-/*         removeCurrentOrder: (menuId: number) => {
+/*         removeCurrentOrder: (menuId: string) => {
             const index = activeCache.orders.findIndex(o => o.menuId === menuId);
             if (index !== -1) {
                 activeCache.orders[index].ticket = [];
@@ -209,7 +209,7 @@ export const cacheHandlerActions = {
             }
         }, */
 
-        //TODO •  addOrder(order: Order)    updateOrder(menuId: number, updatedOrder: Order)    removeOrder(menuId: number)
+        //TODO •  addOrder(order: Order)    updateOrder(menuId: string, updatedOrder: Order)    removeOrder(menuId: string)
 
         
         getActiveCache: () => activeCache // call this to get the current cache state

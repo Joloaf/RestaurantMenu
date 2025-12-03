@@ -1,6 +1,11 @@
 <script lang="ts">
     import { type Dish } from "$lib/services/DishService";
 	import { cacheHandlerActions } from "../../stores/cacheHandlerService";
+    import { DishService } from "$lib/services/DishService";
+    import { ApiService } from "$lib/services/apiService";
+    
+    const apiService = new ApiService();
+    const dishService = new DishService(apiService);
     
     let {
         dishes = $bindable([]), 
@@ -23,13 +28,16 @@
         cacheHandlerActions.removeDish(menuId, dishId)
     }
 
-    function addDish() {
+    async function addDish() {
         const newDish: Dish = {
-            id: Date.now(), // Temporary ID
-            name: "New Dish",
-            foodPicture: ""
+            Id: null, // Temporary ID
+            DishName: "New Dish",
+            DishPicture: "taco-8029161_640.png"
         };
-        cacheHandlerActions.addDish(menuId, newDish);
+        console.warn("Adding new dish:", menuId);
+        const dish = await dishService.createDish(newDish, menuId);
+        cacheHandlerActions.addDish(menuId, dish);
+        
     }
 
     function incrementQuantity(dishId: number) {
