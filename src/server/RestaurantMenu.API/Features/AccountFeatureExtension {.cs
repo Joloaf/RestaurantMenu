@@ -32,6 +32,24 @@ public static class AccountFeatureExtension
             UserName = request.Username,
             Email = request.Email,
         };
+
+        var menu = new Menu
+        {
+            MenuName = "Your first menu",
+            UserName = request.Username,
+            Theme = "Defult"
+        };
+
+        for (int i = 0; i < 6; i++)
+        {
+            menu.Dishes.Add(new Core.Models.Dish
+            {
+                Name = "Empty",
+                FoodPicture = "Empty"
+            });
+        }
+        user.Menus.Add(menu);
+        
         var result = await userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)

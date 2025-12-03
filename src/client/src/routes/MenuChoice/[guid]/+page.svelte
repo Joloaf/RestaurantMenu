@@ -8,12 +8,15 @@
     import type { ApiResponse } from '$lib/services/MenuService'
 	import { goto } from "$app/navigation";
 	import { CapacitorCookies } from "@capacitor/core";
+	import TicketComponent from "$lib/components/TicketComponent.svelte";
+	import OrderView from "$lib/components/OrderView.svelte";
 
     let { guid } = $props();
     let EditMode = $state(false)
     let locg :string | null = null;
     let menus: Menu[] | null = $state(null)
 
+    let AppPage = $state("MenuChoice");
     let sessiosnStart : Menu[] = []
     let menuDelete : Menu[] = []
     let selectedMenu: Menu | null = null;
@@ -150,19 +153,7 @@
 
 
 	async function prev(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
-        CapacitorCookies.setCookie({
-            url: 'localhost',
-            key: `MenuTicket`,
-            value: JSON.stringify(selectedMenu),
-        } as SetCookieOptions).then(()=>{
-            console.log("cookie created")
-        }, (x)=>{
-            console.log(`cookie rejectes ${JSON.stringify(x)}`)
-        }).catch((x)=>{
-            console.log(`capacitorcookie:::threw ${JSON.stringify(x)}`)
-        })
-
-        goto(`../../Ticket/${selectedMenu?.menuId ?? 0}`)
+        AppPage = AppPage == "MenuChoice" ? "Orderview" : "Orders"
 	}
 
 
@@ -186,6 +177,7 @@
 <div >
     <button onclick={onClickEdit}>edit</button>
 </div>
+<div>
 {#each menus as menu (menu.menuId)}
     <RestMenu 
         menuItem = {menu}
@@ -193,12 +185,21 @@
         remove={onClickDelete}
         selectedCB = {onSelectedCB}
         children = {null}/>
-{/each}
-{#if EditMode}
-<button onclick={updateDB}>save</button>
-<button onclick={addButton}>+</button>
+    {/each}
+    {#if EditMode}
+    <button onclick={updateDB}>save</button>
+    <button onclick={addButton}>+</button>
+    {/if}
+    {#if !EditMode}
+    <button onclick={prev}>Prev</button>
+    <button onclick={next}>Next</button>
+    {/if}
+
+</div>
+
+{#if AppPage == "Orderview"}
+    <OrderView currentMenu = {selectedMenu} />
 {/if}
-{#if !EditMode}
-<button onclick={prev}>Prev</button>
-<button onclick={next}>Next</button>
+
+{#if AppPage == "Orders"}
 {/if}
