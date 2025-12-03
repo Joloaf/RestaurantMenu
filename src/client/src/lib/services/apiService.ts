@@ -73,7 +73,9 @@ export class ApiService {
                 .join('&');
                 url += `?${quesry}`;
             }
-			const response = await fetch(url);
+			const response = await fetch(url, {
+				credentials: 'include'
+			});
             if(!response.ok){
                 if(handleAuthError(response)) {
                     return {

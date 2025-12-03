@@ -8,7 +8,6 @@ export interface Menu {
     menuName: string;
     userName: string;
     theme: string;
-    userId: string;  // will we send this from backend?
     dishes: Dish[];
 }
 
@@ -33,23 +32,20 @@ export class MenuService {
 
         } as Menu;
     } */
-    public async getMenusByUserId(uid :string): Promise<Menu[]> {
-        const response: any = await this.ApiService.get<MenuModel>(`Menu/all/${uid}`);
-
-        const menus = response?.menu || response;
+    public async getMenusByUserId(): Promise<Menu[]> {
+        const response: any = await this.ApiService.get(`Menu/all`);
 
         if (Array.isArray(response)) {
-            const arrayMenus = menus.map((menu: any) => ({
+            // API returns camelCase, map to our interface
+            return response.map((menu: any) => ({
                 menuId: menu.id,
-                menuName: menu.menu_name,
-                userName: menu.user_name,
+                menuName: menu.menuName,
+                userName: menu.userName,
                 theme: menu.theme,
-                userId: menu.user_id,
                 dishes: menu.dishes || []
             }));
-            return arrayMenus;
         }
-        return response as Menu[];
+        return [];
     }
 
 
@@ -63,8 +59,8 @@ export class MenuService {
         return response as Menu;
     }
 
-    public async deleteMenu(menuId: number, userId: string): Promise<ApiResponse> {
-        const response = await this.ApiService.delete(`Menu/${menuId}?userId=${userId}`);
+    public async deleteMenu(menuId: number): Promise<ApiResponse> {
+        const response = await this.ApiService.delete(`Menu/${menuId}`);
         return response as ApiResponse;
     }
 }
@@ -73,7 +69,6 @@ class MenuModel{
 
     constructor(public menu: Menu){
         this.id = menu.menuId;
-        this.user_id = menu.userId;
         this.user_name = menu.userName;
         this.theme = menu.theme;
         this.menu_name = menu.menuName;
@@ -82,5 +77,4 @@ class MenuModel{
     public menu_name: string;
     public user_name: string;
     public theme: string;
-    public user_id: string;
 }
