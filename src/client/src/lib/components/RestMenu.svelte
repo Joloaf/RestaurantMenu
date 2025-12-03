@@ -2,8 +2,7 @@
     import { type Menu } from '$lib/services/MenuService'
 	import type { Component } from 'svelte';
     import RestDish from './RestDish.svelte';
-    import { cacheHandlerActions } from '../../stores/cacheHandlerService';
-
+    import { cacheHandlerActions } from '../../stores/cacheHandlerService'
 	import { render } from 'svelte/server';
     let clicked = $state(false);
 
