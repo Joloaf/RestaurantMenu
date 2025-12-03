@@ -1,18 +1,25 @@
 <script lang='ts'>
     import { type Menu } from '$lib/services/MenuService'
     import RestDish from './RestDish.svelte';
+    import { cacheHandlerActions } from '../../stores/cacheHandlerService';
 
     let clicked = $state(false);
     let { 
-        menuItem,
+        menuItem: initialMenuItem,
         isEditMode,
         remove,
         selectedCB,
         children
     } = $props()
 
+    let menuItem = $state(initialMenuItem);
+
     function onClickImage(){
         
+    }
+    function OnSelectedMenu(event: MouseEvent & {currentTarget: EventTarget & HTMLButtonElement;}){
+        event.stopImmediatePropagation();
+        cacheHandlerActions.setCurrentMenu(menuItem)
     }
     function onClickMenu(){
 
@@ -32,7 +39,8 @@
 
 
 	function onClickDelete(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
-        remove(menuItem.menuId)
+        event.stopImmediatePropagation();
+        cacheHandlerActions.removeMenu(menuItem);
 	}
 </script>
 
@@ -44,7 +52,8 @@
     {#if isEditMode}
         <img src="{menuItem.theme}" onclick={onClickImage}>
         <input type="text" bind:value={menuItem.menuName}>
-        <button onclick={onClickDelete}>-</button>
+        <button  type="button" class="remove" onclick={onClickDelete}>-</button>
+        <button type="button" class="pickmeny" onclick={OnSelectedMenu}> Välj meny</button>
     {/if}
 </div>
 {#if clicked}
@@ -53,26 +62,46 @@
     dishes   = {menuItem.dishes}
     active   = {clicked}
     edit     = {isEditMode}
+    menuId   = {menuItem.menuId}
     children = {children}/>
 </div>
 {/if}
 
     <style>
-        .row{
-            display: flex;
-            flex-direction: row;
-            gap: 1.125rem;
-        }
-        .highlight{
-            box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-            -webkit-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-            -moz-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-        }
-        .highlight-img{
-            outline-color: chocolate;
-        }
-        .column{
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
+    .pickmeny {
+        background: rgb(195, 216, 8);
+        color: rgb(238, 238, 238);
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .remove {
+        background: #ff4444;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .row{
+        display: flex;
+        flex-direction: row;
+        gap: 1.125rem;
+        border: 1px solid black;
+        border-radius: 2px;
+        padding: 0.5rem;
+    }
+    .highlight{
+        box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+        -webkit-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+        -moz-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+    }
+    .highlight-img{
+        outline-color: chocolate;
+    }
+    .column{
+        display: flex;
+        flex-direction: column;
+    }
+</style>

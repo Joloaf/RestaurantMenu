@@ -6,7 +6,7 @@
 </script>
 
 <div>
-    <h2>All Menus</h2>
+    <h2>All Menus {menus.length}</h2>
     {#if menus && menus.length > 0}
         {#each menus as menu}
             <RestMenu 

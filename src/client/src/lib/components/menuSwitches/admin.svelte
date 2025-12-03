@@ -17,7 +17,6 @@
             menuName: "",
             userName: "",
             theme: "",
-            userId: "",
             dishes: []
         };
         menuService.createMenu(newMenu);

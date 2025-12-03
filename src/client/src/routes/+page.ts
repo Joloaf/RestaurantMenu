@@ -18,9 +18,7 @@ export const load: PageLoad = async () => {
 		try {
 			cacheHandlerActions.setLoading(true);
 			
-			// TODO: Get userId from auth store/session
-			const userId = '';
-			const menus = await menuService.getMenusByUserId(userId);
+			const menus = await menuService.getMenusByUserId();
 			
 			cacheHandlerActions.setMenus(menus);
 			cacheHandlerActions.setLoading(false);
