@@ -11,11 +11,13 @@ public class DevelopmentSeedService : IDevelopmentSeedService
     private readonly RestaurantDbContext _ctx;
     private readonly UserManager<User> _userManager;
     private readonly ILogger<DevelopmentSeedService> _logger;
+    private readonly IPasswordHasher<User> _passwordHasher;
     
     public DevelopmentSeedService(RestaurantDbContext context,
         UserManager<User> userManager,
         ILogger<DevelopmentSeedService> logger, 
-        IWebHostEnvironment appbuilder)
+        IWebHostEnvironment appbuilder,
+        IPasswordHasher<User> passwordHasher)
     {
         _ctx = context;
         _userManager = userManager;
@@ -39,13 +41,15 @@ public class DevelopmentSeedService : IDevelopmentSeedService
             EmailConfirmed = true,
             PhoneNumberConfirmed = true,
             PhoneNumber = "+460732019353",
+            Email = "someemail@somewhere.com",
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = "SomeUserName",
         });
-        
         if (!use.Succeeded)
             throw new Exception(use.Errors.Select(x=> x.Description).Aggregate((x, y) => x + ", " + y));
-
+        var re = await _userManager.AddPasswordAsync(
+            await _userManager.FindByEmailAsync("someemail@somewhere.com"),
+            "sdfs");
         var user = await _ctx.Users
             .Include(x=> x.Menus)
             .ThenInclude(x=> x.Dishes)

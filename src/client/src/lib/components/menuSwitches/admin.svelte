@@ -25,7 +25,7 @@
     }
 </script>
 
-<div>
+<div class="admin-wrapper">
     <h2>Admin - Edit Menus</h2>
     
     <button class="create-menu-btn" onclick={createNewMenu}>+ Create New Menu</button>
@@ -46,6 +46,7 @@
 </div>
 
 <style>
+    
     .create-menu-btn {
         margin-bottom: 1rem;
         padding: 0.75rem 1.5rem;
@@ -61,5 +62,12 @@
     .create-menu-btn:hover {
         background: #45a049;
     }
+    .admin-wrapper {
+		display: flex;
+        flex-direction: column;
+		overflow-y: scroll;
+		background: #f4f4f4;
+        overflow-y: scroll;
+	}
 </style>
 
