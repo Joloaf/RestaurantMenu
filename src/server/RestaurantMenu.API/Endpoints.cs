@@ -14,6 +14,7 @@ public static class Endpoints
     public static void MapMenuEndpoints(this IEndpointRouteBuilder config)
     {
         var group = config.MapGroup("/Menu")
+            .RequireAuthorization()
             .MapEndPoint<GetMenu>()
             .MapEndPoint<GetAllMenus>()
             .MapEndPoint<CreateMenu>()
@@ -43,7 +44,9 @@ public static class Endpoints
 
     public static void MapDishEndpoint(this IEndpointRouteBuilder config)
     {
-        
+        var group = config.MapGroup("/Dish");
+
+        group.MapEndPoint<GetMenuDishes>();
     }
     //why do we do the TEndpoint constraint of IEndPoint ??
     // the type definition is not 
@@ -53,5 +56,16 @@ public static class Endpoints
     {
         TEndPoint.Map(config);
         return config;
+    }
+}
+
+public class GetMenuDishes : IEndpoint
+{
+    public static void Map(IEndpointRouteBuilder config)
+        => config.MapGet("/DishesPerMenuId/{MenuId}", Handler);
+
+    private static Task<IResult> Handler(int MenuId, HttpContext context)
+    {
+        throw new NotImplementedException();
     }
 }

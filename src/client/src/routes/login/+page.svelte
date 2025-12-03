@@ -13,7 +13,6 @@
     let loading = false;
 
     
-    
     async function handleLogin() {
 
         if(!username || !password){
@@ -47,9 +46,11 @@
 
         const userResponse = response as UserResponse;
         console.log("Login in as user: " + userResponse.Username);
+        console.log("Login in as user.Id: " + userResponse.Id);
+        console.log(userResponse)
 
         try {
-            await goto('/');
+            await goto(`/MenuChoice/${userResponse.id}`);
         } catch (e) {
             console.error('Navigation error:', e);
         }

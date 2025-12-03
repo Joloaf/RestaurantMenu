@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace RestaurantMenu.API.Service.DTOs.Models;
 
-public class MenuModel(int? id, string? menu_name, string? user_name, string? theme, string user_id)
+public class MenuModel(int? id, string? menuName, string? userName, string? theme, string userId)
 {
     public MenuModel() : 
         this(-1, string.Empty, string.Empty, string.Empty, string.Empty)
@@ -17,9 +17,9 @@ public class MenuModel(int? id, string? menu_name, string? user_name, string? th
         
     }
     public int? Id { get; init; } = id;
-    public string? Menu_name { get; init; } = menu_name;
-    public string? User_name { get; init; } = user_name;
+    public string? Menu_name { get; init; } = menuName;
+    public string? User_name { get; init; } = userName;
     public string? Theme { get; init; } = theme;
-    public string? User_id { get; init; } = user_id;
+    public string? User_id { get; init; } = userId;
 }
 

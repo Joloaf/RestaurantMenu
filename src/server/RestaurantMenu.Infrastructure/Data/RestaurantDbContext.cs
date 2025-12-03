@@ -22,8 +22,8 @@ public class RestaurantDbContext : IdentityDbContext<User>
     {
         
         modelBuilder.Entity<User>()
-            .HasMany<Menu>()
-            .WithOne(x => x.User)
+            .HasMany(u => u.Menus)
+            .WithOne(m => m.User)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.ClientCascade);
 
