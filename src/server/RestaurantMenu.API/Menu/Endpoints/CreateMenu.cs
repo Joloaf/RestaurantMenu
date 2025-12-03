@@ -21,9 +21,9 @@ public class CreateMenu : IEndpoint
         [FromServices] IFactory<Menu> factory,
         HttpContext httpContext)
     {
-        /*if(!editModelValidator.EditModelValid(model))
-            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));*/
-
+        if(!editModelValidator.EditModelValid(model))
+            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));
+        
         try
         {
             var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -58,7 +58,12 @@ public class CreateMenu : IEndpoint
             //context.Update(menuItem);
             await context.SaveChangesAsync();
 
-            return TypedResults.Ok("Created menu");
+            return TypedResults.Created<MenuModel>("",
+                new MenuModel(menuItem.Id,
+                    menuItem.MenuName,
+                    menuItem.UserName,
+                    menuItem.Theme,
+                    menuItem.User.Id));
         }
         catch(Exception e)
         {
