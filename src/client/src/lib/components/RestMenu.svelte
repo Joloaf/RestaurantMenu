@@ -4,6 +4,7 @@
     import RestDish from './RestDish.svelte';
     import { cacheHandlerActions } from '../../stores/cacheHandlerService';
 
+	import { render } from 'svelte/server';
     let clicked = $state(false);
 
     let { 
@@ -53,7 +54,7 @@
     <p>{menuItem.menuName}</p>
     {/if}
     {#if isEditMode}
-        <img src="{menuItem.theme}" onclick={onClickImage}>
+        <img src={menuItem.theme > 0 ? menuItem.theme : '/pictures/menu-5507525_640.webp'} onclick={onClickImage}>
         <input type="text" bind:value={menuItem.menuName}>
         <button  type="button" class="remove" onclick={onClickDelete}>-</button>
         <button type="button" class="pickmeny" onclick={OnSelectedMenu}> Välj meny</button>
@@ -72,7 +73,7 @@
 
     <style>
     .pickmeny {
-        background: rgb(195, 216, 8);
+        background: rgb(229, 252, 26);
         color: rgb(238, 238, 238);
         border: none;
         padding: 0.5rem 1rem;
