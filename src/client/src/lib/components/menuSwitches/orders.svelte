@@ -6,7 +6,7 @@
 </script>
 
 <div>
-    <h2>Current Menu</h2>
+    <h2>Current Menu {currentMenu.name}</h2>
     {#if currentMenu}
         <RestMenu 
             menuItem={currentMenu}

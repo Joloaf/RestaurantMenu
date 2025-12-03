@@ -1,11 +1,13 @@
 <script lang="ts">
     import { type Dish } from "$lib/services/DishService";
+	import { cacheHandlerActions } from "../../stores/cacheHandlerService";
     
     let {
         dishes = $bindable([]), 
         active,
         edit,
-        children
+        children,
+        menuId
     } = $props()
     
     // Track quantity for each dish (for non-edit mode)
@@ -18,6 +20,7 @@
 
     function onClickDelete(dishId: number) {
         dishes = dishes.filter(d => d.id !== dishId);
+        cacheHandlerActions.removeDish(menuId, dishId)
     }
 
     function addDish() {
@@ -26,7 +29,7 @@
             name: "New Dish",
             foodPicture: ""
         };
-        dishes.push(newDish);
+        cacheHandlerActions.addDish(menuId, newDish);
     }
 
     function incrementQuantity(dishId: number) {
@@ -53,7 +56,11 @@
                 <!-- View mode: show dish with +/- quantity controls -->
                 <div class='row'>
                     <img src={dish.foodPicture} alt={dish.name} class="dish-image" />
+                    {#if dish.name.length > 0}
                     <p class="dish-name">{dish.name}</p>
+                    {:else}
+                    <p class="dish-name">Inge namn på rätt</p>
+                    {/if}
                     <div class="quantity-controls">
                         <button class="quantity-btn" onclick={() => decrementQuantity(dish.id)}>-</button>
                         <span>{getQuantity(dish.id)}</span>
@@ -78,7 +85,7 @@
         {/each}
         
         {#if edit}
-            <button class="add-dish-btn" onclick={addDish}>+ Add Dish</button>
+        <button class="add-dish-btn" onclick={() => addDish()}>+ Add Dish</button>
         {/if}
     {/if}
 </div>
@@ -137,7 +144,16 @@
     .remove-btn:hover {
         background: #cc0000;
     }
-    
+
+    .remove-dish-btn {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+    }
     .add-dish-btn {
         margin-top: 1rem;
         padding: 0.5rem 1rem;
