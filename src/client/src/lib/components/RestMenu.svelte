@@ -47,33 +47,44 @@
 	}
 </script>
 
-<div class="row" onclick={onClickMenu} >
-    {#if !isEditMode}
-    <img src="{menuItem.theme}">
-    <!--{@html render(children)}-->
-    <p>{menuItem.menuName}</p>
-    {/if}
-    {#if isEditMode}
-        <img src={menuItem.theme > 0 ? menuItem.theme : '/pictures/menu-5507525_640.webp'} onclick={onClickImage}>
+<div onclick={onClickMenu} class="RestMenuWrapper">
+    <div class="row">
+
+        {#if !isEditMode}
+        <img src="{menuItem.theme}">
+        <!--{@html render(children)}-->
+        <p>{menuItem.menuName}</p>
+        {/if}
+        {#if isEditMode}
+        <img src={menuItem.theme > 0 ? menuItem.theme : '/pictures/menu-5507525_640.webp'} onclick={onClickImage} class="theme-display">
         <input type="text" bind:value={menuItem.menuName}>
         <button  type="button" class="remove" onclick={onClickDelete}>-</button>
         <button type="button" class="pickmeny" onclick={OnSelectedMenu}> Välj meny</button>
+        {/if}
+    </div>
+        {#if clicked}
+    <div class="column">
+        <RestDish 
+        dishes   = {menuItem.dishes}
+        active   = {clicked}
+        edit     = {isEditMode}
+        menuId   = {menuItem.menuId}
+        children = {children}/>
+    </div>
     {/if}
 </div>
-{#if clicked}
-<div class="column">
-    <RestDish 
-    dishes   = {menuItem.dishes}
-    active   = {clicked}
-    edit     = {isEditMode}
-    menuId   = {menuItem.menuId}
-    children = {children}/>
-</div>
-{/if}
 
     <style>
+    .RestMenuWrapper{
+        overflow-y: scroll;
+    }
+    .theme-display{
+        width: 20%;
+        height: auto;
+        object-fit: contain;
+    }
     .pickmeny {
-        background: rgb(229, 252, 26);
+        background: rgb(155, 115, 6);
         color: rgb(238, 238, 238);
         border: none;
         padding: 0.5rem 1rem;
@@ -91,6 +102,7 @@
     .row{
         display: flex;
         flex-direction: row;
+        justify-content: space-evenly;
         gap: 1.125rem;
         border: 1px solid black;
         border-radius: 2px;

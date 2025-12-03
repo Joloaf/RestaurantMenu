@@ -8,7 +8,7 @@ namespace RestaurantMenu.API.Dish.Endpoints;
 public class RemoveDish : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder config) =>
-        config.MapDelete("/", Handler);
+        config.MapDelete("/{menuId}", Handler);
 
 
     public static async Task<Results<Ok<DishModel>, NotFound, InternalServerError>> Handler(

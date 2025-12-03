@@ -26,7 +26,15 @@
     <main>
         
         <div class="currentView">
-            
+			{#if currentView === 'admin'}
+				<Admin menus={data.menus} currentMenu={data.currentMenu} />
+			{:else if currentView === 'orders'}
+				<Orders currentMenu={data.currentMenu} />
+			{:else if currentView === 'tickets'}
+				<TicketView orders={data.orders} />
+			{:else if currentView === 'everymenu'}
+				<Everymenu menus={data.menus} currentMenu={data.currentMenu} />
+			{/if}
             
             
         </div>
@@ -38,16 +46,25 @@
         <p>Footer</p>
     </footer>
 </div>
+<style>
+	.currentView{
+		display: block;
+		
+	}
+	main{
+		display: block;
+		max-height: 50rem;
+		overflow-y: scroll;
+	}
+	
+	header{
+		display: inline-block;
+	}
+	footer{
+		display: block;
+	}
+</style>
 
-{#if currentView === 'admin'}
-	<Admin menus={data.menus} currentMenu={data.currentMenu} />
-{:else if currentView === 'orders'}
-	<Orders currentMenu={data.currentMenu} />
-{:else if currentView === 'tickets'}
-	<TicketView orders={data.orders} />
-{:else if currentView === 'everymenu'}
-	<Everymenu menus={data.menus} currentMenu={data.currentMenu} />
-{/if}
 
 
 
