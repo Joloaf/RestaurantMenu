@@ -43,6 +43,8 @@ const activeCache: MemoryCache = {
 
 
 function saveToCache(cache: MemoryCache) {
+    if (typeof window === 'undefined') return; // Skip on server
+    
     try{
         const cacheData = {
             menus: cache.menus,
@@ -58,6 +60,8 @@ function saveToCache(cache: MemoryCache) {
 }
 
 function loadFromCache(): Partial<MemoryCache> | null {
+    if (typeof window === 'undefined') return null; // Skip on server
+    
     try {
         const cached = localStorage.getItem(CACHE_KEY);
         if (!cached) return null;
@@ -81,6 +85,8 @@ function loadFromCache(): Partial<MemoryCache> | null {
 }
 
 function clearCache() {
+    if (typeof window === 'undefined') return; // Skip on server
+    
     try {
         localStorage.removeItem(CACHE_KEY);
     } catch (error) {
