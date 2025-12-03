@@ -9,11 +9,11 @@ namespace RestaurantMenu.API.Dish.Endpoints;
 public class CreateDish : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder config) =>
-        config.MapGet("/", Handler);
+        config.MapPost("/{menuId}", Handler);
 
     public static async Task<Results<Ok<DishModel>, InternalServerError>> Handler(
         [FromBody] DishModel dish,
-        int menuId,
+        [FromRoute] string menuId,
         [FromServices] RestaurantDbContext context)
     {
         try

@@ -30,10 +30,11 @@
 
     async function addDish() {
         const newDish: Dish = {
-            id: null, // Temporary ID
-            name: "New Dish",
-            foodPicture: ""
+            Id: null, // Temporary ID
+            DishName: "New Dish",
+            DishPicture: "taco-8029161_640.png"
         };
+        console.warn("Adding new dish:", menuId);
         const dish = await dishService.createDish(newDish, menuId);
         cacheHandlerActions.addDish(menuId, dish);
         

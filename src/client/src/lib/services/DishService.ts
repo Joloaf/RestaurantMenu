@@ -1,9 +1,9 @@
 import { ApiService } from "./apiService";
 
 export interface Dish {
-    id: number | null;
-    name: string;
-    foodPicture: string;
+    Id: number | null;
+    DishName: string;
+    DishPicture: string;
 }
 
 
@@ -12,12 +12,12 @@ export class DishService {
     constructor(private apiService: ApiService) {}
     
     public async getDishById(dishId: number): Promise<Dish> {
-        const response = await this.apiService.get<Dish>(`dishes/${dishId}`);
+        const response = await this.apiService.get<Dish>(`Dish/${dishId}`);
         return response as Dish;
     }
 
-    public async createDish(dish: Dish, menuId: number): Promise<Dish> {
-        const response = await this.apiService.post('dishes/', {dish, menuId });
+    public async createDish(dish: Dish, menuId: string): Promise<Dish> {
+        const response = await this.apiService.post(`Dish/${menuId}`, dish);
         return response as Dish;
     }
 }

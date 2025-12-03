@@ -96,7 +96,7 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
-            app.MapScalarApiReference();
+            app.MapScalarApiReference(); 
             await app.Seed();
         }
 
@@ -107,6 +107,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapApplicationEndPoints();
+        
         
         if (app.Environment.IsDevelopment())
         {
