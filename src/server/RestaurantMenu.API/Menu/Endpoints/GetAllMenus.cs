@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.API.Service.DTOs.Models;
+using RestaurantMenu.Core.Models;
 using RestaurantMenu.Infrastructure.Data;
 
 public class GetAllMenus : IEndpoint
@@ -9,26 +11,37 @@ public class GetAllMenus : IEndpoint
     public static void Map(IEndpointRouteBuilder config) =>
         config.MapGet("/all", Handler);
 
-    public static async Task<Results<Ok<List<MenuModel>>, InternalServerError>> Handler(
-        string userId,
-        [FromServices] RestaurantDbContext context)
+    record MenuDishesDTO(string menuId, string menuName, string theme, string userName, ICollection<DishDTO> Dishes);
+
+    record DishDTO(int dishId, string name, string foodPicture);
+
+    public static async Task<IResult> Handler(
+        [FromServices] RestaurantDbContext context,
+        HttpContext httpContext)
     {
         try
         {
+            var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return TypedResults.Unauthorized();
+            }
+
             var menus = await context.Menus
                 .Include(m => m.User)
+                .Include(u => u.Dishes)
                 .Where(m => m.User.Id == userId)
                 .ToListAsync();
 
-            var menusToReturn = menus.Select(menu => new MenuModel(
-                menu.Id,
-                menu.MenuName,
-                menu.UserName,
-                menu.Theme,
-                menu.User.Id))
-                .ToList();
 
-            return TypedResults.Ok(menusToReturn);
+            return TypedResults.Ok<List<MenuDishesDTO>>(menus.Select((x) => 
+                new MenuDishesDTO(x.Id.ToString(),
+                    x.MenuName,
+                    x.Theme,
+                    x.UserName,
+                    x.Dishes.Select(y=> new DishDTO(y.Id,y.Name,y.FoodPicture))
+                        .ToList()))
+                .ToList());
         }
         catch (Exception e)
         {

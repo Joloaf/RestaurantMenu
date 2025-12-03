@@ -18,12 +18,16 @@ export interface Order {
 export interface MemoryCache {
     menus: Menu[];
     currentMenu: Menu | null;
+<<<<<<< HEAD
 <<<<<<< HEAD:src/client/src/stores/cacheHandlerService.ts
     orders: Order[];
 =======
     orders: Order[]; 
     currentOrder: Order | null;
 >>>>>>> fe2b4c7d7859a56a86b4ccbdd34c5546182a84ab:src/client/stores/cacheHandlerService.ts
+=======
+    orders: Order[];
+>>>>>>> f6c343ba17f743ce4467cccb97524d9a076c7811
     isLoading: boolean;
     lastFetch: number | null;
     cacheExpiry: number;
@@ -48,6 +52,11 @@ const activeCache: MemoryCache = {
 
 
 function saveToCache(cache: MemoryCache) {
+<<<<<<< HEAD
+=======
+    if (typeof window === 'undefined') return; // Skip on server
+    
+>>>>>>> f6c343ba17f743ce4467cccb97524d9a076c7811
     try{
         const cacheData = {
             menus: cache.menus,
@@ -63,6 +72,11 @@ function saveToCache(cache: MemoryCache) {
 }
 
 function loadFromCache(): Partial<MemoryCache> | null {
+<<<<<<< HEAD
+=======
+    if (typeof window === 'undefined') return null; // Skip on server
+    
+>>>>>>> f6c343ba17f743ce4467cccb97524d9a076c7811
     try {
         const cached = localStorage.getItem(CACHE_KEY);
         if (!cached) return null;
@@ -86,6 +100,11 @@ function loadFromCache(): Partial<MemoryCache> | null {
 }
 
 function clearCache() {
+<<<<<<< HEAD
+=======
+    if (typeof window === 'undefined') return; // Skip on server
+    
+>>>>>>> f6c343ba17f743ce4467cccb97524d9a076c7811
     try {
         localStorage.removeItem(CACHE_KEY);
     } catch (error) {

@@ -11,13 +11,14 @@ using RestaurantMenu.Infrastructure.Data;
 public class UpdateMenu : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder config) =>
-        config.MapPatch("/", Handler);
+        config.MapPatch("/{id}", Handler);
 
     //public record PatchParams(string userid, int menuid);
     //define handler
     public record ValidationErrorModel(MenuModel model, string reason);
     
     public static async Task<IResult> Handler(
+        [FromRoute] int id,
         [FromBody] MenuModel menuModel,
         [FromServices] RestaurantDbContext context,
         [FromServices] IEditModelValidator editModelValidator,
@@ -34,7 +35,7 @@ public class UpdateMenu : IEndpoint
             if(user == null)     // Checking if user is null before trying to access it for item from user.Menus
                 return TypedResults.NotFound();
             
-            var item = user.Menus.Where(x => x.Id == menuModel.Id).SingleOrDefault();
+            var item = user.Menus.Where(x => x.Id == id).SingleOrDefault();
             if(item == null)
                 return TypedResults.NotFound();
             
