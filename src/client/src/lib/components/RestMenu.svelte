@@ -72,21 +72,40 @@
 {/if}
 
     <style>
-        .row{
-            display: flex;
-            flex-direction: row;
-            gap: 1.125rem;
-        }
-        .highlight{
-            box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-            -webkit-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-            -moz-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-        }
-        .highlight-img{
-            outline-color: chocolate;
-        }
-        .column{
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
+    .pickmeny {
+        background: rgb(195, 216, 8);
+        color: rgb(238, 238, 238);
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .remove {
+        background: #ff4444;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .row{
+        display: flex;
+        flex-direction: row;
+        gap: 1.125rem;
+        border: 1px solid black;
+        border-radius: 2px;
+        padding: 0.5rem;
+    }
+    .highlight{
+        box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+        -webkit-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+        -moz-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
+    }
+    .highlight-img{
+        outline-color: chocolate;
+    }
+    .column{
+        display: flex;
+        flex-direction: column;
+    }
+</style>
