@@ -7,8 +7,10 @@
 	import RestMenu from "$lib/components/RestMenu.svelte";
     import { CapacitorCookies } from "@capacitor/core";
 	import type { Dish } from "$lib/services/DishService";
+	import RestDish from "./RestDish.svelte";
     
-    let menu :Menu;
+    let { menu } = $props()
+
     onMount(async ()=>{ 
         
     })
@@ -21,7 +23,6 @@
         menuItem = {menu}
         isEditMode = {false}
         remove = {null}
-        children = {`<input type="number" min="0" max="100" step='1'/>`}
     />
-    
+    <RestDish dishes = {menu.dishes} active = {true} edit={false} children = {`<input type="number" min="0" max="100" step='1'/>`} />
 </div>
