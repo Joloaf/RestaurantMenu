@@ -28,12 +28,8 @@ public static class Endpoints
         var group = config.MapGroup("/Dish")
             .MapEndPoint<RemoveDish>()
             .MapEndPoint<UpdateDish>()
-            .MapEndPoint<GetAllDishes>();
-        
-        
-        
-
-
+            .MapEndPoint<GetAllDishes>()
+            .MapEndPoint<CreateDish>();
     }
 
     public static void AccountEndpoints(this IEndpointRouteBuilder config)
