@@ -18,11 +18,5 @@
 </script>
 
 <div>
-    <RestMenu 
-        selectedCB = {null}
-        menuItem = {menu}
-        isEditMode = {false}
-        remove = {null}
-    />
-    <RestDish dishes = {menu.dishes} active = {true} edit={false} children = {`<input type="number" min="0" max="100" step='1'/>`} />
+
 </div>
