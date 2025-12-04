@@ -6,8 +6,8 @@ import type { APIResponse } from 'playwright';
 export interface Menu {
     menuId: string | null;
     menuName: string;
-    userName: string;
     theme: string;
+    userName: string;
     dishes: Dish[];
 }
 
@@ -37,25 +37,19 @@ export class MenuService {
 
         if (Array.isArray(response)) {
             // API returns camelCase, map to our interface
-            return response.map((menu: any) => ({
-                menuId: menu.id,
-                menuName: menu.menuName,
-                userName: menu.userName,
-                theme: menu.theme,
-                dishes: menu.dishes || []
-            }));
+            return response as Menu[];
         }
-        return [];
+        return response;
     }
 
 
     public async createMenu(menu: Menu): Promise<Menu> {
-        const response = await this.ApiService.post('Menu/', new MenuModel(menu));
+        const response = await this.ApiService.post('Menu/', menu);
         return response as Menu;
     }
 
     public async updateMenu(menu: Menu): Promise<Menu> {
-        const response = await this.ApiService.patch(`Menu/${menu.menuId}`, new MenuModel(menu));
+        const response = await this.ApiService.patch(`Menu/${menu.menuId}`, menu);
         return response as Menu;
     }
 
@@ -72,9 +66,11 @@ class MenuModel{
         this.user_name = menu.userName;
         this.theme = menu.theme;
         this.menu_name = menu.menuName;
+        this.dishes = menu.dishes;
     }
     public id: string | null;
     public menu_name: string;
     public user_name: string;
     public theme: string;
+    public dishes: Dish[];
 }

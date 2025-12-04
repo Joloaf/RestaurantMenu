@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +12,10 @@ public class GetAllMenus : IEndpoint
     public static void Map(IEndpointRouteBuilder config) =>
         config.MapGet("/all", Handler);
 
+    
     record MenuDishesDTO(string menuId, string menuName, string theme, string userName, ICollection<DishDTO> Dishes);
 
-    record DishDTO(int dishId, string name, string foodPicture);
+    record DishDTO(int dishId, string dishName, string dishPicture);
 
     public static async Task<IResult> Handler(
         [FromServices] RestaurantDbContext context,
