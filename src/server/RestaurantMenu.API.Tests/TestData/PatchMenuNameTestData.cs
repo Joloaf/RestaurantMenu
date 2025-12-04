@@ -14,7 +14,7 @@ public class  PatchMenuNameTestData: IEnumerable<object[]>
     private void SetModelData()
     {
         List<object[]> models = [];
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10000; i++)
             models.Add(CreateDataModel());
         
         _testData = models;
