@@ -42,7 +42,8 @@ header {
 button {
     padding: 0.5rem 1rem;
     border: none;
-    background: black;
+    background: rgb(139, 21, 21);
+    color: white;
     cursor: pointer;
     border-radius: 5px;
     font-weight: bold;
