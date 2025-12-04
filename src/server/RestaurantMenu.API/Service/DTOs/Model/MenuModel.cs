@@ -27,5 +27,9 @@ public class MenuModel(int? id, string? menuName, string? userName, string? them
     public string? Theme { get; init; } = theme;
     [JsonPropertyName("userId")]
     public string? User_id { get; init; } = userId;
+    
+    [JsonPropertyName("dishes")] 
+    public List<DishModel> Dishes { get; init; } = [];
+
 }
 

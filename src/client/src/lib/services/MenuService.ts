@@ -45,6 +45,9 @@ export class MenuService {
 
     public async createMenu(menu: Menu): Promise<Menu> {
         const response = await this.ApiService.post('Menu/', menu);
+        console.log("---------------------------------------------------------")
+        console.log(response)
+        console.log("---------------------------------------------------------")
         return response as Menu;
     }
 

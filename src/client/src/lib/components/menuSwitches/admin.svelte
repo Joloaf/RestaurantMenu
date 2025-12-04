@@ -6,14 +6,16 @@
     import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
 	import { stopImmediatePropagation } from "svelte/legacy";
 	import RestDish from "../RestDish.svelte";
+	import { DishService, type Dish } from "$lib/services/DishService";
 
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
+    const dishService = new DishService(apiService)
 
     
     let { menus = $bindable(), currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
     
-    let currentActiveMenu = $state(-1)
+    let currentActiveMenu = $state("-1")
     let AdminState = $state(menus);
 
    async function createNewMenu(event : MouseEvent){
@@ -36,9 +38,29 @@
     function onClickDelete(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
     
 	}
+    async function addDish() {
+        const newDish: Dish = {
+            Id: 0, // Temporary ID
+            DishName: "New Dish",
+            DishPicture: "taco-8029161_640.png"
+        };
+        console.warn("Adding new dish:", currentActiveMenu);
+        const dish = await dishService.createDish(newDish, currentActiveMenu);
+        cacheHandlerActions.addDish(currentActiveMenu, dish);
+        AdminState.filter((x,y) => x.menuId == currentActiveMenu)[0].dishes.push(dish)
+        console.log(currentActiveMenu);
+    }
 	function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
         event.stopPropagation();
 	}
+    function createDish() {
+        return  {
+            Id: 0,
+            DishName: "defaultDish",
+
+            DishPicture: "taco-8029161_640.png"
+        } as Dish
+    }
 </script>
 
 <div class="admin-wrapper">
@@ -73,6 +95,8 @@
                     active   = {currentActiveMenu === menu.menuId}
                     edit     = {true}
                         children = {undefined}/>
+                
+                    <button class="add-dish-btn" onclick={async () => await addDish()}>+ Add Dish</button>
                 </div>
             </div>
         {/each}
