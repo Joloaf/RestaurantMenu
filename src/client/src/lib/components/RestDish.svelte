@@ -1,15 +1,21 @@
 <script lang="ts">
     import { type Dish } from "$lib/services/DishService";
 	import { cacheHandlerActions } from "../../stores/cacheHandlerService";
+    import { DishService } from "$lib/services/DishService";
+    import { ApiService } from "$lib/services/apiService";
+    
+    const apiService = new ApiService();
+    const dishService = new DishService(apiService);
     
     let {
-        dishes = $bindable([]), 
+        dishes = $bindable(),
+        menuId,
         active,
         edit,
         children,
-        menuId
     } = $props()
-    
+
+    let dishesBound = $state(dishes)
     // Track quantity for each dish (for non-edit mode)
     let quantities = $state<Record<number, number>>({});
 
@@ -20,17 +26,10 @@
 
     function onClickDelete(dishId: number) {
         dishes = dishes.filter(d => d.id !== dishId);
-        cacheHandlerActions.removeDish(menuId, dishId)
+        cacheHandlerActions.removeDish(menuId, dishId);
     }
 
-    function addDish() {
-        const newDish: Dish = {
-            id: Date.now(), // Temporary ID
-            name: "New Dish",
-            foodPicture: ""
-        };
-        cacheHandlerActions.addDish(menuId, newDish);
-    }
+    
 
     function incrementQuantity(dishId: number) {
         if (!quantities[dishId]) {
@@ -51,7 +50,7 @@
 </script>
 <div>
     {#if active}
-        {#each dishes as dish}
+        {#each dishesBound as dish}
             {#if !edit}
                 <!-- View mode: show dish with +/- quantity controls -->
                 <div class='row'>
@@ -72,7 +71,7 @@
                 <!-- Edit mode: show dish with editable name, image, and remove button -->
                 <div class='row'>
                     <img 
-                        src={dish.foodPicture.length > 0 ? dish.foodPicture : '/pictures/taco-8029161_640.png'}
+                        src={(dish.foodPicture?.length ?? -1 ) > 0 ? dish.foodPicture : '/pictures/taco-8029161_640.png'}
                         alt={dish.name} 
                         class="dish-image" 
                         onclick={() => onImageClick(dish.id)}
@@ -84,9 +83,7 @@
             {/if}
         {/each}
         
-        {#if edit}
-        <button class="add-dish-btn" onclick={() => addDish()}>+ Add Dish</button>
-        {/if}
+        
     {/if}
 </div>
 <style>

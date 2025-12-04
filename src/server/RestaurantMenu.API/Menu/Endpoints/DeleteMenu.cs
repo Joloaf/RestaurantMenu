@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,11 @@ public class DeleteMenu : IEndpoint
     public static void Map(IEndpointRouteBuilder config) =>
         config.MapDelete("/{id}", Handler);
 
-    public static async Task<Results<NoContent, NotFound, InternalServerError>> Handler(
+    public static async Task<IResult> Handler(
         [FromRoute] int id,
-        [FromQuery] string userId,
-        [FromServices] RestaurantDbContext context)
+        [FromServices] RestaurantDbContext context,
+        [FromServices] IHttpContextAccessor accessor,
+        HttpContext httpContext)
     {
         try
         {
@@ -24,8 +26,8 @@ public class DeleteMenu : IEndpoint
                 return TypedResults.NotFound();
 
             // Verify the menu belongs to the requesting user
-            if (menuItem.User.Id != userId)
-                return TypedResults.NotFound();
+            if (httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)  == null)
+                return TypedResults.Unauthorized();
             
             context.Remove(menuItem);
             await context.SaveChangesAsync();

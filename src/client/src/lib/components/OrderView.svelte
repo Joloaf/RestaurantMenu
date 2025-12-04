@@ -47,7 +47,6 @@ function def(){
         foodPicture : ""
         } as Dish,
     ]
-    def();
 </script>
 <style>
     .row{

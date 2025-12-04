@@ -82,6 +82,10 @@ public class Program
                     .AllowAnyHeader()
                     .AllowCredentials(); 
                 
+                policy.WithOrigins("http://localhost:5173/*/*", "http://192.168.0.190:5173/*/*")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();  
 
               //// policy.AllowAnyOrigin()
               //     .AllowAnyMethod()
@@ -96,7 +100,7 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
-            app.MapScalarApiReference();
+            app.MapScalarApiReference(); 
             await app.Seed();
         }
 
@@ -107,6 +111,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapApplicationEndPoints();
+        
         
         if (app.Environment.IsDevelopment())
         {
