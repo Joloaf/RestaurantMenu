@@ -39,10 +39,7 @@
     Show();
 
 
-	function onClickDelete(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
-        event.stopImmediatePropagation();
-        cacheHandlerActions.removeMenu(menuItem.menuId);
-	}
+	
 </script>
 
 
@@ -59,7 +56,6 @@
             console.log(menuItem.theme)
             return menuItem.theme > 0 ? defPicPath+"/"+menuItem.theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
         <input type="text" bind:value={menuItem.menuName}>
-        <button  type="button" class="remove" onclick={onClickDelete}>-</button>
         <button type="button" class="pickmeny" onclick={OnSelectedMenu}> Välj meny</button>
         {/if}
     </div>

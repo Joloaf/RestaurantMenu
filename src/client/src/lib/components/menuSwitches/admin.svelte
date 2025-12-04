@@ -9,9 +9,13 @@
 
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
-    let currentActiveMenu = $state(-1)
 
-    let { menus, currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
+    
+    let { menus = $bindable(), currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
+    
+    let currentActiveMenu = $state(-1)
+    let AdminState = $state(menus);
+
    async function createNewMenu(event : MouseEvent){
 
         event.stopImmediatePropagation()
@@ -24,17 +28,14 @@
         };
 
        const menu = await menuService.createMenu(newMenu);
-
-        //
-        // if(menu.CreationStamp != null)
-        //  -> add to cache cus then you know it needs to be added, right now it looks like 
-        //  
-
-        cacheHandlerActions.addMenu(menu);
+       cacheHandlerActions.addMenu(menu);
+       AdminState.push(menu)
 
     }
 
-
+    function onClickDelete(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
+    
+	}
 	function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
         event.stopPropagation();
 	}
@@ -46,30 +47,43 @@
     <button class="create-menu-btn" onclick={createNewMenu}>+ Create New Menu</button>
     
     {#if menus && menus.length > 0}
-        {#each menus as menu}
-            <button onclick={(event) => { currentActiveMenu = menu.menuId; onClickMenuHandler(event)}} class="RestMenuWrapper">
-                <RestMenu 
-                menuItem={menu}
-                isEditMode={true}
-                remove={() => {}}
-                selectedCB={() => {}}
-                children={undefined}
-                />
+        {#each AdminState as menu}
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <div onclick={(event) => { currentActiveMenu = menu.menuId; onClickMenuHandler(event)}} class="RestMenuWrapper">
+                <div class="row">
+                    <RestMenu 
+                    menuItem={menu}
+                    isEditMode={true}
+                    />
+                    <button  type="button" class="remove" onclick={(e)=> {
+                        e.stopImmediatePropagation();
+                        cacheHandlerActions.removeMenu(menu.menuId);
+                        const curr = AdminState.findIndex((x,y) => x.menuId == menu.menuId)
+
+                        if(curr != -1)
+                            AdminState.splice(curr, 1)
+                    
+                }}>-</button>
+                </div>
                 <div class="column">
                     <RestDish 
-                        dishes   = {menu.dishes ?? []}
-                        menuId   = {menu.menuId}
-                        active   = {currentActiveMenu === menu.menuId}
-                        edit     = {true}
+                    dishes   = {menu.dishes ?? []}
+                    menuId   = {menu.menuId}
+                    active   = {currentActiveMenu === menu.menuId}
+                    edit     = {true}
                         children = {undefined}/>
                 </div>
-            </button>
+            </div>
         {/each}
     {/if}
     <p>No menus available</p>
 </div>
 
 <style>
+    .row{
+
+    }
    .RestMenuWrapper{
         overflow-y: scroll;
         background-color: sandybrown;
