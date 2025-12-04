@@ -14,8 +14,8 @@
         edit,
         children,
     } = $props()
-    let dishesBound = $state(dishes)
 
+    let dishesBound = $state(dishes)
     // Track quantity for each dish (for non-edit mode)
     let quantities = $state<Record<number, number>>({});
 
@@ -26,20 +26,10 @@
 
     function onClickDelete(dishId: number) {
         dishes = dishes.filter(d => d.id !== dishId);
-        cacheHandlerActions.removeDish(menuId, dishId)
+        cacheHandlerActions.removeDish(menuId, dishId);
     }
 
-    async function addDish() {
-        const newDish: Dish = {
-            Id: 0, // Temporary ID
-            DishName: "New Dish",
-            DishPicture: "taco-8029161_640.png"
-        };
-        console.warn("Adding new dish:", menuId);
-        const dish = await dishService.createDish(newDish, menuId);
-        cacheHandlerActions.addDish(menuId, dish);
-        console.log(menuId);
-    }
+    
 
     function incrementQuantity(dishId: number) {
         if (!quantities[dishId]) {
@@ -93,9 +83,7 @@
             {/if}
         {/each}
         
-        {#if edit}
-        <button class="add-dish-btn" onclick={() => addDish()}>+ Add Dish</button>
-        {/if}
+        
     {/if}
 </div>
 <style>
