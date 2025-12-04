@@ -211,6 +211,46 @@ export const cacheHandlerActions = {
 
         //TODO •  addOrder(order: Order)    updateOrder(menuId: string, updatedOrder: Order)    removeOrder(menuId: string)
 
-        
+        //
+        //if order exists updates it silently.
+        addOrder(order: Order){
+
+            const res = activeCache.orders.findIndex((x, y) => x.menuId == order.menuId)
+            if(res !== -1)
+            {
+                return this.updateOrder(order.menuId, order)
+            }
+
+            activeCache.orders.push(order)
+
+            activeCache.isLoading = true;
+            saveToCache(activeCache);
+            activeCache.isLoading = false;
+        },
+
+        removeOrder(menuId: string){
+            const res = activeCache.orders.findIndex((x, y) => x.menuId === menuId)
+            if(res === -1)
+                console.warn(`Could not locate ${menuId} in activeCache`)
+            
+            //this might be a memeory leak...?
+            activeCache.orders = activeCache.orders.filter((x,y)=> x.menuId !== menuId)
+            saveToCache(activeCache);
+        },
+
+        updateOrder(menuId :string, updateOrder: Order){
+            const res = activeCache.orders.findIndex((x,y) => x.menuId === menuId)
+            if(res -1){
+                console.warn(`could not locate ${menuId} in activeCache`)
+                return;
+            }
+
+            const ref = activeCache.orders[res];
+            ref.ticket = updateOrder.ticket;
+            ref.ticketNumber = updateOrder.ticketNumber;
+            saveToCache(activeCache);
+        },
+
+
         getActiveCache: () => activeCache // call this to get the current cache state
 };

@@ -2,19 +2,17 @@
     import { type Menu } from '$lib/services/MenuService'
 	import type { Component } from 'svelte';
     import RestDish from './RestDish.svelte';
-    import { cacheHandlerActions } from '../../stores/cacheHandlerService'
+    import { cacheHandlerActions } from '../../stores/cacheHandlerService';
+
 	import { render } from 'svelte/server';
+    const defPicPath = "/pictures"
     let clicked = $state(false);
 
     let { 
-        menuItem: initialMenuItem,
+        menuItem,
         isEditMode,
-        remove,
-        selectedCB,
-        children
     } = $props()
 
-    let menuItem = $state(initialMenuItem);
 
     function onClickImage(){
         
@@ -25,16 +23,17 @@
     }
     function onClickMenu(){
 
-        selectedCB(menuItem);
         if(!clicked){
             clicked = true;
             return;
         }
         if(clicked)
             clicked = false;
+
     }
    
     function Show(){
+        console.log("--------------------------------")
         console.log(menuItem);
     }
     Show();
@@ -42,41 +41,32 @@
 
 	function onClickDelete(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
         event.stopImmediatePropagation();
-        cacheHandlerActions.removeMenu(menuItem);
+        cacheHandlerActions.removeMenu(menuItem.menuId);
 	}
 </script>
 
-<div onclick={onClickMenu} class="RestMenuWrapper">
-    <div class="row">
 
+    
+    
+    <div class="row">
         {#if !isEditMode}
-        <img src="{menuItem.theme}">
+        <img src="{defPicPath+"/"+menuItem.theme}">
         <!--{@html render(children)}-->
         <p>{menuItem.menuName}</p>
         {/if}
         {#if isEditMode}
-        <img src={menuItem.theme > 0 ? menuItem.theme : '/pictures/menu-5507525_640.webp'} onclick={onClickImage} class="theme-display">
+        <img src={(()=>{
+            console.log(menuItem.theme)
+            return menuItem.theme > 0 ? defPicPath+"/"+menuItem.theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
         <input type="text" bind:value={menuItem.menuName}>
         <button  type="button" class="remove" onclick={onClickDelete}>-</button>
         <button type="button" class="pickmeny" onclick={OnSelectedMenu}> Välj meny</button>
         {/if}
     </div>
-        {#if clicked}
-    <div class="column">
-        <RestDish 
-        dishes   = {menuItem.dishes}
-        active   = {clicked}
-        edit     = {isEditMode}
-        menuId   = {menuItem.menuId}
-        children = {children}/>
-    </div>
-    {/if}
-</div>
+        
 
     <style>
-    .RestMenuWrapper{
-        overflow-y: scroll;
-    }
+    
     .theme-display{
         width: 20%;
         height: auto;

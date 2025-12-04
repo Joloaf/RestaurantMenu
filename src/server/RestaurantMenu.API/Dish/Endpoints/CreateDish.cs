@@ -11,14 +11,22 @@ public class CreateDish : IEndpoint
     public static void Map(IEndpointRouteBuilder config) =>
         config.MapPost("/{menuId}", Handler);
 
-    public static async Task<Results<Ok<DishModel>, InternalServerError>> Handler(
-        [FromBody] DishModel dish,
+    public static async Task<IResult> Handler(
         [FromRoute] string menuId,
+        [FromBody] DishModel dish,
         [FromServices] RestaurantDbContext context)
     {
         try
         {
-            var menu = await context.Menus.FindAsync(menuId);
+            int outInt = -1;
+            if(!int.TryParse(menuId, out outInt) || outInt < 1)
+                return Results.BadRequest();
+
+            var menu = await context.Menus.Where(x => x.Id == outInt).SingleOrDefaultAsync();
+            
+            if (menu == null)
+                return TypedResults.NotFound("notFound");
+            
             
             var newDish = new Core.Models.Dish
             {

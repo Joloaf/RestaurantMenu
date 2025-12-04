@@ -5,6 +5,8 @@
 	import Orders from '$lib/components/menuSwitches/orders.svelte';
 	import TicketView from '$lib/components/menuSwitches/ticketView.svelte';
     
+
+	//where is data defined/populated?
 	let { data } = $props();
 	
 	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
@@ -27,7 +29,13 @@
         
         <div class="currentView">
 			{#if currentView === 'admin'}
-				<Admin menus={data.menus} currentMenu={data.currentMenu} />
+				<Admin menus={(()=>{ 
+					console.log(data.menus)
+					return data.menus})()} 
+					currentMenu={(()=>{ 
+						console.log(data.currentMenu)
+						return data.currentMenu})()
+						} />
 			{:else if currentView === 'orders'}
 				<Orders currentMenu={data.currentMenu} />
 			{:else if currentView === 'tickets'}
