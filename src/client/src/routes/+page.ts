@@ -19,7 +19,11 @@ export const load: PageLoad = async () => {
 			cacheHandlerActions.setLoading(true);
 			
 			const menus = await menuService.getMenusByUserId();
-			
+			console.log("cacheInitializer result::------------------------------")
+			console.log(menus)
+			console.log("cacheInitializer result::end------------------------------")
+
+			console.log(menus)
 			cacheHandlerActions.setMenus(menus);
 			cacheHandlerActions.setLoading(false);
 		} catch (error) {

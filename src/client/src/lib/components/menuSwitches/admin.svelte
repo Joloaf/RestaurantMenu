@@ -78,8 +78,15 @@
                     menuItem={menu}
                     isEditMode={true}
                     />
-                    <button  type="button" class="remove" onclick={(e)=> {
+                    <button  type="button" class="remove" onclick={async (e)=> {
                         e.stopImmediatePropagation();
+                        let res = await menuService.deleteMenu(menu.menuId);
+                       // if(!res.success)
+                       // {
+                       //     throw Error(`DB remove menu failed! message: ${res.message} \n data: ${res.data}`)
+                       //     return;
+                       // }
+
                         cacheHandlerActions.removeMenu(menu.menuId);
                         const curr = AdminState.findIndex((x,y) => x.menuId == menu.menuId)
 
@@ -106,7 +113,8 @@
 
 <style>
     .row{
-
+        display: flex;
+        flex-direction: row;
     }
    .RestMenuWrapper{
         overflow-y: scroll;
