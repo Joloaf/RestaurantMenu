@@ -21,8 +21,8 @@ public class CreateMenu : IEndpoint
         [FromServices] IFactory<Menu> factory,
         HttpContext httpContext)
     {
-        if(!editModelValidator.EditModelValid(model))
-            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));
+        /*if(!editModelValidator.EditModelValid(model))
+            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));*/
         
         try
         {

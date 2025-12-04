@@ -168,7 +168,7 @@ namespace RestaurantMenu.API.Tests
             var createdMenu = await created.Content.ReadFromJsonAsync<MenuModel>();
             
             //act
-            var deleteResponse = await _client.DeleteAsync($"{base_url}{createdMenu.Id}?userId={userClient.uid}");
+            var deleteResponse = await _client.DeleteAsync($"{base_url}{createdMenu.Id}");
             
             //assert
             if (!deleteResponse.IsSuccessStatusCode)
@@ -178,7 +178,42 @@ namespace RestaurantMenu.API.Tests
             }
             deleteResponse.EnsureSuccessStatusCode();
         }
+        [Fact]
+        public async Task MenuDelete_RemoveExistingMenuWithDishesForValidUser()
+        {
+            var userClient = await _fixture.CreateSignedInClient();
+            var _client = userClient.client;
 
+            //arrange
+            var obj = new MenuModel(0, "menu to delete", "Patrick", Guid.NewGuid().ToString(), userClient.uid);
+            List<DishModel> dishes =
+            [
+                new DishModel(0, "SpidermanMenu", "Bartek"),
+                new DishModel(0, "SpidermanMen2u", "Bartek")
+            ];
+            
+            var created = await _client.PostAsJsonAsync(base_url, obj);
+            
+            if (!created.IsSuccessStatusCode)
+            {
+                var errorContent = await created.Content.ReadAsStringAsync();
+                throw new Exception($"POST Failed with status {created.StatusCode}: {errorContent}");
+            }
+            var createdMenu = await created.Content.ReadFromJsonAsync<MenuModel>();
+            var resdish  = await _client.PostAsJsonAsync($"/Dish/{createdMenu.Id.ToString()}", dishes[0]);
+            
+            //act
+            var deleteResponse = await _client.DeleteAsync($"{base_url}{createdMenu.Id}");
+            
+            //assert
+            resdish.EnsureSuccessStatusCode();
+            if (!deleteResponse.IsSuccessStatusCode)
+            {
+                var errorContent = await deleteResponse.Content.ReadAsStringAsync();
+                throw new Exception($"DELETE Failed with status {deleteResponse.StatusCode}: {errorContent}");
+            }
+            deleteResponse.EnsureSuccessStatusCode();
+        }
         [Fact]
         public async Task MenuDelete_NotFound_NonExistentMenu()
         {
@@ -215,18 +250,12 @@ namespace RestaurantMenu.API.Tests
             }
             var createdMenu = await created.Content.ReadFromJsonAsync<MenuModel>();
 
-            var wrongUserId = "wrong-user-id-123";
-            
+            var unsignedInClient = _fixture.CreateClient();
             //act
-            var deleteResponse = await _client.DeleteAsync($"{base_url}{createdMenu.Id}?userId={wrongUserId}");
+            var deleteResponse = await unsignedInClient.DeleteAsync($"{base_url}{createdMenu.Id}?userId={userClient.uid}");
             
             //assert
-            if (deleteResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
-            {
-                var errorContent = await deleteResponse.Content.ReadAsStringAsync();
-                throw new Exception($"Expected NotFound but got {deleteResponse.StatusCode}: {errorContent}");
-            }
-            Assert.Equal(System.Net.HttpStatusCode.NotFound, deleteResponse.StatusCode);
+            Assert.Equal(System.Net.HttpStatusCode.MethodNotAllowed, deleteResponse.StatusCode);
         }
         
         [Fact]
