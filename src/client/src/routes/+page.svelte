@@ -4,12 +4,28 @@
 	import Everymenu from '$lib/components/menuSwitches/everymenu.svelte';
 	import Orders from '$lib/components/menuSwitches/orders.svelte';
 	import TicketView from '$lib/components/menuSwitches/ticketView.svelte';
+	import { cacheHandlerActions } from '../stores/cacheHandlerService';
     
 
 	//where is data defined/populated?
 	let { data } = $props();
 	
 	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
+
+	function GetCurrentCacheData() {
+		let cache = cacheHandlerActions.getActiveCache();
+
+		console.log('Getting current cache data:', cache);
+		console.log('Current data before update:', data);
+
+
+	
+		data.menus =  cache.menus,
+		data.currentMenu = cache.currentMenu,
+		data.orders = cache.orders,
+		data.isLoading = cache.isLoading
+		console.log('Data after update:', data);
+	}
 </script>
 
 
@@ -18,10 +34,10 @@
         <img src="/img/logo.png" alt="logo" class="logo" />
 
         <div class="navigation">
-            <button on:click={() => currentView = 'everymenu'} class:active={currentView === 'everymenu'}>Everymenu</button>
-            <button on:click={() => currentView = 'orders'} class:active={currentView === 'orders'}>Orders</button>
-            <button on:click={() => currentView = 'tickets'} class:active={currentView === 'tickets'}>Tickets</button>
-            <button on:click={() => currentView = 'admin'} class:active={currentView === 'admin'}>Admin</button>
+            <button on:click={() => (currentView = 'everymenu',GetCurrentCacheData)} class:active={currentView === 'everymenu'}>Everymenu</button>
+            <button on:click={() => (currentView = 'orders', GetCurrentCacheData)} class:active={currentView === 'orders'}>Orders</button>
+            <button on:click={() => (currentView = 'tickets', GetCurrentCacheData)} class:active={currentView === 'tickets'}>Tickets</button>
+            <button on:click={() => (currentView = 'admin', GetCurrentCacheData)} class:active={currentView === 'admin'}>Admin</button>
         </div>
     </header>
 
