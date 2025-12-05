@@ -21,8 +21,8 @@ public class CreateMenu : IEndpoint
         [FromServices] IFactory<Menu> factory,
         HttpContext httpContext)
     {
-        /*if(!editModelValidator.EditModelValid(model))
-            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));*/
+        if(!editModelValidator.EditModelValid(model))
+            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));
         
         try
         {
@@ -42,7 +42,6 @@ public class CreateMenu : IEndpoint
                 Console.WriteLine($"Error: User {userId} not found in database");
                 return TypedResults.NotFound();
             }
-            
             Menu menuItem = factory.Create();
             menuItem.MenuName = model.Menu_name;
             menuItem.UserName = model.User_name;

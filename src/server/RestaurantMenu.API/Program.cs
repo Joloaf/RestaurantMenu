@@ -1,16 +1,10 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.Infrastructure.Data;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Scalar.AspNetCore;
-using MinimalApi.Endpoint;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using RestaurantMenu.Core.Models;
-using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.AspNetCore.Mvc;
-using MinimalApi.Endpoint.Extensions;
-using Microsoft.AspNetCore.Http.Connections.Features;
 using RestaurantMenu.API.EndPoints.Menu;
 using RestaurantMenu.API.Service.Interfaces;
 using RestaurantMenu.API.Service;
@@ -24,12 +18,15 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         
+        // cycles stop infinite loop in models
         builder.Services.Configure<JsonOptions>(options =>
         {
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             options.JsonSerializerOptions.MaxDepth = 32;
         });
+        
         //TODO change requires after dev
+        // add identity lower requirement for creation accounts/password
         builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
@@ -47,7 +44,9 @@ public class Program
             options.Cookie.SameSite = SameSiteMode.None;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
-
+        
+        // authentication who it is
+        // author is the person allowed
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
         
@@ -61,6 +60,7 @@ public class Program
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddScoped<IValidations, Validations>();
+        
         builder.Services.AddScoped<IEditModelValidator, EditModelValidator>();
         builder.Services.AddScoped<IFactory<Menu>, MenuFactory>();
         builder.Services.AddTransient<IDevelopmentSeedService, DevelopmentSeedService>();
