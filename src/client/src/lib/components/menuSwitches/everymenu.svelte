@@ -1,8 +1,12 @@
 <script lang="ts">
     import RestMenu from "../RestMenu.svelte";
     import type { Menu } from "$lib/services/MenuService";
+    import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
 
     let { menus, currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
+
+    menus = cacheHandlerActions.getActiveCache().menus;
+
 </script>
 
 <div>
@@ -10,11 +14,9 @@
     {#if menus && menus.length > 0}
         {#each menus as menu}
             <RestMenu 
-                menuItem={menu}
+                menuItem={currentMenu}
                 isEditMode={false}
-                remove={() => {}}
-                selectedCB={() => {}}
-                children={undefined}
+                active= {currentMenu.id === menu.id}
             />
         {/each}
     {:else}

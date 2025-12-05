@@ -11,18 +11,18 @@
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
     const dishService = new DishService(apiService)
-
     
     let { menus = $bindable(), currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
     
     let currentActiveMenu = $state("-1")
     let AdminState = $state(menus);
+    AdminState = cacheHandlerActions.getActiveCache().menus;
 
    async function createNewMenu(event : MouseEvent){
 
         event.stopImmediatePropagation()
         const newMenu: Menu = {
-            menuId: "0" , // Temporary ID// was this a string?
+            menuId: "0" , // Temporary ID // why is this a string? why not number?
             menuName: "Defaultmenu",
             userName: "Defautuser",
             theme: "menu-5507525_640.webp",
@@ -30,8 +30,12 @@
         };
 
        const menu = await menuService.createMenu(newMenu);
-       cacheHandlerActions.addMenu(menu);
-       AdminState.push(menu)
+       if(menu.menuId != null){
+           menu.menuId = menu.menuId.toString();
+   
+          cacheHandlerActions.addMenu(menu);
+          AdminState.push(menu)
+       }
 
     }
 
