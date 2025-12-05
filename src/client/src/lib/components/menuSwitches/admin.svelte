@@ -25,7 +25,7 @@
             menuId: "0" , // Temporary ID // why is this a string? why not number?
             menuName: "Defaultmenu",
             userName: "Defautuser",
-            theme: "menu-5507525_640.webp",
+            theme: "d1bbc886-0a27-4f95-9bf1-7ed9758694c7.webp", // Default theme image
             dishes: []
         };
 
@@ -46,7 +46,7 @@
         const newDish: Dish = {
             Id: 0, // Temporary ID
             DishName: "New Dish",
-            DishPicture: "taco-8029161_640.png"
+            DishPicture: "a70a6112-964d-4f87-8853-0ad44b6d4a3a.png" // default dish image
         };
         console.warn("Adding new dish:", currentActiveMenu);
         const dish = await dishService.createDish(newDish, currentActiveMenu);
