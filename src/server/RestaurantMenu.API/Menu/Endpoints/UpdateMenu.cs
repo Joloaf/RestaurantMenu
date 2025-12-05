@@ -24,8 +24,10 @@ public class UpdateMenu : IEndpoint
         [FromServices] IEditModelValidator editModelValidator,
         [FromServices] IFactory<Menu> factory)
     {
+        /*
         if(!editModelValidator.EditModelValid(menuModel))
             return TypedResults.BadRequest(new ValidationErrorModel(menuModel, "Not Yet Implemented"));
+            */
         
         try
         {
