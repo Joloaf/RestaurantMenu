@@ -10,15 +10,19 @@ public class DeleteMenu : IEndpoint
         config.MapDelete("/{id}", Handler);
 
     public static async Task<IResult> Handler(
-        [FromRoute] int id,
+        [FromRoute] string id,
         [FromServices] RestaurantDbContext context,
         [FromServices] IHttpContextAccessor accessor,
         HttpContext httpContext)
     {
         try
         {
+            int parsedId = int.Parse(id);
+            if (parsedId <= 0)
+                return Results.BadRequest();
+            
             var menuItem = await context.Menus
-                .Where(m => m.Id == id)
+                .Where(m => m.Id == parsedId)
                 .Include(m => m.User)
                 .SingleOrDefaultAsync();
             
