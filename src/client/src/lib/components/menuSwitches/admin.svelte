@@ -51,7 +51,7 @@
         console.warn("Adding new dish:", currentActiveMenu);
         const dish = await dishService.createDish(newDish, currentActiveMenu);
         cacheHandlerActions.addDish(currentActiveMenu, dish);
-        AdminState.filter((x,y) => x.menuId == currentActiveMenu)[0].dishes.push(dish)
+        AdminState.find((x: { menuId: string; }) => x.menuId === currentActiveMenu)?.dishes.push(dish);
         console.log(currentActiveMenu);
     }
 	function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
@@ -92,7 +92,7 @@
                        // }
 
                         cacheHandlerActions.removeMenu(menu.menuId);
-                        const curr = AdminState.findIndex((x,y) => x.menuId == menu.menuId)
+                        const curr = AdminState.findIndex((x: { menuId: any; }) => x.menuId == menu.menuId)
 
                         if(curr != -1)
                             AdminState.splice(curr, 1)

@@ -6,6 +6,7 @@
     
     const apiService = new ApiService();
     const dishService = new DishService(apiService);
+    const picturePath = "/static/pictures/"
     
     let {
         dishes = $bindable(),
@@ -25,7 +26,7 @@
     }
 
     function onClickDelete(dishId: number) {
-        dishes = dishes.filter(d => d.id !== dishId);
+        dishes = dishes.filter((d: { id: number; }) => d.id !== dishId);
         cacheHandlerActions.removeDish(menuId, dishId);
     }
 
@@ -69,7 +70,7 @@
                 </div>
             {:else}
                 <!-- Edit mode: show dish with editable name, image, and remove button -->
-                <div class='row'>
+                <div class='row' style="background-image:url('{picturePath}{dishes.theme}' ">
                     <img 
                         src={(dish.foodPicture?.length ?? -1 ) > 0 ? dish.foodPicture : '/pictures/taco-8029161_640.png'}
                         alt={dish.name} 

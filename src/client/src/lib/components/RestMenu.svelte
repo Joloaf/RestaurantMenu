@@ -11,6 +11,9 @@
     let { 
         menuItem,
         isEditMode,
+    }: {
+        menuItem: Menu,
+        isEditMode: boolean
     } = $props()
 
 

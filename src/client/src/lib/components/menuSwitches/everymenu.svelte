@@ -1,5 +1,5 @@
 <script lang="ts">
-    import RestMenu from "../RestMenu.svelte";
+    import  RestMenu from "../RestMenu.svelte";
     import type { Menu } from "$lib/services/MenuService";
     import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
 
@@ -14,9 +14,8 @@
     {#if menus && menus.length > 0}
         {#each menus as menu}
             <RestMenu 
-                menuItem={currentMenu}
+                menuItem={menu}
                 isEditMode={false}
-                active= {currentMenu.id === menu.id}
             />
         {/each}
     {:else}
