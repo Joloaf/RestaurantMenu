@@ -34,10 +34,10 @@
         <img src="/img/logo.png" alt="logo" class="logo" />
 
         <div class="navigation">
-            <button on:click={() => (currentView = 'everymenu',GetCurrentCacheData)} class:active={currentView === 'everymenu'}>Everymenu</button>
-            <button on:click={() => (currentView = 'orders', GetCurrentCacheData)} class:active={currentView === 'orders'}>Orders</button>
-            <button on:click={() => (currentView = 'tickets', GetCurrentCacheData)} class:active={currentView === 'tickets'}>Tickets</button>
-            <button on:click={() => (currentView = 'admin', GetCurrentCacheData)} class:active={currentView === 'admin'}>Admin</button>
+            <button onclick={() => (currentView = 'everymenu',GetCurrentCacheData)} class:active={currentView === 'everymenu'}>Everymenu</button>
+            <button onclick={() => (currentView = 'orders', GetCurrentCacheData)} class:active={currentView === 'orders'}>Orders</button>
+            <button onclick={() => (currentView = 'tickets', GetCurrentCacheData)} class:active={currentView === 'tickets'}>Tickets</button>
+            <button onclick={() => (currentView = 'admin', GetCurrentCacheData)} class:active={currentView === 'admin'}>Admin</button>
         </div>
     </header>
 
