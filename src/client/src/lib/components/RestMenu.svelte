@@ -57,7 +57,7 @@
         {#if isEditMode}
         <img src={(()=>{
             console.log(menuItem.theme)
-            return menuItem.theme > 0 ? defPicPath+"/"+menuItem.theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
+            return menuItem.theme.length > 0 ? defPicPath+"/"+menuItem.theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
         <input type="text" bind:value={menuItem.menuName}>
         <button type="button" class="pickmeny" onclick={OnSelectedMenu}> Välj meny</button>
         {/if}
