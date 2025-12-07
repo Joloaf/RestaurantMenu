@@ -4,7 +4,6 @@
 	import Everymenu from '$lib/components/menuSwitches/everymenu.svelte';
 	import Orders from '$lib/components/menuSwitches/orders.svelte';
 	import TicketView from '$lib/components/menuSwitches/ticketView.svelte';
-    
 
 	//where is data defined/populated?
 	let { data } = $props();

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,20 +18,23 @@ public class UpdateMenu : IEndpoint
     //public record PatchParams(string userid, int menuid);
     //define handler
     public record ValidationErrorModel(MenuModel model, string reason);
-    
     public static async Task<IResult> Handler(
         [FromRoute] int id,
         [FromBody] MenuModel menuModel,
         [FromServices] RestaurantDbContext context,
         [FromServices] IEditModelValidator editModelValidator,
-        [FromServices] IFactory<Menu> factory)
+        [FromServices] IFactory<Menu> factory,
+        HttpContext httpcxt)
     {
-        if(!editModelValidator.EditModelValid(menuModel))
-            return TypedResults.BadRequest(new ValidationErrorModel(menuModel, "Not Yet Implemented"));
-        
+        //if(!editModelValidator.EditModelValid(menuModel))
+          //  return TypedResults.BadRequest(new ValidationErrorModel(menuModel, "Not Yet Implemented"));
+          //
+          //
+        if(httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
+            return TypedResults.Unauthorized();
         try
         {
-            var user = await context.Users.Where(x => x.Id == menuModel.User_id)
+            var user = await context.Users.Where(x => x.Id == httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier))
                 .Include(x => x.Menus)
                 .SingleOrDefaultAsync();
             if(user == null)     // Checking if user is null before trying to access it for item from user.Menus

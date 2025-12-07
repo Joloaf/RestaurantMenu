@@ -10,11 +10,9 @@
     {#if menus && menus.length > 0}
         {#each menus as menu}
             <RestMenu 
-                menuItem={menu}
+                name={menu.menuName}
+                theme={menu.theme}
                 isEditMode={false}
-                remove={() => {}}
-                selectedCB={() => {}}
-                children={undefined}
             />
         {/each}
     {:else}

@@ -111,6 +111,13 @@ export const cacheHandlerActions = {
         setLoading(loading: boolean) {
             activeCache.isLoading = loading;
         },
+        getMenu(menuId: string) : Menu | null{
+            let index = -1;
+            if((index = activeCache.menus.findIndex((x) => x.menuId == menuId)) > -1)
+                return activeCache.menus[index]
+
+            return null;
+        },
 
         setMenus(menus: Menu[]) {
             activeCache.menus = menus;
