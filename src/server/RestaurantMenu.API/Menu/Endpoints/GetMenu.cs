@@ -9,7 +9,7 @@ public class GetMenu : IEndpoint
     public static void Map(IEndpointRouteBuilder config) =>
         config.MapGet("/single/{id}", Handler);
 
-    public static async Task<Results<Ok<MenuModel>, NotFound, InternalServerError>> Handler(
+    public static async Task<Results<Ok<MenuDto>, NotFound, InternalServerError>> Handler(
         int id,
         [FromServices] RestaurantDbContext context)
     {
@@ -22,7 +22,7 @@ public class GetMenu : IEndpoint
             if (menu == null)
                 return TypedResults.NotFound();
 
-            return TypedResults.Ok(new MenuModel(
+            return TypedResults.Ok(new MenuDto(
                 menu.Id,
                 menu.MenuName,
                 menu.UserName,

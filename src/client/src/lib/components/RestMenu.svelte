@@ -9,12 +9,14 @@
     let clicked = $state(false);
 
     let { 
+        isEditMode, 
         theme = $bindable("default"),
         name = $bindable("default"),
-        isEditMode,
-    } = $props();
+        } = $props()
+        
     const boundName : string = $derived(name);
     const boundTheme : string = $derived(theme);
+
     function onClickImage(){
         
     }

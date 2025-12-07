@@ -11,7 +11,7 @@ public class GetAllDishes : IEndpoint
     public static void Map(IEndpointRouteBuilder config) =>
         config.MapGet("/", Handler);
 
-    public static async Task<Results<Ok<List<DishModel>>, InternalServerError>> Handler(
+    public static async Task<Results<Ok<List<DishDto>>, InternalServerError>> Handler(
         int menuId,
         [FromServices] RestaurantDbContext context)
     {
@@ -21,7 +21,7 @@ public class GetAllDishes : IEndpoint
                 .Where(m => m.Menu.Id == menuId)
                 .ToListAsync();
 
-            var dishesToReturn = dishes.Select(dish => new DishModel(
+            var dishesToReturn = dishes.Select(dish => new DishDto(
                     dish.Id,
                     dish.Name,
                     dish.FoodPicture))

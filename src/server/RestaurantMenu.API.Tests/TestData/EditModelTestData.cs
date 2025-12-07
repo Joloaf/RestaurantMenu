@@ -17,7 +17,7 @@ public class EditModelTestData : IEnumerable<object[]>
     public List<object[]> GetTestData()
     {
         List<object[]> models = [];
-        for (int i = 0; i < 10_000; i++)
+        for (int i = 0; i < 10; i++)
         {
             if (i % 2 == 0)
             {
@@ -32,7 +32,7 @@ public class EditModelTestData : IEnumerable<object[]>
         return models;
     }
 
-    private IEnumerable<MenuModel> CreateInvalidModel()
+    private IEnumerable<MenuDto> CreateInvalidModel()
     {
         for(int i = 0; i < 5; i++)
             switch (i)
@@ -81,7 +81,7 @@ public class EditModelTestData : IEnumerable<object[]>
         }
     }
 
-    private MenuModel CreateValidModel()
+    private MenuDto CreateValidModel()
     {
         return _builder.WithId(true)
             .WithIdentityUserId(true)

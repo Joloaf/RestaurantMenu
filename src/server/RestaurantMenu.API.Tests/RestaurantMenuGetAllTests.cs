@@ -18,21 +18,21 @@ public class RestaurantMenuGetAllTests : IClassFixture<WebclassFixture<Program>>
     [Fact]
     public async Task ReturnListOfMenu_ValidResponseCode()
     {
-        var newListMenu = new List<MenuModel>();
+        var newListMenu = new List<MenuDto>();
          
         var signedInClient = await _fixture.CreateSignedInClient();
             
         //Arrange
         for (int i = 0; i < 3; i++)
         {
-            var newMenu = new MenuModel(0,
+            var newMenu = new MenuDto(0,
                 $"Read test manu name {i}",
                 $"Skdjfsl",
                 Guid.NewGuid().ToString(),
                 signedInClient.uid);
                 
             var createResp = await signedInClient.client.PostAsJsonAsync(base_url, newMenu);
-            var created = await createResp.Content.ReadFromJsonAsync<MenuModel>();
+            var created = await createResp.Content.ReadFromJsonAsync<MenuDto>();
             newListMenu.Add(created);
         }
 
@@ -41,7 +41,7 @@ public class RestaurantMenuGetAllTests : IClassFixture<WebclassFixture<Program>>
 
         //Assert
         getResp.EnsureSuccessStatusCode();
-        var fetched = await getResp.Content.ReadFromJsonAsync<List<MenuModel>>();
+        var fetched = await getResp.Content.ReadFromJsonAsync<List<MenuDto>>();
         Assert.NotNull(fetched);
         Assert.NotEmpty(fetched);
         Assert.Equal(newListMenu.Count, fetched.Count);

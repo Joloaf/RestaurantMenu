@@ -11,7 +11,6 @@
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
     const dishService = new DishService(apiService)
-
     
     let { menus = $bindable(), currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
     
@@ -35,22 +34,29 @@
     }
 
     let currentActiveMenu :string = $state("-1")
-    let AdminState :Menu[] = $state(menus);
+    //let AdminState :Menu[] = $state(menus);
+    //let currentActiveMenu = $state("-1")
+    let AdminState = $state(menus);
+    AdminState = cacheHandlerActions.getActiveCache().menus;  //ask marcus
 
    async function createNewMenu(event : MouseEvent){
 
         event.stopImmediatePropagation()
         const newMenu: Menu = {
-            menuId: "0" , // Temporary ID// was this a string?
+            menuId: "0" , // Temporary ID // why is this a string? why not number?
             menuName: "Defaultmenu",
             userName: "Defautuser",
-            theme: "menu-5507525_640.webp",
+            theme: "d1bbc886-0a27-4f95-9bf1-7ed9758694c7.webp", // Default theme image
             dishes: []
         };
 
        const menu = await menuService.createMenu(newMenu);
-       cacheHandlerActions.addMenu(menu);
-       AdminState.push(menu)
+       if(menu.menuId != null){
+           menu.menuId = menu.menuId.toString();
+   
+          cacheHandlerActions.addMenu(menu);
+          AdminState.push(menu)
+       }
 
     }
 
@@ -61,12 +67,12 @@
         const newDish: Dish = {
             Id: 0, // Temporary ID
             DishName: "New Dish",
-            DishPicture: "taco-8029161_640.png"
+            DishPicture: "a70a6112-964d-4f87-8853-0ad44b6d4a3a.png" // default dish image
         };
         console.warn("Adding new dish:", currentActiveMenu);
         const dish = await dishService.createDish(newDish, currentActiveMenu);
         cacheHandlerActions.addDish(currentActiveMenu, dish);
-        AdminState.filter((x,y) => x.menuId == currentActiveMenu)[0].dishes.push(dish)
+        AdminState.find((x: { menuId: string; }) => x.menuId === currentActiveMenu)?.dishes.push(dish);
         console.log(currentActiveMenu);
     }
 	async function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
@@ -101,7 +107,7 @@
                        // }
 
                         cacheHandlerActions.removeMenu(menu.menuId);
-                        const curr = AdminState.findIndex((x,y) => x.menuId == menu.menuId)
+                        const curr = AdminState.findIndex((x: { menuId: any; }) => x.menuId == menu.menuId)
 
                         if(curr != -1)
                             AdminState.splice(curr, 1)
