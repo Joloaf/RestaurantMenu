@@ -11,9 +11,6 @@
         <RestMenu 
             menuItem={currentMenu}
             isEditMode={false}
-            remove={() => {}}
-            selectedCB={() => {}}
-            children={undefined}
         />
     {:else}
         <p>No menu selected</p>

@@ -1,6 +1,6 @@
 <script lang="ts">
     import RestMenu from "../RestMenu.svelte";
-    import type { Menu } from '$lib/services/MenuService';
+    import type { ApiResponse, Menu } from '$lib/services/MenuService';
     import { ApiService } from "$lib/services/apiService";
     import { MenuService } from "$lib/services/MenuService";
     import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
@@ -15,8 +15,27 @@
     
     let { menus = $bindable(), currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
     
-    let currentActiveMenu = $state("-1")
-    let AdminState = $state(menus);
+    export async function UpdatePageData(){
+        let currMen :Menu[] = cacheHandlerActions.getActiveCache().menus
+        for(let i = 0; i < currMen.length; i ++)
+            if(!Object.keys(currMen[i]).map((x) => { 
+                console.log(currMen[i])
+                console.log(AdminState[i])
+                if(x !== 'dishes') 
+                    return AdminState[i][x] === currMen[i][x]
+                else return true;
+             }).every(x => x))
+            {
+                cacheHandlerActions.updateMenu(AdminState[i])
+                let res = await menuService.updateMenu(AdminState[i])
+                console.log("*********************************************")
+                console.log((res as ApiResponse).message)
+            }
+
+    }
+
+    let currentActiveMenu :string = $state("-1")
+    let AdminState :Menu[] = $state(menus);
 
    async function createNewMenu(event : MouseEvent){
 
@@ -50,17 +69,10 @@
         AdminState.filter((x,y) => x.menuId == currentActiveMenu)[0].dishes.push(dish)
         console.log(currentActiveMenu);
     }
-	function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
+	async function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
         event.stopPropagation();
+        await Update();
 	}
-    function createDish() {
-        return  {
-            Id: 0,
-            DishName: "defaultDish",
-
-            DishPicture: "taco-8029161_640.png"
-        } as Dish
-    }
 </script>
 
 <div class="admin-wrapper">
@@ -72,11 +84,12 @@
         {#each AdminState as menu}
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <div onclick={(event) => { currentActiveMenu = menu.menuId; onClickMenuHandler(event)}} class="RestMenuWrapper">
+            <div onclick={async (event) => { currentActiveMenu = menu.menuId; await onClickMenuHandler(event)}} class="RestMenuWrapper">
                 <div class="row">
                     <RestMenu 
-                    menuItem={menu}
-                    isEditMode={true}
+                        bind:name = {menu.menuName}
+                        bind:theme = {menu.theme}
+                        isEditMode={true}
                     />
                     <button  type="button" class="remove" onclick={async (e)=> {
                         e.stopImmediatePropagation();
