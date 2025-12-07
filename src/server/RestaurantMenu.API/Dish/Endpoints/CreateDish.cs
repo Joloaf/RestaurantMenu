@@ -13,7 +13,7 @@ public class CreateDish : IEndpoint
 
     public static async Task<IResult> Handler(
         [FromRoute] string menuId,
-        [FromBody] DishModel dish,
+        [FromBody] DishDto dish,
         [FromServices] RestaurantDbContext context)
     {
         try
@@ -38,7 +38,7 @@ public class CreateDish : IEndpoint
            var dishToReturn=  context.Add(newDish);
            context.SaveChanges();
             
-           return TypedResults.Ok(new DishModel(
+           return TypedResults.Ok(new DishDto(
                newDish.Id,
                newDish.Name,
                newDish.FoodPicture));

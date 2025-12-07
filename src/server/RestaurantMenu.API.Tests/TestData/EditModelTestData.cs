@@ -32,7 +32,7 @@ public class EditModelTestData : IEnumerable<object[]>
         return models;
     }
 
-    private IEnumerable<MenuModel> CreateInvalidModel()
+    private IEnumerable<MenuDto> CreateInvalidModel()
     {
         for(int i = 0; i < 5; i++)
             switch (i)
@@ -81,7 +81,7 @@ public class EditModelTestData : IEnumerable<object[]>
         }
     }
 
-    private MenuModel CreateValidModel()
+    private MenuDto CreateValidModel()
     {
         return _builder.WithId(true)
             .WithIdentityUserId(true)
