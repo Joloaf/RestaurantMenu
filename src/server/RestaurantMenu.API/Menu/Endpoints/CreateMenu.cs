@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.API.Service.DTOs.Models;
@@ -12,17 +11,16 @@ public class CreateMenu : IEndpoint
     public static void Map(IEndpointRouteBuilder config) =>
         config.MapPost("/", Handler);
 
-    public record ValidationErrorModel(MenuModel model, string reason);
+    public record ValidationErrorModel(MenuDto Dto, string reason);
 
     public static async Task<IResult> Handler(
-        [FromBody] MenuModel model,
+        [FromBody] MenuDto dto,
         [FromServices] RestaurantDbContext context,
-        [FromServices] IEditModelValidator editModelValidator,
-        [FromServices] IFactory<Menu> factory,
+        [FromServices] IMenuValidator menuValidator,
         HttpContext httpContext)
     {
-        if(!editModelValidator.EditModelValid(model))
-            return TypedResults.BadRequest(new ValidationErrorModel(model, "Not Yet Implemented"));
+        if(!menuValidator.EditModelValid(dto))
+            return TypedResults.BadRequest(new ValidationErrorModel(dto, "Not Yet Implemented"));
         
         try
         {
@@ -42,10 +40,10 @@ public class CreateMenu : IEndpoint
                 Console.WriteLine($"Error: User {userId} not found in database");
                 return TypedResults.NotFound();
             }
-            Menu menuItem = factory.Create();
-            menuItem.MenuName = model.Menu_name;
-            menuItem.UserName = model.User_name;
-            menuItem.Theme = model.Theme;
+            Menu menuItem = new Menu();
+            menuItem.MenuName = dto.Menu_name;
+            menuItem.UserName = dto.User_name;
+            menuItem.Theme = dto.Theme;
             menuItem.User = user;
             menuItem.Dishes = [];
 
@@ -57,8 +55,8 @@ public class CreateMenu : IEndpoint
             //context.Update(menuItem);
             await context.SaveChangesAsync();
 
-            return TypedResults.Created<MenuModel>("",
-                new MenuModel(menuItem.Id,
+            return TypedResults.Created<MenuDto>("",
+                new MenuDto(menuItem.Id,
                     menuItem.MenuName,
                     menuItem.UserName,
                     menuItem.Theme,
