@@ -17,13 +17,12 @@ public class UpdateMenu : IEndpoint
 
     //public record PatchParams(string userid, int menuid);
     //define handler
-    public record ValidationErrorModel(MenuModel model, string reason);
+    public record ValidationErrorModel(MenuDto Dto, string reason);
+    
     public static async Task<IResult> Handler(
         [FromRoute] int id,
-        [FromBody] MenuModel menuModel,
+        [FromBody] MenuDto menuDto,
         [FromServices] RestaurantDbContext context,
-        [FromServices] IEditModelValidator editModelValidator,
-        [FromServices] IFactory<Menu> factory,
         HttpContext httpcxt)
     {
         //if(!editModelValidator.EditModelValid(menuModel))
@@ -34,7 +33,12 @@ public class UpdateMenu : IEndpoint
             return TypedResults.Unauthorized();
         try
         {
-            var user = await context.Users.Where(x => x.Id == httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier))
+            var user = await context.Users.Where(x => x.Id == httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier));
+       {
+        
+        try
+        {
+            var user = await context.Users.Where(x => x.Id == menuDto.User_id)
                 .Include(x => x.Menus)
                 .SingleOrDefaultAsync();
             if(user == null)     // Checking if user is null before trying to access it for item from user.Menus
@@ -44,17 +48,14 @@ public class UpdateMenu : IEndpoint
             if(item == null)
                 return TypedResults.NotFound();
             
-            item.MenuName = menuModel.Menu_name;
-            item.UserName = menuModel.User_name;
-            item.Theme = menuModel.Theme;
+            item.MenuName = menuDto.Menu_name;
+            item.UserName = menuDto.User_name;
+            item.Theme = menuDto.Theme;
 
             // Updates should automatically be tracked, and we should only need the one save.
-            //context.Update(item);
-            //await context.SaveChangesAsync();
-            //context.Update(user);
             await context.SaveChangesAsync();
             
-            return TypedResults.Ok<MenuModel>(new MenuModel(item.Id,
+            return TypedResults.Ok<MenuDto>(new MenuDto(item.Id,
                 item.MenuName,
                 item.UserName,
                 item.Theme,

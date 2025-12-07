@@ -1,8 +1,12 @@
 <script lang="ts">
-    import RestMenu from "../RestMenu.svelte";
+    import  RestMenu from "../RestMenu.svelte";
     import type { Menu } from "$lib/services/MenuService";
+    import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
 
     let { menus, currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
+
+    menus = cacheHandlerActions.getActiveCache().menus;
+
 </script>
 
 <div>

@@ -2,11 +2,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantMenu.Core.Models;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace RestaurantMenu.API.Features;
 
-public static class AccountFeatureExtension
+public static class AccountFeatureExtensions
 {
     public static RouteGroupBuilder AddAccountFeatures(this RouteGroupBuilder group)
     {

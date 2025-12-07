@@ -11,7 +11,7 @@ public class RemoveDish : IEndpoint
         config.MapDelete("/{menuId}", Handler);
 
 
-    public static async Task<Results<Ok<DishModel>, NotFound, InternalServerError>> Handler(
+    public static async Task<Results<Ok<DishDto>, NotFound, InternalServerError>> Handler(
         int id,
         [FromServices] RestaurantDbContext context)
     {
@@ -27,7 +27,7 @@ public class RemoveDish : IEndpoint
 
             await context.SaveChangesAsync();
 
-            return TypedResults.Ok(new DishModel(
+            return TypedResults.Ok(new DishDto(
                 dish.Id,
                 dish.Name,
                 dish.FoodPicture));
