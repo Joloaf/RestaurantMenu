@@ -13,7 +13,7 @@ public class GetAllMenus : IEndpoint
         config.MapGet("/all", Handler);
 
     
-    record MenuDishesDTO(string menuId, string menuName, string theme, string userName, ICollection<DishModel> dishes);
+    record MenuDishesDTO(string menuId, string menuName, string theme, string userName, ICollection<DishDto> dishes);
 
 
     public static async Task<IResult> Handler(
@@ -40,7 +40,7 @@ public class GetAllMenus : IEndpoint
                     x.MenuName,
                     x.Theme,
                     x.UserName,
-                    x.Dishes.Select(y=> new DishModel(y.Id, y.Name, y.FoodPicture))
+                    x.Dishes.Select(y=> new DishDto(y.Id, y.Name, y.FoodPicture))
                         .ToList()))
                 .ToList());
         }

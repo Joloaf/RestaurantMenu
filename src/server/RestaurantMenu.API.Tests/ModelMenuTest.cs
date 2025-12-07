@@ -22,11 +22,11 @@ public class ModelMenuTest
     /// The menu name needs to have atleast one character now too
     ///
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="dto"></param>
     /// <param name="expected"></param>
     [Theory]
     [ClassData(typeof(EditModelTestData))] //define
-    public void EditModelValid_ModelCombinations(MenuModel model, bool expected)
+    public void EditModelValid_ModelCombinations(MenuDto dto, bool expected)
     /*
      * Fixed the Generation, issue wasn't actually the generation but the addition of
      * whitespaces characters inside the range of allowed characters
@@ -40,21 +40,21 @@ public class ModelMenuTest
     {
         
        //arrange 
-       var sut = new EditModelValidator(new Validations());
+       var sut = new MenuValidator(new Validations());
        
        //act
-       var actual = sut.EditModelValid(model);
+       var actual = sut.EditModelValid(dto);
 
        //assert
        Assert.True(actual == expected,
            $"Validation Failed: \n" +
            $"\texpected:\t{expected} |\n \tactual:\t${actual} \n" +
-           $"\tTestObject:\t {System.Text.Json.JsonSerializer.Serialize(model)}");
+           $"\tTestObject:\t {System.Text.Json.JsonSerializer.Serialize(dto)}");
     }
 
-    public class localModel(MenuModel model, bool exp, bool act)
+    public class localModel(MenuDto dto, bool exp, bool act)
     {
-        public MenuModel model { get; set; } = model;
+        public MenuDto Dto { get; set; } = dto;
         public bool expected { get; set; } = exp;
         public bool actual { get; set; } = act;
     }
@@ -62,10 +62,10 @@ public class ModelMenuTest
     public void EditModelValid_Inline()
     {
         //arrange 
-        var sut = new EditModelValidator(new Validations());
+        var sut = new MenuValidator(new Validations());
        
         //act
-        var actual = sut.EditModelValid(new MenuModel(0, "StandardMenu", "Sara",Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+        var actual = sut.EditModelValid(new MenuDto(0, "StandardMenu", "Sara",Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
        
         //assert
         Assert.True(actual);

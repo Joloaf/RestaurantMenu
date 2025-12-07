@@ -5,7 +5,7 @@ using RestaurantMenu.Core.Models;
 
 namespace RestaurantMenu.API.Features;
 
-public static class AccountFeatureExtension
+public static class AccountFeatureExtensions
 {
     public static RouteGroupBuilder AddAccountFeatures(this RouteGroupBuilder group)
     {
