@@ -1,6 +1,6 @@
 ﻿namespace RestaurantMenu.API.Service;
 
-public static class DevelopmentSeedRunner
+public static class SeedingExtensions
 {
     public static async Task Seed(this IHost app)
     {

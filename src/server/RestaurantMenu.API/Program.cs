@@ -61,8 +61,7 @@ public class Program
 
         builder.Services.AddScoped<IValidations, Validations>();
         
-        builder.Services.AddScoped<IEditModelValidator, EditModelValidator>();
-        builder.Services.AddScoped<IFactory<Menu>, MenuFactory>();
+        builder.Services.AddScoped<IMenuValidator, MenuValidator>();
         builder.Services.AddTransient<IDevelopmentSeedService, DevelopmentSeedService>();
 
 

@@ -11,26 +11,26 @@ internal class MenuModelBuilder
     private enum Field { Id, UsId, MName, Theme, UsName }
     public MenuModelBuilder()
     {
-        Model = new MenuModel();
+        Dto = new MenuDto();
     }
 
-    private MenuModel Model { get; set; }
+    private MenuDto Dto { get; set; }
     
 
-    private MenuModel ModelCreator(Field field, object value)
+    private MenuDto ModelCreator(Field field, object value)
     {
         switch (field)
         {
             case Field.UsId:
-                return new MenuModel(Model.Id, Model.Menu_name, Model.User_name, Model.Theme, (string)value);
+                return new MenuDto(Dto.Id, Dto.Menu_name, Dto.User_name, Dto.Theme, (string)value);
             case Field.Theme:
-                return new MenuModel(Model.Id, Model.Menu_name, Model.User_name, (string)value, Model.User_id);
+                return new MenuDto(Dto.Id, Dto.Menu_name, Dto.User_name, (string)value, Dto.User_id);
             case Field.UsName:
-                return new MenuModel(Model.Id, Model.Menu_name, (string)value, Model.Theme, Model.User_id);
+                return new MenuDto(Dto.Id, Dto.Menu_name, (string)value, Dto.Theme, Dto.User_id);
             case Field.MName:
-                return new MenuModel(Model.Id, (string)value, Model.User_name, Model.Theme, Model.User_id);
+                return new MenuDto(Dto.Id, (string)value, Dto.User_name, Dto.Theme, Dto.User_id);
             case Field.Id:
-                return new MenuModel((int)value, Model.Menu_name, Model.User_name, Model.Theme, Model.User_id); 
+                return new MenuDto((int)value, Dto.Menu_name, Dto.User_name, Dto.Theme, Dto.User_id); 
         }
 
         throw new AbandonedMutexException();
@@ -169,21 +169,21 @@ internal class MenuModelBuilder
     {
         if (valid)
         {
-            this.Model = ModelCreator(Field.Id, Random.Shared.Next(0, int.MaxValue));
+            this.Dto = ModelCreator(Field.Id, Random.Shared.Next(0, int.MaxValue));
             return this;
         }
-        this.Model = ModelCreator(Field.Id, Random.Shared.Next(int.MinValue, 0));
+        this.Dto = ModelCreator(Field.Id, Random.Shared.Next(int.MinValue, 0));
         return this;
     }
     public MenuModelBuilder WithUserName(bool valid)
     {
         if (valid)
         {
-            this.Model = ModelCreator(Field.UsName, CreateValidUserName());
+            this.Dto = ModelCreator(Field.UsName, CreateValidUserName());
             return this;
         }
         
-        this.Model = ModelCreator(Field.UsName, CreateInvalidUserName());
+        this.Dto = ModelCreator(Field.UsName, CreateInvalidUserName());
         return this;
     }
 
@@ -191,21 +191,21 @@ internal class MenuModelBuilder
     {
         if (valid)
         {
-            this.Model = ModelCreator(Field.UsId, Guid.NewGuid().ToString());
+            this.Dto = ModelCreator(Field.UsId, Guid.NewGuid().ToString());
             return this;
         }
         
-        this.Model = ModelCreator(Field.UsId, InvalidGuid());
+        this.Dto = ModelCreator(Field.UsId, InvalidGuid());
         return this;
     }
     public MenuModelBuilder WithName(bool valid, Spaces? spaces = null)
     {
         if (valid)
         {
-            this.Model = ModelCreator(Field.MName, CreateValidUserName());
+            this.Dto = ModelCreator(Field.MName, CreateValidUserName());
             return this;
         }
-        this.Model = ModelCreator(Field.MName, CreateInvalidMenuName(spaces ?? Spaces.Internal));
+        this.Dto = ModelCreator(Field.MName, CreateInvalidMenuName(spaces ?? Spaces.Internal));
         return this;
     }
 
@@ -213,17 +213,17 @@ internal class MenuModelBuilder
     {
         if (valid)
         {
-            this.Model = ModelCreator(Field.Theme, CreateValidThemeName());
+            this.Dto = ModelCreator(Field.Theme, CreateValidThemeName());
             return this;
         }
-        this.Model = ModelCreator(Field.Theme, CreateInvalidThemeName());
+        this.Dto = ModelCreator(Field.Theme, CreateInvalidThemeName());
         
         return this;
     }
 
 
-    public MenuModel Build()
+    public MenuDto Build()
     {
-        return this.Model;
+        return this.Dto;
     }
 }

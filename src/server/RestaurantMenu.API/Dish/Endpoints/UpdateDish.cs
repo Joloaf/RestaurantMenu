@@ -11,21 +11,21 @@ public class UpdateDish : IEndpoint
         config.MapPatch("/", Handler);
     
     
-    public static async Task<Results<Ok<DishModel>, NotFound, InternalServerError>> Handler(
-        [FromBody] DishModel dishModel,
+    public static async Task<Results<Ok<DishDto>, NotFound, InternalServerError>> Handler(
+        [FromBody] DishDto dishDto,
         [FromServices] RestaurantDbContext context)
     {
         try
         {
-            var dish = await context.Dishes.FindAsync(dishModel.Id);
+            var dish = await context.Dishes.FindAsync(dishDto.Id);
             
             if (dish == null)
                 return TypedResults.NotFound();
             
-            dish.Name = dishModel.DishName;
-            dish.FoodPicture = dishModel.DishPicture;
+            dish.Name = dishDto.DishName;
+            dish.FoodPicture = dishDto.DishPicture;
 
-            return TypedResults.Ok(new DishModel(
+            return TypedResults.Ok(new DishDto(
                 dish.Id,
                 dish.Name,
                 dish.FoodPicture));
