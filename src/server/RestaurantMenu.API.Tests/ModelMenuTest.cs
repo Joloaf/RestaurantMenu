@@ -65,7 +65,7 @@ public class ModelMenuTest
         var sut = new MenuValidator(new Validations());
        
         //act
-        var actual = sut.EditModelValid(new MenuDto(0, "StandardMenu", "Sara",Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+        var actual = sut.EditModelValid(new MenuDto(0, "StandardMenu", "Sara",Guid.NewGuid().ToString()+".webp", Guid.NewGuid().ToString()));
        
         //assert
         Assert.True(actual);

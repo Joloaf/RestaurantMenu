@@ -8,7 +8,7 @@ namespace RestaurantMenu.API.Tests.TestData;
 public enum Spaces {Start =1, Ending =2, Internal =4 }
 internal class MenuModelBuilder
 {
-    private enum Field { Id, UsId, MName, Theme, UsName }
+    private enum Field { Id, MName, Theme, UsName }
     public MenuModelBuilder()
     {
         Dto = new MenuDto();
@@ -21,8 +21,6 @@ internal class MenuModelBuilder
     {
         switch (field)
         {
-            case Field.UsId:
-                return new MenuDto(Dto.Id, Dto.Menu_name, Dto.User_name, Dto.Theme, (string)value);
             case Field.Theme:
                 return new MenuDto(Dto.Id, Dto.Menu_name, Dto.User_name, (string)value, Dto.User_id);
             case Field.UsName:
@@ -151,7 +149,7 @@ internal class MenuModelBuilder
     
     private string CreateValidThemeName()
     {
-        return Guid.NewGuid().ToString();
+        return Guid.NewGuid().ToString()+".jpg";
     }
 
     private string CreateInvalidThemeName()
@@ -187,17 +185,6 @@ internal class MenuModelBuilder
         return this;
     }
 
-    public MenuModelBuilder WithIdentityUserId(bool valid)
-    {
-        if (valid)
-        {
-            this.Dto = ModelCreator(Field.UsId, Guid.NewGuid().ToString());
-            return this;
-        }
-        
-        this.Dto = ModelCreator(Field.UsId, InvalidGuid());
-        return this;
-    }
     public MenuModelBuilder WithName(bool valid, Spaces? spaces = null)
     {
         if (valid)
