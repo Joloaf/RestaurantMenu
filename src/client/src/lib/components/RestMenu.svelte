@@ -9,21 +9,18 @@
     let clicked = $state(false);
 
     let { 
-        menuItem,
-        isEditMode,
-    }: {
-        menuItem: Menu,
-        isEditMode: boolean
-    } = $props()
-
+        isEditMode, 
+        theme = $bindable("default"),
+        name = $bindable("default"),
+        } = $props()
+        
+    const boundName : string = $derived(name);
+    const boundTheme : string = $derived(theme);
 
     function onClickImage(){
         
     }
-    function OnSelectedMenu(event: MouseEvent & {currentTarget: EventTarget & HTMLButtonElement;}){
-        event.stopImmediatePropagation();
-        cacheHandlerActions.setCurrentMenu(menuItem)
-    }
+    
     function onClickMenu(){
 
         if(!clicked){
@@ -37,7 +34,7 @@
    
     function Show(){
         console.log("--------------------------------")
-        console.log(menuItem);
+        //console.log(menuItem);
     }
     Show();
 
@@ -48,20 +45,20 @@
 
     
     
-    <div class="row">
-        {#if !isEditMode}
-        <img src="{defPicPath+"/"+menuItem.theme}">
-        <!--{@html render(children)}-->
-        <p>{menuItem.menuName}</p>
-        {/if}
-        {#if isEditMode}
-        <img src={(()=>{
-            console.log(menuItem.theme)
-            return menuItem.theme.length > 0 ? defPicPath+"/"+menuItem.theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
-        <input type="text" bind:value={menuItem.menuName}>
-        <button type="button" class="pickmeny" onclick={OnSelectedMenu}> Välj meny</button>
-        {/if}
-    </div>
+<div class="row">
+    {#if !isEditMode}
+    <img src={defPicPath+"/"+theme}>
+    <!--{@html render(children)}-->
+    <p>{name}</p>
+    {/if}
+    {#if isEditMode}
+    <img src={(()=>{
+        console.log(theme);
+        return theme.length > 0 ? defPicPath+"/"+theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
+    <input type="text" bind:value={name}>
+    
+    {/if}
+</div>
         
 
     <style>
@@ -71,14 +68,7 @@
         height: auto;
         object-fit: contain;
     }
-    .pickmeny {
-        background: rgb(155, 115, 6);
-        color: rgb(238, 238, 238);
-        border: none;
-        padding: 0.5rem 1rem;
-        cursor: pointer;
-        border-radius: 4px;
-    }
+    
     .remove {
         background: #ff4444;
         color: white;
