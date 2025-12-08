@@ -90,7 +90,10 @@
         console.warn("Adding new dish:", currentActiveMenu);
         const dish = await dishService.createDish(newDish, currentActiveMenu);
         cacheHandlerActions.addDish(currentActiveMenu, dish);
-        AdminState.find((x: { menuId: string; }) => x.menuId === currentActiveMenu)?.dishes.push(dish);
+        AdminState = cacheHandlerActions.getActiveCache().menus;
+
+/*         AdminState.find(x => x.menuId === currentActiveMenu)?.dishes.push(dish);
+ */      
         console.log(currentActiveMenu);
     }
 	async function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
