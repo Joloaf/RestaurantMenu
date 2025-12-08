@@ -20,7 +20,6 @@ public class MenuValidator : IMenuValidator
         return (_v.ValidThemeName(dto.Theme)
                 && _v.ValidUserName(dto.User_name)
                 && _v.ValidMenuName(dto.Menu_name)
-                && _v.ValidId(dto.Id)
-                && _v.ValidThemeName(dto.User_id));
+                && _v.ValidId(dto.Id));
     }
 }

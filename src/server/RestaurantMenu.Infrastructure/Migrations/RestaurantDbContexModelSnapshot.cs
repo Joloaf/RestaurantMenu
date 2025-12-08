@@ -347,7 +347,7 @@ namespace RestaurantMenu.Infrastructure.Migrations
                     b.HasOne("RestaurantMenu.Core.Models.User", "User")
                         .WithMany("Menus")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
