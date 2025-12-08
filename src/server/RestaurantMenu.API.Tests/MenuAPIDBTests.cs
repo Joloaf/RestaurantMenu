@@ -79,7 +79,7 @@ public class MenuAPIDBTests : IClassFixture<WebclassFixture<Program>>
         Assert.NotNull(resultMenu);
         
         var updatedMenu = new MenuDto(resultMenu.Id, "Othername", "Otheruser", Guid.NewGuid().ToString() + ".jpeg", " ");
-        var updated = await client.PostAsJsonAsync($"/Menu", updatedMenu);
+        var updated = await client.PatchAsJsonAsync($"/Menu/{resultMenu.Id}", updatedMenu);
         var updatedResultMenu = await updated.Content.ReadFromJsonAsync<MenuDto>();
         
         if(!updated.IsSuccessStatusCode)
