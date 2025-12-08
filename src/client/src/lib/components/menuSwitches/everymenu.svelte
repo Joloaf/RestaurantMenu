@@ -146,7 +146,7 @@
     .active-badge {
         position: absolute;
         top: -12px;
-        right: 1rem;
+        right: -12px;
         z-index: 10;
         background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
         color: white;
