@@ -10,13 +10,52 @@
 
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
-    const dishService = new DishService(apiService)
+    const dishService = new DishService(apiService);
+
+    let { menus = $bindable(), currentMenu, assignHandler } = $props<{ menus: Menu[], currentMenu: Menu | null, assignHandler: (handleSwap: () => Promise<void>) => void}>();
+
+    export async function DBUpdatePageData(){
+        updateMenus();
+        for(let i = 0; i < AdminState.length; i++)
+            updateDishes(AdminState[i])
+    }
     
-    let { menus = $bindable(), currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
-    
-    let currentActiveMenu = $state("-1")
-    let AdminState = $state(menus);
-    AdminState = cacheHandlerActions.getActiveCache().menus;
+    export async function updateMenus(){
+        let currMen :Menu[] = cacheHandlerActions.getActiveCache().menus
+        for(let i = 0; i < currMen.length; i ++)
+        //dropping into javascript cus lazy, should be a helper to compare the fields
+            if(!Object.keys(currMen[i]).map((x) => { 
+                if(x !== 'dishes') 
+                    return AdminState[i][x] === currMen[i][x] //work this will not when smarter the compiler gets
+                else return true;
+             }).every(x => x))
+            {
+                cacheHandlerActions.updateMenu(AdminState[i])
+            }
+    }
+    export async function updateDishes(menu: Menu){
+        //the aforementioned local helper
+        const evalElem = (cacheDish :Dish, adminDish : Dish) :boolean =>{
+            return (cacheDish.dishName === adminDish.dishName 
+                && cacheDish.dishPicture === adminDish.dishPicture)
+        };
+        //reference for the cache object
+        const cacheDishes = cacheHandlerActions.getActiveCache().menus.find((x) => x.menuId == menu.menuId)
+
+        if(!cacheDishes)
+            throw Error(`couldnt locate: ${menu.menuId} in cache, state is disjointed`)
+
+        //loop over, compare, update
+        for(let i = 0; i < menu.dishes.length; i++)
+            if(!evalElem(cacheDishes.dishes[i], menu.dishes[i])){
+                cacheHandlerActions.updateDish(menu.menuId!, menu.dishes[i])
+            }
+    }
+    let currentActiveMenu :string = $state("-1")
+    //let AdminState :Menu[] = $state(menus);
+    //let currentActiveMenu = $state("-1")
+    let AdminState: Menu[] = $state(menus);
+    AdminState = cacheHandlerActions.getActiveCache().menus;  //ask marcus
 
    async function createNewMenu(event : MouseEvent){
 
@@ -28,7 +67,7 @@
             theme: "d1bbc886-0a27-4f95-9bf1-7ed9758694c7.webp", // Default theme image
             dishes: []
         };
-
+    
        const menu = await menuService.createMenu(newMenu);
        if(menu.menuId != null){
            menu.menuId = menu.menuId.toString();
@@ -36,17 +75,17 @@
           cacheHandlerActions.addMenu(menu);
           AdminState.push(menu)
        }
-
     }
 
     function onClickDelete(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
     
 	}
+
     async function addDish() {
         const newDish: Dish = {
-            Id: 0, // Temporary ID
-            DishName: "New Dish",
-            DishPicture: "a70a6112-964d-4f87-8853-0ad44b6d4a3a.png" // default dish image
+            id: 0, // Temporary ID
+            dishName: "New Dish",
+            dishPicture: "a70a6112-964d-4f87-8853-0ad44b6d4a3a.png" // default dish image
         };
         console.warn("Adding new dish:", currentActiveMenu);
         const dish = await dishService.createDish(newDish, currentActiveMenu);
@@ -54,17 +93,13 @@
         AdminState.find((x: { menuId: string; }) => x.menuId === currentActiveMenu)?.dishes.push(dish);
         console.log(currentActiveMenu);
     }
-	function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
+	async function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
         event.stopPropagation();
+        //await UpdatePageData();
 	}
-    function createDish() {
-        return  {
-            Id: 0,
-            DishName: "defaultDish",
+    if(assignHandler)
+        assignHandler(DBUpdatePageData);
 
-            DishPicture: "taco-8029161_640.png"
-        } as Dish
-    }
 </script>
 
 <div class="admin-wrapper">
@@ -76,22 +111,23 @@
         {#each AdminState as menu}
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <div onclick={(event) => { currentActiveMenu = menu.menuId; onClickMenuHandler(event)}} class="RestMenuWrapper">
+            <div onclick={async (event) => { currentActiveMenu = menu.menuId!; await onClickMenuHandler(event)}} class="RestMenuWrapper">
                 <div class="row">
                     <RestMenu 
-                    menuItem={menu}
-                    isEditMode={true}
+                        bind:name = {menu.menuName}
+                        bind:theme = {menu.theme}
+                        isEditMode={true}
                     />
                     <button  type="button" class="remove" onclick={async (e)=> {
                         e.stopImmediatePropagation();
-                        let res = await menuService.deleteMenu(menu.menuId);
+                        let res = await menuService.deleteMenu(menu.menuId!);
                        // if(!res.success)
                        // {
                        //     throw Error(`DB remove menu failed! message: ${res.message} \n data: ${res.data}`)
                        //     return;
                        // }
 
-                        cacheHandlerActions.removeMenu(menu.menuId);
+                        cacheHandlerActions.removeMenu(menu.menuId!);
                         const curr = AdminState.findIndex((x: { menuId: any; }) => x.menuId == menu.menuId)
 
                         if(curr != -1)
@@ -101,12 +137,11 @@
                 </div>
                 <div class="column">
                     <RestDish 
-                    dishes   = {menu.dishes ?? []}
-                    menuId   = {menu.menuId}
+                    bind:dishes   = {menu.dishes}
+                    bind:menuId   = {menu.menuId}
                     active   = {currentActiveMenu === menu.menuId}
                     edit     = {true}
-                        children = {undefined}/>
-                
+                    />
                     <button class="add-dish-btn" onclick={async () => await addDish()}>+ Add Dish</button>
                 </div>
             </div>

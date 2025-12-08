@@ -19,34 +19,6 @@ export const {
     orderedDishes = $bindable([]),
 } = $props();
 
-function def(){
-        if(currentMenu.dishes.length == 0 || currentMenu.dishes == null || currentMenu.dishes == undefined)
-            currentMenu.dishes = tempDish;
-        
-            currentMenu.dishes.forEach((x,y) =>{ orderedDishes.push(new DishOrder(x, 0))});
-    }
-    let tempDish :Dish[] = [
-        {
-        name : "hello",
-        foodPicture : ""
-        } as Dish,
-        {   
-        name : "hello",
-        foodPicture : ""
-        } as Dish,
-        {   
-        name : "hello",
-        foodPicture : ""
-        } as Dish,
-        {   
-        name : "hello",
-        foodPicture : ""
-        } as Dish,
-        {   
-        name : "hello",
-        foodPicture : ""
-        } as Dish,
-    ]
 </script>
 <style>
     .row{

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.API.Service.DTOs.Models;
 using RestaurantMenu.Infrastructure.Data;
 
@@ -17,13 +18,15 @@ public class UpdateDish : IEndpoint
     {
         try
         {
-            var dish = await context.Dishes.FindAsync(dishDto.Id);
+            var dish = await context.Dishes.Where(x=> x.Id == dishDto.Id).SingleOrDefaultAsync();
             
             if (dish == null)
                 return TypedResults.NotFound();
             
             dish.Name = dishDto.DishName;
             dish.FoodPicture = dishDto.DishPicture;
+            
+            context.SaveChangesAsync();
 
             return TypedResults.Ok(new DishDto(
                 dish.Id,

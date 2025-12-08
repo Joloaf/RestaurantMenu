@@ -169,11 +169,11 @@ public class ModelMenuTest
     }
 
     [Theory]
-    [InlineData("ada650cd-8835-40eb-9e15-7dc9d2f362a5", true)]
-    [InlineData("e7c265e6-cd31-468b-a619-5c10210866dd", true)]
-    [InlineData("74e51634-1cfe-4ab3-9a8b-5054b8aa84c6", true)]
-    [InlineData("f72f3330-82e5-4dbe-ac5a-03cd9b25fe84", true)]
-    [InlineData("j72f3330-82e5-4dbe-ac5a-03cd9b25fe84", false)]
+    [InlineData("ada650cd-8835-40eb-9e15-7dc9d2f362a5.webp", true)]
+    [InlineData("e7c265e6-cd31-468b-a619-5c10210866dd.jpeg", true)]
+    [InlineData("74e51634-1cfe-4ab3-9a8b-5054b8aa84c6.jpg", true)]
+    [InlineData("f72f3330-82e5-4dbe-ac5a-03cd9b25fe84.webp", true)]
+    [InlineData("j72f3330-82e5-4dbe-ac5a-03cd9b25fe84.jpeg", false)]
 
     public void ValidThemeName_IsValidGuid(string? theme, bool expected)
     {
@@ -296,35 +296,3 @@ public class ModelMenuTest
         Assert.Equal(expected, sut.ValidMenuName(name));
     }
 }
-
-
-/*public class ISpecialCharacterTestData : IEnumerable<object[]>
-{
-
-    public List<object[]> _testData = [];
-
-    public ModelMenuTest()
-    {
-        _testData = TestDataGenerator();
-    }
-    public IEnumerator<object[]> GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    private List<object[]> TestDataGenerator()
-    {
-       // int a = 65;
-       // int b = 90;
-       // int l = 97;
-       // int le = 122;
-    }*/
-/*}*/
-
-
-//public static class Use

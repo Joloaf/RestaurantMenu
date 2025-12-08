@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,16 +23,17 @@ public class UpdateMenu : IEndpoint
         [FromRoute] int id,
         [FromBody] MenuDto menuDto,
         [FromServices] RestaurantDbContext context,
-        [FromServices] IMenuValidator menuValidator)
+        HttpContext httpcxt)
     {
-        /*
-        if(!editModelValidator.EditModelValid(menuModel))
-            return TypedResults.BadRequest(new ValidationErrorModel(menuModel, "Not Yet Implemented"));
-            */
-        
+        //if(!editModelValidator.EditModelValid(menuModel))
+          //  return TypedResults.BadRequest(new ValidationErrorModel(menuModel, "Not Yet Implemented"));
+          //
+          //
+        if(httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
+            return TypedResults.Unauthorized();
         try
         {
-            var user = await context.Users.Where(x => x.Id == menuDto.User_id)
+            var user = await context.Users.Where(x => x.Id == httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier))
                 .Include(x => x.Menus)
                 .SingleOrDefaultAsync();
             if(user == null)     // Checking if user is null before trying to access it for item from user.Menus
@@ -45,9 +48,6 @@ public class UpdateMenu : IEndpoint
             item.Theme = menuDto.Theme;
 
             // Updates should automatically be tracked, and we should only need the one save.
-            //context.Update(item);
-            //await context.SaveChangesAsync();
-            //context.Update(user);
             await context.SaveChangesAsync();
             
             return TypedResults.Ok<MenuDto>(new MenuDto(item.Id,

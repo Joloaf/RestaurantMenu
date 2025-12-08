@@ -1,9 +1,9 @@
 import { ApiService } from "./apiService";
 
 export interface Dish {
-    Id: number | null;
-    DishName: string;
-    DishPicture: string;
+    id: number | null;
+    dishName: string;
+    dishPicture: string;
 }
 
 
@@ -19,5 +19,11 @@ export class DishService {
     public async createDish(dish: Dish, menuId: string): Promise<Dish> {
         const response = await this.apiService.post(`Dish/${menuId}`, dish);
         return response as Dish;
+    }
+    public async deleteDish(dishId: number) : Promise<Dish>{
+        return await this.apiService.delete(`Dish/${dishId}`) as Dish;
+    }
+    public async upDateDish(dish: Dish) : Promise<Dish>{
+        return await this.apiService.patch(`Dish`, dish) as Dish;
     }
 }

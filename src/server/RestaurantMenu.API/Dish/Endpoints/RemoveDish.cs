@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.API.Service.DTOs.Models;
 using RestaurantMenu.Infrastructure.Data;
 
@@ -8,29 +9,28 @@ namespace RestaurantMenu.API.Dish.Endpoints;
 public class RemoveDish : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder config) =>
-        config.MapDelete("/{menuId}", Handler);
+        config.MapDelete("/{dishId}", Handler);
 
 
-    public static async Task<Results<Ok<DishDto>, NotFound, InternalServerError>> Handler(
-        int id,
+    public static async Task<IResult> Handler(
+        int dishId,
         [FromServices] RestaurantDbContext context)
     {
         try
         {
-            var dish = await context.Dishes.FindAsync(id);
-
+            var dish = await context.Dishes.Where(x => x.Id == dishId).SingleOrDefaultAsync();
+            
             if (dish == null)
                 return TypedResults.NotFound();
 
+            context.Dishes.Remove(dish);
+            
             dish.Name = "Empty";
             dish.FoodPicture = "Empty";
 
             await context.SaveChangesAsync();
 
-            return TypedResults.Ok(new DishDto(
-                dish.Id,
-                dish.Name,
-                dish.FoodPicture));
+            return TypedResults.NoContent();
         }
         catch (Exception e)
         {

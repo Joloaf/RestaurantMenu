@@ -10,24 +10,31 @@
     
     let {
         dishes = $bindable(),
-        menuId,
+        menuId = $bindable(),
         active,
         edit,
-        children,
     } = $props()
 
-    let dishesBound = $state(dishes)
+    let dishesBound : Dish[] = $derived(dishes)
     // Track quantity for each dish (for non-edit mode)
     let quantities = $state<Record<number, number>>({});
+
 
     function onImageClick(dishId: number) {
         // TODO: Add image upload/change functionality
         console.log('Image clicked for dish', dishId);
     }
 
-    function onClickDelete(dishId: number) {
-        dishes = dishes.filter((d: { id: number; }) => d.id !== dishId);
+    async function onClickDelete(dishId: number) {
+        //another one of those, "this will not work when the compiler gets smarter"
+        const dishIndex = dishesBound.findIndex(x => x.id == dishId);
+        
+        if(dishIndex == -1)
+        throw new Error("I physically cannot");
+    
+        dishesBound.splice(dishIndex, 1); //intentional loose equality cus i'm not dealing with the type issues.
         cacheHandlerActions.removeDish(menuId, dishId);
+        await dishService.deleteDish(dishId);
     }
 
     
@@ -55,36 +62,33 @@
             {#if !edit}
                 <!-- View mode: show dish with +/- quantity controls -->
                 <div class='row'>
-                    <img src={dish.foodPicture} alt={dish.name} class="dish-image" />
-                    {#if dish.name.length > 0}
-                    <p class="dish-name">{dish.name}</p>
+                    <img src={dish.dishPicture} alt={dish.dishName} class="dish-image" />
+                    {#if dish.dishName.length > 0}
+                    <p class="dish-name">{dish.dishName}</p>
                     {:else}
                     <p class="dish-name">Inge namn på rätt</p>
                     {/if}
                     <div class="quantity-controls">
-                        <button class="quantity-btn" onclick={() => decrementQuantity(dish.id)}>-</button>
-                        <span>{getQuantity(dish.id)}</span>
-                        <button class="quantity-btn" onclick={() => incrementQuantity(dish.id)}>+</button>
+                        <button class="quantity-btn" onclick={() => decrementQuantity(dish.id!)}>-</button>
+                        <span>{getQuantity(dish.id!)}</span>
+                        <button class="quantity-btn" onclick={() => incrementQuantity(dish.id!)}>+</button>
                     </div>
-                    {@render children?.()}
                 </div>
             {:else}
                 <!-- Edit mode: show dish with editable name, image, and remove button -->
                 <div class='row' style="background-image:url('{picturePath}{dishes.theme}' ">
                     <img 
-                        src={(dish.foodPicture?.length ?? -1 ) > 0 ? dish.foodPicture : '/pictures/taco-8029161_640.png'}
-                        alt={dish.name} 
+                        src={(dish.dishPicture?.length ?? -1 ) > 0 ? '/pictures/'+dish.dishPicture : '/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a.png'}
+                        alt={dish.dishName} 
                         class="dish-image" 
-                        onclick={() => onImageClick(dish.id)}
+                        onclick={() => onImageClick(dish.id!)}
                         style="cursor: pointer;"
                     />
-                    <input type="text" bind:value={dish.name} class="dish-name" placeholder="Dish name" />
-                    <button class="remove-btn" onclick={() => onClickDelete(dish.id)}>Remove</button>
+                    <input type="text" bind:value={dish.dishName} class="dish-name" placeholder="Dish name" />
+                    <button class="remove-btn" onclick={async () => await onClickDelete(dish.id!)}>Remove</button>
                 </div>
             {/if}
         {/each}
-        
-        
     {/if}
 </div>
 <style>

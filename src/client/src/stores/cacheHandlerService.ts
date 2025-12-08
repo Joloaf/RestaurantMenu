@@ -111,6 +111,13 @@ export const cacheHandlerActions = {
         setLoading(loading: boolean) {
             activeCache.isLoading = loading;
         },
+        getMenu(menuId: string) : Menu | null{
+            let index = -1;
+            if((index = activeCache.menus.findIndex((x) => x.menuId == menuId)) > -1)
+                return activeCache.menus[index]
+
+            return null;
+        },
 
         setMenus(menus: Menu[]) {
             activeCache.menus = menus;
@@ -153,7 +160,7 @@ export const cacheHandlerActions = {
         updateDish(menuId: string, updatedDish: Dish) {
             const menu = activeCache.menus.find(m => m.menuId === menuId);
             if(menu){
-                const index = menu.dishes.findIndex(d => d.Id === updatedDish.Id);
+                const index = menu.dishes.findIndex(d => d.id === updatedDish.id);
                 if(index !== -1) // findIndex returns -1 if not found
                     {
                     menu.dishes[index] = updatedDish;
@@ -170,7 +177,7 @@ export const cacheHandlerActions = {
             }
 
             const initialLength = menu.dishes.length;
-            menu.dishes = menu.dishes.filter(p => p.Id !== dishId);
+            menu.dishes = menu.dishes.filter(p => p.id !== dishId);
 
             if(menu.dishes.length === initialLength) {
                 console.warn(`Dish with id ${dishId} not found in menu ${menuId}`);
