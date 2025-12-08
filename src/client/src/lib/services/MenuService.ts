@@ -65,18 +65,4 @@ export class MenuService {
     }
 }
 
-class MenuModel{
 
-    constructor(public menu: Menu){
-        this.id = menu.menuId;
-        this.user_name = menu.userName;
-        this.theme = menu.theme;
-        this.menu_name = menu.menuName;
-        this.dishes = menu.dishes;
-    }
-    public id: string | null;
-    public menu_name: string;
-    public user_name: string;
-    public theme: string;
-    public dishes: Dish[];
-}

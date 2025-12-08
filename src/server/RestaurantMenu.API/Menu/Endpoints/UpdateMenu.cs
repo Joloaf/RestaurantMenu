@@ -33,12 +33,7 @@ public class UpdateMenu : IEndpoint
             return TypedResults.Unauthorized();
         try
         {
-            var user = await context.Users.Where(x => x.Id == httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier));
-       {
-        
-        try
-        {
-            var user = await context.Users.Where(x => x.Id == menuDto.User_id)
+            var user = await context.Users.Where(x => x.Id == httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier))
                 .Include(x => x.Menus)
                 .SingleOrDefaultAsync();
             if(user == null)     // Checking if user is null before trying to access it for item from user.Menus

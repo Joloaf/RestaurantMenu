@@ -20,10 +20,7 @@
     function onClickImage(){
         
     }
-    function OnSelectedMenu(event: MouseEvent & {currentTarget: EventTarget & HTMLButtonElement;}){
-        event.stopImmediatePropagation();
-        //cacheHandlerActions.setCurrentMenu(menuItem)
-    }
+    
     function onClickMenu(){
 
         if(!clicked){
@@ -59,7 +56,7 @@
         console.log(theme);
         return theme.length > 0 ? defPicPath+"/"+theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
     <input type="text" bind:value={name}>
-    <button type="button" class="pickmeny" onclick={OnSelectedMenu}> Välj meny</button>
+    
     {/if}
 </div>
         
@@ -71,14 +68,7 @@
         height: auto;
         object-fit: contain;
     }
-    .pickmeny {
-        background: rgb(155, 115, 6);
-        color: rgb(238, 238, 238);
-        border: none;
-        padding: 0.5rem 1rem;
-        cursor: pointer;
-        border-radius: 4px;
-    }
+    
     .remove {
         background: #ff4444;
         color: white;
