@@ -7,6 +7,7 @@
 	import { stopImmediatePropagation } from "svelte/legacy";
 	import RestDish from "../RestDish.svelte";
 	import { DishService, type Dish } from "$lib/services/DishService";
+    import UploadPicture from "../uploadPicture.svelte";
 
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
@@ -137,6 +138,7 @@
                             AdminState.splice(curr, 1)
                     
                 }}>-</button>
+                <uploadPicture ></uploadPicture>
                 </div>
                 <div class="column">
                     <RestDish 
