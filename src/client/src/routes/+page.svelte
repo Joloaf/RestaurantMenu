@@ -75,21 +75,18 @@
 	}
 </script>
 
-
 <div class="layout-wrapper">
     <header>
         <img src="/img/logo.png" alt="logo" class="logo" />
-
         <div class="navigation">
-            <button onclick={async () => { await signalSwap(); currentView = 'everymenu'; /*GetCurrentCacheData()*/}} class:active={currentView === 'everymenu'}>Everymenu</button>
-            <button onclick={async () => { await signalSwap(); currentView = 'orders';    /*GetCurrentCacheData()*/}} class:active={currentView === 'orders'}>Orders</button>
-            <button onclick={async () => { await signalSwap(); currentView = 'tickets';   /*GetCurrentCacheData()*/}} class:active={currentView === 'tickets'}>Tickets</button>
-            <button onclick={() => {  currentView = 'admin';     /*GetCurrentCacheData()*/}} class:active={currentView === 'admin'}>Admin</button>
+            <button onclick={async () => { if (currentView === 'admin') await signalSwap(); currentView = 'everymenu'; /*GetCurrentCacheData()*/}} class:active={currentView === 'everymenu'}>Everymenu</button>
+            <button onclick={async () => { if (currentView === 'admin') await signalSwap(); currentView = 'orders';    /*GetCurrentCacheData()*/}} class:active={currentView === 'orders'}>Orders</button>
+            <button onclick={async () => { if (currentView === 'admin') await signalSwap(); currentView = 'tickets';   /*GetCurrentCacheData()*/}} class:active={currentView === 'tickets'}>Tickets</button>
+            <button onclick={() => { currentView = 'admin'; /*GetCurrentCacheData()*/}} class:active={currentView === 'admin'}>Admin</button>
         </div>
     </header>
 
     <main>
-        
         <div class="currentView">
 			{#if currentView === 'admin'}
 				<Admin 
@@ -104,38 +101,10 @@
 			{:else if currentView === 'everymenu'}
 				<Everymenu menus={data.menus} currentMenu={data.currentMenu} />
 			{/if}
-            
-            
         </div>
-
-        
     </main>
-
+    
     <footer>
-        <p>Footer</p>
+        <p>Cafe Lek</p>
     </footer>
 </div>
-<style>
-	.currentView{
-		display: block;
-		
-	}
-	main{
-		display: block;
-		max-height: 50rem;
-		overflow-y: scroll;
-	}
-	
-	header{
-		display: inline-block;
-	}
-	footer{
-		display: block;
-	}
-</style>
-
-
-
-
-
-

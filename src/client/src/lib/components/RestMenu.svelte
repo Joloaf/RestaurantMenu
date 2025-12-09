@@ -17,6 +17,7 @@
     const boundName : string = $derived(name);
     const boundTheme : string = $derived(theme);
 
+    // Empty function, will be implemented at a later stage...
     function onClickImage(){
         
     }
@@ -29,8 +30,7 @@
         }
         if(clicked)
             clicked = false;
-
-    }
+        }
    
     function Show(){
         console.log("--------------------------------")
@@ -38,64 +38,70 @@
     }
     Show();
 
-
-	
 </script>
 
-
-    
-    
-<div class="row">
+<div class="menu-display" class:edit-mode={isEditMode}>
     {#if !isEditMode}
-    <img src={defPicPath+"/"+theme}>
-    <!--{@html render(children)}-->
-    <p>{name}</p>
+        <img src={defPicPath+"/"+theme} alt={name} class="menu-image">
+        <p class="menu-name">{name}</p>
     {/if}
     {#if isEditMode}
-    <img src={(()=>{
-        console.log(theme);
-        return theme.length > 0 ? defPicPath+"/"+theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
-    <input type="text" bind:value={name}>
-    
+        <div class="row">
+            <img src={(()=>{
+                console.log(theme);
+                return theme.length > 0 ? defPicPath+"/"+theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
+            <input type="text" bind:value={name}>
+        </div>
     {/if}
 </div>
         
-
-    <style>
+<style>
+    .menu-display {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
     
+    .menu-name {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+        text-align: center;
+    }
+    
+    .menu-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 20px;
+        border: 5px solid #FFB347;
+        box-shadow: 
+            0 0 0 3px white,
+            0 0 0 6px #FF6B6B,
+            0 8px 20px rgba(0, 0, 0, 0.4),
+            0 4px 10px rgba(0, 0, 0, 0.2);
+        transform: rotate(-1.5deg);
+        transition: transform 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .menu-image:hover {
+        transform: rotate(0deg) scale(1.02);
+    }
+
     .theme-display{
         width: 20%;
         height: auto;
         object-fit: contain;
     }
-    
-    .remove {
-        background: #ff4444;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        cursor: pointer;
-        border-radius: 4px;
-    }
+
     .row{
         display: flex;
         flex-direction: row;
-        justify-content: space-evenly;
-        gap: 1.125rem;
-        border: 1px solid black;
-        border-radius: 2px;
-        padding: 0.5rem;
-    }
-    .highlight{
-        box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-        -webkit-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-        -moz-box-shadow: 27px 21px 97px 39px rgba(28,174,49,0.63);
-    }
-    .highlight-img{
-        outline-color: chocolate;
-    }
-    .column{
-        display: flex;
-        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        padding: 1rem;
     }
 </style>

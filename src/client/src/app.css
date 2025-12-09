@@ -9,15 +9,18 @@ html, body {
 body {
     display: flex;
     justify-content: center;
-    align-items: center;
-    background: #f2f2f2;
+    background: #d0d0d0;
     font-family: system-ui;
 }
 
  .layout-wrapper {
      display: grid;
      grid-template-rows: auto 1fr auto;
+     width: 100%;
+     max-width: 428px;  /* Picked a set width that is of the measurements to most standard phone screens */
      min-height: 100vh;
+     background: white;
+     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
  }
 
 header {
@@ -55,8 +58,9 @@ button.active {
 }
 
 main {
-    padding: 2rem;
+    padding: 0.5rem;
     background: #f4f4f4;
+    overflow-y: auto;
 }
 
 footer {
@@ -64,5 +68,11 @@ footer {
     color: white;
     text-align: center;
     padding: 1rem;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
 }
 
