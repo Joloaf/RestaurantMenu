@@ -97,7 +97,7 @@
 			{:else if currentView === 'orders'}
 				<Orders currentMenu={cacheHandlerActions.getActiveCache().currentMenu} />
 			{:else if currentView === 'tickets'}
-				<TicketView orders={cacheHandlerActions.getActiveCache().orders} />
+				<TicketView currentOrders={cacheHandlerActions.getActiveCache().currentOrder} />
 			{:else if currentView === 'everymenu'}
 				<Everymenu menus={data.menus} currentMenu={data.currentMenu} />
 			{/if}
