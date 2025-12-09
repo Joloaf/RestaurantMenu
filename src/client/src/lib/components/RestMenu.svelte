@@ -3,6 +3,7 @@
 	import type { Component } from 'svelte';
     import RestDish from './RestDish.svelte';
     import { cacheHandlerActions } from '../../stores/cacheHandlerService';
+    import UploadPicture from './uploadPicture.svelte';
 
 	import { render } from 'svelte/server';
     const defPicPath = "/pictures"
@@ -17,8 +18,10 @@
     const boundName : string = $derived(name);
     const boundTheme : string = $derived(theme);
 
-    function onClickImage(){
-        
+    function handleMenuPictureUpload(pictureDataUrl: string) {
+        theme = pictureDataUrl;
+        // The theme is bound to parent, so it will update automatically
+        // If you need to save to backend/cache immediately, do it here
     }
     
     function onClickMenu(){
@@ -52,21 +55,45 @@
     <p>{name}</p>
     {/if}
     {#if isEditMode}
-    <img src={(()=>{
-        console.log(theme);
-        return theme.length > 0 ? defPicPath+"/"+theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
-    <input type="text" bind:value={name}>
-    
+    <div class="menu-edit-section">
+        <div class="image-upload-section">
+            <img 
+                src={theme?.length > 0 ? (theme.startsWith('data:') ? theme : defPicPath+"/"+theme) : '/pictures/menu-5507525_640.webp'} 
+                class="theme-display"
+                alt="Menu theme"
+            >
+            <UploadPicture 
+                onPictureSelected={handleMenuPictureUpload}
+                buttonText="Change Theme"
+            />
+        </div>
+        <input type="text" bind:value={name} placeholder="Menu name">
+    </div>
     {/if}
 </div>
         
 
     <style>
     
-    .theme-display{
-        width: 20%;
-        height: auto;
-        object-fit: contain;
+    .menu-edit-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+    
+    .image-upload-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .theme-display {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
     }
     
     .remove {

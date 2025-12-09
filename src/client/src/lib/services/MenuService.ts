@@ -51,12 +51,12 @@ export class MenuService {
         return response as Menu;
     }
 
-    public async updateMenu(menu: Menu): Promise<Menu | ApiResponse> {
+    public async updateMenu(menu: Menu): Promise<Menu> {
         const response = await this.ApiService.patch(`Menu/${menu.menuId}`, menu);
         console.log("***************API**UPDATE**************")
         console.log(response)
         console.log("***************API**UPDATE**************")
-        return response as Menu | ApiResponse;
+        return response as Menu;
     }
 
     public async deleteMenu(menuId: string): Promise<ApiResponse> {

@@ -3,6 +3,7 @@
 	import { cacheHandlerActions } from "../../stores/cacheHandlerService";
     import { DishService } from "$lib/services/DishService";
     import { ApiService } from "$lib/services/apiService";
+    import UploadPicture from "./uploadPicture.svelte";
     
     const apiService = new ApiService();
     const dishService = new DishService(apiService);
@@ -20,9 +21,19 @@
     let quantities = $state<Record<number, number>>({});
 
 
-    function onImageClick(dishId: number) {
-        // TODO: Add image upload/change functionality
-        console.log('Image clicked for dish', dishId);
+    async function handlePictureUpload(dish: Dish, pictureDataUrl: string) {
+        // Update the dish with the new picture
+        dish.dishPicture = pictureDataUrl;
+        
+        // Update in cache
+        cacheHandlerActions.updateDish(menuId, dish);
+        
+        // Update in backend
+        try {
+            await dishService.upDateDish(dish);
+        } catch (err) {
+            console.error('Error updating dish picture:', err);
+        }
     }
 
     async function onClickDelete(dishId: number) {
@@ -76,14 +87,18 @@
                 </div>
             {:else}
                 <!-- Edit mode: show dish with editable name, image, and remove button -->
-                <div class='row' style="background-image:url('{picturePath}{dishes.theme}' ">
-                    <img 
-                        src={(dish.dishPicture?.length ?? -1 ) > 0 ? '/pictures/'+dish.dishPicture : '/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a.png'}
-                        alt={dish.dishName} 
-                        class="dish-image" 
-                        onclick={() => onImageClick(dish.id!)}
-                        style="cursor: pointer;"
-                    />
+                <div class='row'>
+                    <div class="image-section">
+                        <img 
+                            src={(dish.dishPicture?.length ?? -1 ) > 0 ? dish.dishPicture : '/static/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a.png'}
+                            alt={dish.dishName} 
+                            class="dish-image"
+                        />
+                        <UploadPicture 
+                            onPictureSelected={(dataUrl) => handlePictureUpload(dish, dataUrl)}
+                            buttonText="Change"
+                        />
+                    </div>
                     <input type="text" bind:value={dish.dishName} class="dish-name" placeholder="Dish name" />
                     <button class="remove-btn" onclick={async () => await onClickDelete(dish.id!)}>Remove</button>
                 </div>
@@ -101,6 +116,13 @@
         padding: 0.5rem;
         border: 1px solid #ddd;
         border-radius: 4px;
+    }
+    
+    .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
     }
     
     .dish-image {
