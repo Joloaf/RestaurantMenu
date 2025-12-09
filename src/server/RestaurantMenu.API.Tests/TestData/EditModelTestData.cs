@@ -17,7 +17,7 @@ public class EditModelTestData : IEnumerable<object[]>
     public List<object[]> GetTestData()
     {
         List<object[]> models = [];
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 1_000; i++)
         {
             if (i % 2 == 0)
             {
@@ -34,12 +34,11 @@ public class EditModelTestData : IEnumerable<object[]>
 
     private IEnumerable<MenuDto> CreateInvalidModel()
     {
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 4; i++)
             switch (i)
             {
                 case 0:
                     yield return _builder.WithId(false)
-                    .WithIdentityUserId(true)
                     .WithName(true)
                     .WithUserName(true)
                     .WithThemeName(true)
@@ -47,31 +46,20 @@ public class EditModelTestData : IEnumerable<object[]>
                     break;
                 case 1:
                     yield return _builder.WithId(true)
-                    .WithIdentityUserId(false)
-                    .WithName(true) 
-                    .WithUserName(true)
-                    .WithThemeName(true)
-                    .Build();
-                    break;
-                case 2:
-                    yield return _builder.WithId(true)
-                    .WithIdentityUserId(true)
                     .WithName(false, Spaces.Ending | Spaces.Start)
                     .WithThemeName(true)
                     .WithUserName(true)
                     .Build();
                     break;
-                case 3:
+                case 2:
                     yield return _builder.WithId(true)
-                    .WithIdentityUserId(true)
                     .WithName(true)
                     .WithThemeName(true)
                     .WithUserName(false)
                     .Build();
                     break;
-                case 4:
+                case 3:
                     yield return _builder.WithId(true)
-                        .WithIdentityUserId(true)
                         .WithName(true)
                         .WithThemeName(false)
                         .WithUserName(true)
@@ -84,7 +72,6 @@ public class EditModelTestData : IEnumerable<object[]>
     private MenuDto CreateValidModel()
     {
         return _builder.WithId(true)
-            .WithIdentityUserId(true)
             .WithThemeName(true)
             .WithUserName(true)
             .WithName(true)
