@@ -57,7 +57,7 @@ public class Validations : IValidations
            || string.IsNullOrWhiteSpace(username))
             return false;
 
-        var regex = new Regex(@"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+        var regex = new Regex(@"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\.(?:webp|png|jpg|jpeg)$");
         return regex.IsMatch(username);
     }
     public bool TicketValidIdNumber(int id)
