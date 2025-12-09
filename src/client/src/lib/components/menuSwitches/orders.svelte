@@ -119,7 +119,6 @@
         align-items: center;
         justify-content: center;
         padding: 0.5rem;
-        background: white;
     }
     
     .dish-name {
@@ -137,7 +136,6 @@
         align-items: center;
         justify-content: space-around;
         padding: 0.5rem;
-        background: white;
         gap: 0.5rem;
     }
 
@@ -146,7 +144,7 @@
         height: 60px;
         background: linear-gradient(135deg, #FC6675 0%, #AB537C 100%);
         color: white;
-        border: none;
+        border: 2px solid #8B2F5C;
         border-radius: 12px;
         font-size: 2.5rem;
         font-weight: bold;
@@ -157,6 +155,7 @@
         box-shadow: 0 4px 8px rgba(255, 107, 157, 0.4);
         transition: all 0.2s ease;
         line-height: 1;
+        text-shadow: 1px 1px 2px #8B2F5C, -1px -1px 2px #8B2F5C, 1px -1px 2px #8B2F5C, -1px 1px 2px #8B2F5C;
     }
     
     .btn-minus:hover {
@@ -173,7 +172,7 @@
         height: 60px;
         background: linear-gradient(135deg, #a8ff78 0%, #00CED1 100%);
         color: white;
-        border: none;
+        border: 2px solid #00A8AA;
         border-radius: 12px;
         font-size: 2.5rem;
         font-weight: bold;
@@ -184,6 +183,7 @@
         box-shadow: 0 4px 8px rgba(0, 206, 209, 0.4);
         transition: all 0.2s ease;
         line-height: 1;
+        text-shadow: 1px 1px 2px #00A8AA, -1px -1px 2px #00A8AA, 1px -1px 2px #00A8AA, -1px 1px 2px #00A8AA;
     }
     
     .btn-plus:hover {
@@ -214,7 +214,7 @@
         width: 100%;
         background: linear-gradient(135deg, #FFB347 0%, #FF6B6B 100%);
         color: white;
-        border: none;
+        border: 2px solid #D94A4A;
         padding: 1.5rem 2rem;
         cursor: pointer;
         border-radius: 16px;
@@ -224,6 +224,7 @@
         text-transform: uppercase;
         box-shadow: 0 6px 12px rgba(255, 107, 107, 0.4);
         transition: all 0.3s ease;
+        text-shadow: 1px 1px 2px #D94A4A, -1px -1px 2px #D94A4A, 1px -1px 2px #D94A4A, -1px 1px 2px #D94A4A;
     }
     
     .place-order-btn:hover {

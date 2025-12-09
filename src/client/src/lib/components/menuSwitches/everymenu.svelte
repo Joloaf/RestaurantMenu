@@ -31,7 +31,7 @@
 </script>
 
 <div class="everymenu-container">
-    <h2 class="title">Alla Menyer ({menus.length})</h2>
+    <h2 class="title">Antal menyer ({menus.length})</h2>
     
     {#if menus && menus.length > 0}
         <div class="menus-list">
@@ -109,9 +109,11 @@
     }
     
     .menu-card.active {
-        border: 5px solid #4ECDC4;
-        background: linear-gradient(135deg, #FFF9E6 0%, #FFE5F1 100%);
-        box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4);
+        background: 
+            linear-gradient(135deg, #FFF9E6 0%, #FFE5F1 100%) padding-box,
+            linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%) border-box;
+        border: 5px solid transparent;
+        box-shadow: 0 8px 20px rgba(116, 235, 213, 0.4);
     }
 
     .menu-card.flash {
@@ -121,23 +123,23 @@
     /* Keyframes to animate the flash effect when selecting a new active menu */
     @keyframes flashHighlight {
         0% {
-            box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.8);
+            box-shadow: 0 0 0 0 rgba(116, 235, 213, 0.8);
             transform: scale(1);
         }
         25% {
-            box-shadow: 0 0 30px 15px rgba(78, 205, 196, 0.6);
+            box-shadow: 0 0 30px 15px rgba(116, 235, 213, 0.6);
             transform: scale(1.03);
         }
         50% {
-            box-shadow: 0 0 40px 20px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 0 40px 20px rgba(172, 182, 229, 0.4);
             transform: scale(1.05);
         }
         75% {
-            box-shadow: 0 0 30px 15px rgba(78, 205, 196, 0.6);
+            box-shadow: 0 0 30px 15px rgba(116, 235, 213, 0.6);
             transform: scale(1.03);
         }
         100% {
-            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4);
+            box-shadow: 0 8px 20px rgba(116, 235, 213, 0.4);
             transform: scale(1);
         }
     }
@@ -148,7 +150,7 @@
         top: -12px;
         right: -12px;
         z-index: 10;
-        background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+        background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
         color: white;
         padding: 0.5rem 1rem;
         border-radius: 20px;
@@ -190,7 +192,7 @@
         width: 100%;
         background: linear-gradient(135deg, #FF6B6B 0%, #FFB347 100%);
         color: white;
-        border: none;
+        border: 2px solid #D94A4A;
         padding: 1.5rem 2rem;
         cursor: pointer;
         border-radius: 16px;
@@ -200,6 +202,7 @@
         transition: all 0.3s ease;
         box-shadow: 0 6px 12px rgba(255, 107, 107, 0.4);
         text-transform: uppercase;
+        text-shadow: 1px 1px 2px #D94A4A, -1px -1px 2px #D94A4A, 1px -1px 2px #D94A4A, -1px 1px 2px #D94A4A;
     }
     
     .select-btn:hover:not(:disabled) {
@@ -212,9 +215,11 @@
     }
     
     .select-btn.selected {
-        background: linear-gradient(135deg, #95E1D3 0%, #4ECDC4 100%);
+        background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
         cursor: default;
-        box-shadow: 0 6px 12px rgba(78, 205, 196, 0.4);
+        box-shadow: 0 6px 12px rgba(116, 235, 213, 0.4);
+        border: 2px solid #3D9B95;
+        text-shadow: 1px 1px 2px #3D9B95, -1px -1px 2px #3D9B95, 1px -1px 2px #3D9B95, -1px 1px 2px #3D9B95;
     }
     
     .select-btn:disabled {
