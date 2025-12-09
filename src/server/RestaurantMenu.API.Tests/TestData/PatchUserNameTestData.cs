@@ -25,7 +25,6 @@ public class PatchUserNameTestData : IEnumerable<object[]>
         var builder = new MenuModelBuilder();
 
         var obj = builder.WithId(true)
-            .WithIdentityUserId(true)
             .WithName(true)
             .WithUserName(true)
             .WithThemeName(true)
