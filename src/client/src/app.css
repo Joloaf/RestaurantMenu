@@ -31,7 +31,7 @@ header {
 
 .logo {
     height: 40px;
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem auto; 
 }
 
 .navigation {
@@ -65,4 +65,29 @@ footer {
     text-align: center;
     padding: 1rem;
 }
+
+/*For menu img*/
+/*.image-container-menu {*/
+/*    display: flex;*/
+/*    justify-content: center; !* centrerar bilden horisontellt *!*/
+/*    align-items: center;     !* centrerar bilden vertikalt *!*/
+/*    height: 100px;           !* exempelhöjd *!*/
+/*    width: 100px;            !* exempelbredd *!*/
+/*    background-color: #eee;  !* valfri bakgrund *!*/
+/*}*/
+
+/*.menu-img-log {*/
+/*    max-width: 100%;*/
+/*    max-height: 100%;*/
+/*}*/
+
+.order-dish-logo {
+    height: 60px;
+    margin: 0 auto 1rem auto;
+}
+
+
+
+
+
 

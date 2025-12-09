@@ -80,6 +80,9 @@
     <header>
         <img src="/img/logo.png" alt="logo" class="logo" />
 
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+
         <div class="navigation">
             <button onclick={async () => { await signalSwap(); currentView = 'everymenu'; /*GetCurrentCacheData()*/}} class:active={currentView === 'everymenu'}>Everymenu</button>
             <button onclick={async () => { await signalSwap(); currentView = 'orders';    /*GetCurrentCacheData()*/}} class:active={currentView === 'orders'}>Orders</button>
@@ -100,7 +103,7 @@
 			{:else if currentView === 'orders'}
 				<Orders currentMenu={cacheHandlerActions.getActiveCache().currentMenu} />
 			{:else if currentView === 'tickets'}
-				<TicketView orders={cacheHandlerActions.getActiveCache().orders} />
+				<TicketView currentOrders={cacheHandlerActions.getActiveCache().currentOrder} />
 			{:else if currentView === 'everymenu'}
 				<Everymenu menus={data.menus} currentMenu={data.currentMenu} />
 			{/if}
