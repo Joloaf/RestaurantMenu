@@ -2,6 +2,7 @@
     import { ApiService } from "$lib/services/apiService";
     import { AccountService } from "$lib/services/accountService";
     import type { LoginRequest, UserResponse, ErrorResponse } from "$lib/services/accountService";
+    import { clearCache } from "../../stores/cacheHandlerService";
 
     let { isOpen = $bindable(false) } = $props();
 
@@ -52,6 +53,8 @@
         password = "";
         loading = false;
         isOpen = false;
+        clearCache();
+        document.location.reload();
     }
 
     function closeModal() {
