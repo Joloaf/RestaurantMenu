@@ -45,6 +45,7 @@ header {
 }
 
 .logo {
+    max-width: 75%;
     height: auto;
     max-height: 60px;
     object-fit: contain;
@@ -70,7 +71,9 @@ header {
     justify-content: center;
     width: 2.5rem;
     height: 2.5rem;
+}
 
+.login-btn:hover {
     background: rgba(255, 255, 255, 0.3);
 }
 
@@ -159,21 +162,6 @@ footer p {
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
-
-/*For menu img*/
-/*.image-container-menu {*/
-/*    display: flex;*/
-/*    justify-content: center; !* centrerar bilden horisontellt *!*/
-/*    align-items: center;     !* centrerar bilden vertikalt *!*/
-/*    height: 100px;           !* exempelhöjd *!*/
-/*    width: 100px;            !* exempelbredd *!*/
-/*    background-color: #eee;  !* valfri bakgrund *!*/
-/*}*/
-
-/*.menu-img-log {*/
-/*    max-width: 100%;*/
-/*    max-height: 100%;*/
-/*}*/
 
 .order-dish-logo {
     height: 60px;
