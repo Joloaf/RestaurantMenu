@@ -26,7 +26,4 @@ export class DishService {
     public async upDateDish(dish: Dish) : Promise<Dish>{
         return await this.apiService.patch(`Dish`, dish) as Dish;
     }
-    public async upDateTheme(id: number, file: string) : Promise<string>{
-    return await this.apiService.patch(`Dish/${id}`, file) as string;
-    }
 }
