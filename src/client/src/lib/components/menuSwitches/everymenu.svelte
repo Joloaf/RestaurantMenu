@@ -3,15 +3,16 @@
     import type { Menu } from "$lib/services/MenuService";
     import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
 
-    let { menus, currentMenu = $bindable() } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
+    let { menus, currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
     
     // Making good use of our cache to ensure we have nothing stale in this restaurant menu!
-    menus = cacheHandlerActions.getActiveCache().menus;
-    currentMenu = cacheHandlerActions.getActiveCache().currentMenu;
+    //menus = cacheHandlerActions.getActiveCache().menus;
+    //currentMenu = cacheHandlerActions.getActiveCache().currentMenu;
     
     // Local states for selected menu badge and animation
     let selectedMenuId = $state(currentMenu?.menuId || null);
     let justSelected = $state(false);
+    let selectedMenu = $state(currentMenu)
 
     function isActiveMenu(menu: Menu): boolean {
         return selectedMenuId === menu.menuId;
