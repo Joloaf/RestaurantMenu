@@ -1,18 +1,38 @@
 <script lang="ts">
     import '../../../app.css';
     import {cacheHandlerActions, type Order} from '$lib/../stores/cacheHandlerService';
-    import type Ticket from '$lib/../stores/cacheHandlerService';
-
-
-    let {currentOrders} = $props<{ currentOrders: Order[] }>();
+    import type Ticket from "../../../stores/cacheHandlerService";
+    
+    let {currentOrders} = $props<{ currentOrders: Order[] | null}>();
     let orders: Order[] = $state(populateOrders())
-
+    
     function populateOrders(): Order[] {
-        return [...currentOrders].sort((a, b) => a.ticketNumber - b.ticketNumber);
+        
+        const activeMenuId = cacheHandlerActions.getActiveCache().currentMenu?.menuId;
+        
+        if (!activeMenuId) {
+            console.warn("No active menu selected");
+            return [];
+        }
+        const ordersArray = currentOrders ?? [];
+        
+        const currentOrder = [...ordersArray].filter(o => o.menuId === activeMenuId);
+        
+        return [...currentOrder].sort((a, b) => a.ticketNumber - b.ticketNumber);
     }
     
     function finishTicket(ticketId: number): void {
         cacheHandlerActions.removeTicket(ticketId)
+
+        const orderIndex = orders.findIndex((o: { ticket: Ticket[]; }) =>
+            o.ticket.some(t => t.id === ticketId))
+
+        orders[orderIndex].ticket =
+            orders[orderIndex].ticket.filter((t: { id: number; }) => t.id !== ticketId);
+
+        if (orders[orderIndex].ticket.length == 0) {
+            orders.splice(orderIndex, 1);
+        }
     }
 
 </script>
