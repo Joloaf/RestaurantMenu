@@ -15,8 +15,12 @@ public class DeleteMenu : IEndpoint
         [FromServices] IHttpContextAccessor accessor,
         HttpContext httpContext)
     {
+        
         try
         {
+            if (httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)  == null)
+                return TypedResults.Unauthorized();
+            
             int parsedId = int.Parse(id);
             if (parsedId <= 0)
                 return Results.BadRequest();
@@ -30,8 +34,6 @@ public class DeleteMenu : IEndpoint
                 return TypedResults.NotFound();
 
             // Verify the menu belongs to the requesting user
-            if (httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)  == null)
-                return TypedResults.Unauthorized();
             
             context.Remove(menuItem);
             await context.SaveChangesAsync();

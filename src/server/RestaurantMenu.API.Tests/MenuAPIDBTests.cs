@@ -27,7 +27,7 @@ public class MenuAPIDBTests : IClassFixture<WebclassFixture<Program>>
         var fixt = await _fixture.CreateSignedInClient();
         var client = fixt.client; //split out the client
         //instantiate creationobj
-        var toCreate = new MenuDto(0, "Defaultname", "User", Guid.NewGuid().ToString() + ".jpeg", " ");
+        var toCreate = new MenuDto(0, "Defaultname", "User", Guid.NewGuid().ToString(), " ");
         
         var created = await client.PostAsJsonAsync("/Menu", toCreate);
         if(!created.IsSuccessStatusCode)
@@ -63,9 +63,7 @@ public class MenuAPIDBTests : IClassFixture<WebclassFixture<Program>>
         var fixt = await _fixture.CreateSignedInClient();
         var client = fixt.client;
         var clientGuid = fixt.uid;
-        
-        var toCreate = new MenuDto(0, "Defaultname", "User", Guid.NewGuid().ToString() + ".jpeg", " ");
-        
+         var toCreate = new MenuDto(0, "Defaultname", "User", Guid.NewGuid().ToString(), " "); 
         var created = await client.PostAsJsonAsync("/Menu", toCreate);
         if(!created.IsSuccessStatusCode)
             throw new Exception($"Failed to create menu: {created.ReasonPhrase} " +
@@ -78,7 +76,7 @@ public class MenuAPIDBTests : IClassFixture<WebclassFixture<Program>>
         var resultMenu = await created.Content.ReadFromJsonAsync<MenuDto>();
         Assert.NotNull(resultMenu);
         
-        var updatedMenu = new MenuDto(resultMenu.Id, "Othername", "Otheruser", Guid.NewGuid().ToString() + ".jpeg", " ");
+        var updatedMenu = new MenuDto(resultMenu.Id, "Othername", "Otheruser", Guid.NewGuid().ToString(), " ");
         var updated = await client.PatchAsJsonAsync($"/Menu/{resultMenu.Id}", updatedMenu);
         var updatedResultMenu = await updated.Content.ReadFromJsonAsync<MenuDto>();
         
@@ -124,7 +122,7 @@ public class MenuAPIDBTests : IClassFixture<WebclassFixture<Program>>
         var client = fixt.client;
         var clientGuid = fixt.uid;
         
-        var toCreate = new MenuDto(0, "Defaultname", "User", Guid.NewGuid().ToString() + ".jpeg", " ");
+        var toCreate = new MenuDto(0, "Defaultname", "User", Guid.NewGuid().ToString(), " ");
         
         var created = await client.PostAsJsonAsync("/Menu", toCreate);
         if(!created.IsSuccessStatusCode)

@@ -24,7 +24,7 @@ public class Program
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             options.JsonSerializerOptions.MaxDepth = 32;
         });
-        
+        builder.WebHost.UseUrls("http://0.0.0.0:5187", "http://192.168.1.195:5187");
         //TODO change requires after dev
         // add identity lower requirement for creation accounts/password
         builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -120,7 +120,6 @@ public class Program
                   app.Environment);
         }
 
-        //
         app.Run();
     }
 }

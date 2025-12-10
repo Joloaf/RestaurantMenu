@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.API.Service.DTOs.Models;
@@ -13,14 +14,15 @@ public class CreateMenu : IEndpoint
 
     public record ValidationErrorModel(MenuDto Dto, string reason);
 
+    [Authorize]
     public static async Task<IResult> Handler(
         [FromBody] MenuDto dto,
         [FromServices] RestaurantDbContext context,
         [FromServices] IMenuValidator menuValidator,
         HttpContext httpContext)
     {
-        //if(!menuValidator.EditModelValid(dto))
-           // return TypedResults.BadRequest(new ValidationErrorModel(dto, "Not Yet Implemented"));
+        if(!menuValidator.ModelValid(dto))
+            return TypedResults.BadRequest(new ValidationErrorModel(dto, "Not Yet Implemented"));
         
         try
         {

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,14 @@ public class GetMenu : IEndpoint
 
     public static async Task<Results<Ok<MenuDto>, NotFound, InternalServerError>> Handler(
         int id,
-        [FromServices] RestaurantDbContext context)
+        [FromServices] RestaurantDbContext context,
+        HttpContext httpContext)
     {
         try
         {
+            if(httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
+                return TypedResults.NotFound();
+            
             var menu = await context.Menus
                 .Include(m => m.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
