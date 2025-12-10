@@ -49,6 +49,9 @@
         console.log("Logged in as user: " + userResponse.Username);
         console.log("Logged in as user.Id: " + userResponse.Id);
         console.log(userResponse);
+
+        localStorage.setItem('user', JSON.stringify(userResponse));
+        
         username = "";
         password = "";
         loading = false;

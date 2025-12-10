@@ -6,6 +6,7 @@
 	import Orders from '$lib/components/menuSwitches/orders.svelte';
 	import TicketView from '$lib/components/menuSwitches/ticketView.svelte';
 	import LoginModal from '$lib/components/LoginModal.svelte';
+	import LogoutModal from '$lib/components/LogoutModal.svelte';
 	import { cacheHandlerActions } from '../stores/cacheHandlerService';
 	import type { Menu } from '$lib/services/MenuService.js';
 	import { MenuService } from '$lib/services/MenuService.js';
@@ -20,6 +21,20 @@
 	
 	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
 	let isLoginModalOpen = $state(false);
+	let isLogoutModalOpen = $state(false);
+
+	function isLoggedIn() {
+		if (typeof window === 'undefined') return false;
+		return localStorage.getItem('user') !== null;
+	}
+	
+	function handleAuthButtonClick() {
+		if (isLoggedIn()) {
+			isLogoutModalOpen = true;
+		} else {
+			isLoginModalOpen = true;
+		}
+	}
 
 	// Function to change view with animation
 	function changeView(newView: typeof currentView) {
@@ -96,7 +111,7 @@
         <div class="header-top">
             <img src="/img/logoNew.png" alt="logo" class="logo" />
             {#if currentView === 'admin'}
-                <button class="login-btn" onclick={() => isLoginModalOpen = true}>👤</button>
+                <button class="login-btn" onclick={handleAuthButtonClick}>👤</button>
             {/if}
         </div>
         <div class="navigation">
@@ -131,3 +146,4 @@
 </div>
 
 <LoginModal bind:isOpen={isLoginModalOpen} />
+<LogoutModal bind:isOpen={isLogoutModalOpen} />
