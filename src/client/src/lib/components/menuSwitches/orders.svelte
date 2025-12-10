@@ -40,7 +40,7 @@
                 <div class="dish-card">
                     <div class="dish-image-container">
                         <img 
-                            src={ticket.dishes?.dishPicture.length ?? -1 > 0 ? "/pictures/"+ticket.dishes.dishPicture : "/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a.png"}
+                            src={ticket.dishes?.dishPicture.length ?? -1 > 0 ? "/pictures/"+ticket.dishes.dishPicture : "/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a"}
                             alt={ticket.dishes.dishName}
                             class="dish-image"
                         />

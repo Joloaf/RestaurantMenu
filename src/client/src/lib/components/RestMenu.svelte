@@ -3,6 +3,7 @@
 	import type { Component } from 'svelte';
     import RestDish from './RestDish.svelte';
     import { cacheHandlerActions } from '../../stores/cacheHandlerService';
+    import { validateField } from '$lib/Validations/clientValidations';
 
 	import { render } from 'svelte/server';
     const defPicPath = "/pictures"
@@ -46,12 +47,8 @@
         <p class="menu-name">{name}</p>
     {/if}
     {#if isEditMode}
-        <div class="row">
-            <img src={(()=>{
-                console.log(theme);
-                return theme.length > 0 ? defPicPath+"/"+theme : '/pictures/menu-5507525_640.webp'})()} onclick={onClickImage} class="theme-display">
-            <input type="text" bind:value={name}>
-        </div>
+        <img src={(()=>{ return theme.length > 0 ? defPicPath+"/"+theme : '/pictures/d1bbc886-0a27-4f95-9bf1-7ed9758694c7'})()} onclick={onClickImage} class="theme-display">
+        <input type="text" bind:value={name}>
     {/if}
 </div>
         

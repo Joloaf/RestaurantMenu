@@ -4,5 +4,5 @@ namespace RestaurantMenu.API.Service.Interfaces;
 
 public interface IMenuValidator
 {
-    public bool EditModelValid(MenuDto dto);
+    public bool ModelValid(MenuDto dto);
 }

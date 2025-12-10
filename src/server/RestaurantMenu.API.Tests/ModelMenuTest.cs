@@ -43,7 +43,7 @@ public class ModelMenuTest
        var sut = new MenuValidator(new Validations());
        
        //act
-       var actual = sut.EditModelValid(dto);
+       var actual = sut.ModelValid(dto);
 
        //assert
        Assert.True(actual == expected,
@@ -65,7 +65,7 @@ public class ModelMenuTest
         var sut = new MenuValidator(new Validations());
        
         //act
-        var actual = sut.EditModelValid(new MenuDto(0, "StandardMenu", "Sara",Guid.NewGuid().ToString()+".webp", Guid.NewGuid().ToString()));
+        var actual = sut.ModelValid(new MenuDto(0, "StandardMenu", "Sara",Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
        
         //assert
         Assert.True(actual);
@@ -169,11 +169,11 @@ public class ModelMenuTest
     }
 
     [Theory]
-    [InlineData("ada650cd-8835-40eb-9e15-7dc9d2f362a5.webp", true)]
-    [InlineData("e7c265e6-cd31-468b-a619-5c10210866dd.jpeg", true)]
-    [InlineData("74e51634-1cfe-4ab3-9a8b-5054b8aa84c6.jpg", true)]
-    [InlineData("f72f3330-82e5-4dbe-ac5a-03cd9b25fe84.webp", true)]
-    [InlineData("j72f3330-82e5-4dbe-ac5a-03cd9b25fe84.jpeg", false)]
+    [InlineData("ada650cd-8835-40eb-9e15-7dc9d2f362a5", true)]
+    [InlineData("e7c265e6-cd31-468b-a619-5c10210866dd", true)]
+    [InlineData("74e51634-1cfe-4ab3-9a8b-5054b8aa84c6", true)]
+    [InlineData("f72f3330-82e5-4dbe-ac5a-03cd9b25fe84", true)]
+    [InlineData("j72f3330-82e5-4dbe-ac5a-03cd9b25fe84", false)]
 
     public void ValidThemeName_IsValidGuid(string? theme, bool expected)
     {

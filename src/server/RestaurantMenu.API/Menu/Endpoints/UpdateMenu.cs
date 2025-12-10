@@ -23,14 +23,17 @@ public class UpdateMenu : IEndpoint
         [FromRoute] int id,
         [FromBody] MenuDto menuDto,
         [FromServices] RestaurantDbContext context,
+        [FromServices] IMenuValidator validator,
         HttpContext httpcxt)
     {
-        //if(!editModelValidator.EditModelValid(menuModel))
-          //  return TypedResults.BadRequest(new ValidationErrorModel(menuModel, "Not Yet Implemented"));
-          //
-          //
         if(httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
             return TypedResults.Unauthorized();
+        
+        if(!validator.ModelValid(menuDto))
+            return TypedResults.BadRequest(new ValidationErrorModel(menuDto, "Not Yet Implemented"));
+          
+          
+        
         try
         {
             var user = await context.Users.Where(x => x.Id == httpcxt.User.FindFirstValue(ClaimTypes.NameIdentifier))
