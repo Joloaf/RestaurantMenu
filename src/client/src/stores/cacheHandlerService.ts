@@ -96,6 +96,7 @@ export function clearCache() {
     } catch (error) {
         console.error('Error clearing cache:', error);
     }
+
 }
 function saveOrdersToCache(cache: Order) {
     if (typeof window === 'undefined') return;
@@ -190,6 +191,7 @@ export const cacheHandlerActions = {
     },
 
     setCurrentMenu(menu: Menu | null) {
+        activeCache.currentOrder = activeCache.orders.filter(o => o.menuId === menu?.menuId);
         console.log(activeCache.orders);
         console.log(activeCache.currentOrder);
         activeCache.currentMenu = menu;
@@ -284,8 +286,6 @@ export const cacheHandlerActions = {
 
     //
     //if order exists updates it silently.
-
-
     checkemptyOrder(orderId: number) {
         const res = activeCache.orders.findIndex((x) => x.ticketNumber === orderId)
 

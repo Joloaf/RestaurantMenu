@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using RestaurantMenu.API.Service.DTOs.Models;
 
 namespace RestaurantMenu.API.Service.Interfaces;
@@ -13,8 +14,7 @@ public class MenuValidator : IMenuValidator
 
     /*  TODO: Expand the validations to get more specific error messages.
         We wanna make it easier to pinpoint what is wrong if we ever get an error. */
-
-    public bool EditModelValid(MenuDto dto)
+    public bool ModelValid(MenuDto dto)
     {
         
         return (_v.ValidThemeName(dto.Theme)
@@ -23,3 +23,13 @@ public class MenuValidator : IMenuValidator
                 && _v.ValidId(dto.Id));
     }
 }
+
+
+
+
+
+
+
+
+
+

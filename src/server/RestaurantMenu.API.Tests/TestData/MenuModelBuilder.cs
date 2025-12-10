@@ -149,7 +149,7 @@ internal class MenuModelBuilder
     
     private string CreateValidThemeName()
     {
-        return Guid.NewGuid().ToString()+".jpg";
+        return Guid.NewGuid().ToString();
     }
 
     private string CreateInvalidThemeName()

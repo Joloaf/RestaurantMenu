@@ -3,10 +3,6 @@ using RestaurantMenu.API.Service.Interfaces;
 
 namespace RestaurantMenu.API.Service.Validations;
 
-
-
-
-
 public class Validations : IValidations
 {
     public bool ValidUserName(string? username)
@@ -57,7 +53,7 @@ public class Validations : IValidations
            || string.IsNullOrWhiteSpace(username))
             return false;
 
-        var regex = new Regex(@"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\.(?:webp|png|jpg|jpeg)$");
+        var regex = new Regex(@"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
         return regex.IsMatch(username);
     }
     public bool TicketValidIdNumber(int id)

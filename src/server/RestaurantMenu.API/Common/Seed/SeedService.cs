@@ -75,17 +75,17 @@ public class DevelopmentSeedService : IDevelopmentSeedService
                     new Core.Models.Dish()
                     {
                         Name = "SeedingDish1",
-                        FoodPicture = "taco-8029161_640.png"
+                        FoodPicture = "a70a6112-964d-4f87-8853-0ad44b6d4a3a"
                     },
                     new Core.Models.Dish()
                     {
                         Name = "SeedingDish2",
-                        FoodPicture = "taco-8029161_640.png"
+                        FoodPicture = "a70a6112-964d-4f87-8853-0ad44b6d4a3a"
                     },
                     new Core.Models.Dish()
                     {
                         Name = "SeedingDish3",
-                        FoodPicture = "taco-8029161_640.png"
+                        FoodPicture = "a70a6112-964d-4f87-8853-0ad44b6d4a3a"
                     }
                 }
             });

@@ -7,20 +7,35 @@
 	import { stopImmediatePropagation } from "svelte/legacy";
 	import RestDish from "../RestDish.svelte";
 	import { DishService, type Dish } from "$lib/services/DishService";
-
+    import { validateField, type IValidationResult } from "$lib/Validations/clientValidations";
+    
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
     const dishService = new DishService(apiService);
-
-    let { menus = $bindable(), currentMenu, assignHandler } = $props<{ menus: Menu[], currentMenu: Menu | null, assignHandler: (handleSwap: () => Promise<void>) => void}>();
-
-    export async function DBUpdatePageData(){
-        updateMenus();
-        for(let i = 0; i < AdminState.length; i++)
-            updateDishes(AdminState[i])
-    }
     
-    export async function updateMenus(){
+    let { menus,
+        currentMenu,
+        assignHandler } = $props<{ menus: Menu[],
+            currentMenu: Menu | null,
+            assignHandler: (handleSwap: () => Promise<void>) => void}>();
+
+        let currentActiveMenu :string = $state("-1")
+        let expandedMenuId: string | null = $state(null);
+        let AdminState: Menu[] = $state(menus)
+
+        //let ChangedValue: string[] = $state([])
+        //AdminState = cacheHandlerActions.getActiveCache().menus;
+            
+                
+                //exports removed, they not needed
+const DBUpdatePageData = () => {
+    updateMenus();
+    for(let i = 0; i < AdminState.length; i++)
+    updateDishes(AdminState[i])
+}
+    
+
+    async function updateMenus(){
         let currMen :Menu[] = cacheHandlerActions.getActiveCache().menus
         for(let i = 0; i < currMen.length; i ++)
         //dropping into javascript cus lazy, should be a helper to compare the fields
@@ -33,7 +48,7 @@
                 cacheHandlerActions.updateMenu(AdminState[i])
             }
     }
-    export async function updateDishes(menu: Menu){
+    async function updateDishes(menu: Menu){
         //the aforementioned local helper
         const evalElem = (cacheDish :Dish, adminDish : Dish) :boolean =>{
             return (cacheDish.dishName === adminDish.dishName 
@@ -51,11 +66,9 @@
                 cacheHandlerActions.updateDish(menu.menuId!, menu.dishes[i])
             }
     }
-    let currentActiveMenu :string = $state("-1")
-    let expandedMenuId: string | null = $state(null);
-    let AdminState: Menu[] = $state(menus);
-    AdminState = cacheHandlerActions.getActiveCache().menus;
+
     
+
     function toggleMenu(menuId: string) {
         if (expandedMenuId === menuId) {
             expandedMenuId = null;
@@ -65,7 +78,12 @@
             currentActiveMenu = menuId;
         }
     }
-    
+    function handleDishNameValueChange(value :string, dish: Dish){
+        const validation = validateField.validateDishName(value)
+        
+        return validation.value;
+    }
+
     function isMenuExpanded(menuId: string): boolean {
         return expandedMenuId === menuId;
     }
@@ -77,7 +95,7 @@
             menuId: "0" , // Temporary ID // Why is this a string? Why not number?
             menuName: "Ny meny",
             userName: "Defautuser",
-            theme: "d1bbc886-0a27-4f95-9bf1-7ed9758694c7.webp", // Default theme image
+            theme: "d1bbc886-0a27-4f95-9bf1-7ed9758694c7", // Default theme image
             dishes: []
         };
     
@@ -98,15 +116,15 @@
         const newDish: Dish = {
             id: 0, // Temporary ID
             dishName: "Ny rätt",
-            dishPicture: "a70a6112-964d-4f87-8853-0ad44b6d4a3a.png" // Default dish image
+            dishPicture: "a70a6112-964d-4f87-8853-0ad44b6d4a3a" // Default dish image
         };
         console.warn("Adding new dish:", currentActiveMenu);
         const dish = await dishService.createDish(newDish, currentActiveMenu);
         cacheHandlerActions.addDish(currentActiveMenu, dish);
-        AdminState = cacheHandlerActions.getActiveCache().menus;
+        //AdminState = cacheHandlerActions.getActiveCache().menus;
 
-/*         AdminState.find(x => x.menuId === currentActiveMenu)?.dishes.push(dish);
- */      
+         AdminState.find(x => x.menuId === currentActiveMenu)?.dishes.push(dish);
+
         console.log(currentActiveMenu);
     }
 	async function onClickMenuHandler(event: MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }) {
@@ -129,7 +147,9 @@
     {#if menus && menus.length > 0}
         <div class="menus-list">
             {#each AdminState as menu}
-                <div class="menu-item" class:expanded={isMenuExpanded(menu.menuId!)}>
+                <div class="menu-item" class:expanded={isMenuExpanded(menu.menuId!)} class:bounce={!validateField.validateMenuName(menu.menuName).valid}>
+                    <!-- svelte-ignore a11y_click_events_have_key_events -->
+                    <!-- svelte-ignore a11y_no_static_element_interactions -->
                     <div class="menu-card" onclick={() => toggleMenu(menu.menuId!)}>
                         <div class="menu-image-container">
                             <img 
@@ -141,7 +161,8 @@
 
                         <div class="menu-info-container">
                             <textarea 
-                                bind:value={menu.menuName}
+                                bind:value={() => menu.menuName,
+                                            (v) => menu.menuName = validateField.validateMenuName(v).value}
                                 class="menu-name-input"
                                 onclick={(e) => e.stopPropagation()}
                                 placeholder="Menyns namn"
@@ -162,7 +183,7 @@
                         <div class="dishes-dropdown">
                             <div class="control-buttons">
                                 <button 
-                                    class="btn-add-dish"
+                                    class={["btn-add-dish"]}
                                     onclick={async () => await addDish()}
                                 >
                                     <span class="btn-icon">+</span>
@@ -187,7 +208,7 @@
                             <div class="dishes-list">
                                 {#if menu.dishes && menu.dishes.length > 0}
                                     {#each menu.dishes as dish}
-                                        <div class="dish-card">
+                                        <div class={["dish-card"]} class:bounce={!validateField.validateDishName(dish.dishName).valid} id={dish.id?.toString()}>
                                             <div class="dish-image-container">
                                                 <img 
                                                     src="/pictures/{dish.dishPicture}" 
@@ -196,9 +217,10 @@
                                                 />
                                             </div>
 
-                                            <div class="dish-name-container">
+                                            <div class="dish-name-container" >
                                                 <textarea 
-                                                    bind:value={dish.dishName}
+                                                    bind:value={() => dish.dishName,
+                                                                (v) => dish.dishName = validateField.validateDishName(v).value}
                                                     class="dish-name-input"
                                                     placeholder="Rättens namn"
                                                     rows="2"
@@ -305,7 +327,6 @@
     }
     
     .menu-card:hover {
-        background: #f9f9f9;
     }
 
     .menu-image-container {
@@ -538,4 +559,27 @@
         font-size: 1.5rem;
         margin-top: 3rem;
     }
+    .bounce {
+        background-color: #FC6675 !important;
+        animation: bounce 1s ease infinite;
+
+        }
+
+    @keyframes bounce {
+
+    70% { transform:translateY(0%); }
+
+    80% { transform:translateY(-35%); }
+
+    90% { transform:translateY(0%); }
+
+    95% { transform:translateY(-23%); }
+
+    97% { transform:translateY(0%); }
+
+    99% { transform:translateY(-12%); }
+
+    100% { transform:translateY(0); }
+
+}
 </style>
