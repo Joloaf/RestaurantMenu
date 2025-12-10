@@ -88,7 +88,7 @@ function saveToCache(cache: MemoryCache) {
     }
 }
 
-function clearCache() {
+export function clearCache() {
     if (typeof window === 'undefined') return; // Skip on server
 
     try {
