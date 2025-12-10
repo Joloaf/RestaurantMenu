@@ -58,6 +58,14 @@ export class MenuService {
         console.log("***************API**UPDATE**************")
         return response as Menu | ApiResponse;
     }
+        public async updateTheme(id: number, file: string): Promise<string> {
+        const response = await this.ApiService.patch(`Menu/theme${id}`, file);
+        console.log("***************API**UPDATE**************")
+        console.log(response)
+        console.log("***************API**UPDATE**************")
+        return response as string;
+    }
+
 
     public async deleteMenu(menuId: string): Promise<ApiResponse> {
         const response = await this.ApiService.delete(`Menu/${menuId}`);

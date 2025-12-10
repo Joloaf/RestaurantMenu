@@ -35,16 +35,15 @@ export const actions: Actions = {
 
              if (type === "menu") {
                 const menuService = new MenuService(apiService);
-
-
-                    id = parseInt(rawId as string);
-                    const oldFile = await menuService.updateTheme(id, fileName);
+                id = parseInt(rawId as string);
+                const oldFile = await menuService.updateTheme(id, fileName);
+                    
                 
             }
             if (type === "dish") {
                 const dishService = new DishService(apiService);
 
-                const updatedDish = await dishService.upDateDishTheme(id, fileName);
+                const updatedDish = await dishService.upDateTheme(id, fileName);
             } 
         }
         return { success: true };

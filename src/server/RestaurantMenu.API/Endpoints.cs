@@ -1,5 +1,6 @@
 using RestaurantMenu.API.Dish.Endpoints;
 using RestaurantMenu.API.Features;
+using RestaurantMenu.API.Menu.Endpoints;
 
 public static class Endpoints
 {
@@ -29,7 +30,8 @@ public static class Endpoints
             .MapEndPoint<RemoveDish>()
             .MapEndPoint<UpdateDish>()
             .MapEndPoint<GetAllDishes>()
-            .MapEndPoint<CreateDish>();
+            .MapEndPoint<CreateDish>()
+            .MapEndPoint<ChangeTheme>();
     }
 
     public static void AccountEndpoints(this IEndpointRouteBuilder config)

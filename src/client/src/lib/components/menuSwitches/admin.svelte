@@ -7,6 +7,8 @@
 	import { stopImmediatePropagation } from "svelte/legacy";
 	import RestDish from "../RestDish.svelte";
 	import { DishService, type Dish } from "$lib/services/DishService";
+	import UploadDishPicture from "../uploadDishPicture.svelte";
+	import UploadMenuPicture from "../uploadMenuPicture.svelte";
 
     const apiService = new ApiService();
     const menuService = new MenuService(apiService);
@@ -129,6 +131,7 @@
     {#if menus && menus.length > 0}
         <div class="menus-list">
             {#each AdminState as menu}
+            <UploadMenuPicture id={menu.menuId}></UploadMenuPicture>
                 <div class="menu-item" class:expanded={isMenuExpanded(menu.menuId!)}>
                     <div class="menu-card" onclick={() => toggleMenu(menu.menuId!)}>
                         <div class="menu-image-container">
