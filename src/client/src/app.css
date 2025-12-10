@@ -45,11 +45,6 @@ header {
 }
 
 .logo {
-<<<<<<< HEAD
-    height: 40px;
-    margin: 0 auto 1rem auto; 
-=======
-    max-width: 75%;
     height: auto;
     max-height: 60px;
     object-fit: contain;
@@ -75,11 +70,8 @@ header {
     justify-content: center;
     width: 2.5rem;
     height: 2.5rem;
-}
 
-.login-btn:hover {
     background: rgba(255, 255, 255, 0.3);
->>>>>>> 891069fbfb6da83bcb4755693ae1dfc480ed7a8f
 }
 
 .navigation {

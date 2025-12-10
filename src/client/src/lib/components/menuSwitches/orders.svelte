@@ -9,21 +9,13 @@
     let { currentMenu } = $props<{ currentMenu: Menu | null }>();
     let orders : Order = $state(populateOrder())
     
-<<<<<<< HEAD
-
-=======
->>>>>>> 891069fbfb6da83bcb4755693ae1dfc480ed7a8f
     function populateOrder() : Order{
         const orders :Order = { } as Order;
         orders.ticket = currentMenu.dishes.map(x  => {
             return ({dishes: x, id: Math.floor(Math.random() * 1000), quantity: 0} as Ticket);
         })
         orders.menuId = currentMenu.menuId;
-<<<<<<< HEAD
-        orders.ticketNumber = Math.floor(Math.random() * 100); // Need to change this to a sherd variabel, just random now so it works
-=======
         orders.ticketNumber = Math.floor(Math.random() * 1000); 
->>>>>>> 891069fbfb6da83bcb4755693ae1dfc480ed7a8f
 
         return orders;
     }
