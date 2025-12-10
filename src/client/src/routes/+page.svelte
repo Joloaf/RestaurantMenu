@@ -20,14 +20,14 @@
 	
 	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
 	let isLoginModalOpen = $state(false);
-	
+
 	// Function to change view with animation
 	function changeView(newView: typeof currentView) {
 		if (!document.startViewTransition) {
 			currentView = newView;
 			return;
 		}
-		
+
 		document.startViewTransition(() => {
 			currentView = newView;
 		});
@@ -90,6 +90,7 @@
 	}
 </script>
 
+
 <div class="layout-wrapper">
     <header>
         <div class="header-top">
@@ -117,7 +118,7 @@
 			{:else if currentView === 'orders'}
 				<Orders currentMenu={cacheHandlerActions.getActiveCache().currentMenu} />
 			{:else if currentView === 'tickets'}
-				<TicketView orders={cacheHandlerActions.getActiveCache().orders} />
+				<TicketView currentOrders={cacheHandlerActions.loadAllOrders()} />
 			{:else if currentView === 'everymenu'}
 				<Everymenu menus={data.menus} currentMenu={data.currentMenu} />
 			{/if}
