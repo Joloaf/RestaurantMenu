@@ -1,13 +1,14 @@
 <script lang="ts">
     import { clearCache } from "../../stores/cacheHandlerService";
+    import { signOut } from "$lib/services/singOut";
 
     let { isOpen = $bindable(false) } = $props();
 
-    function confirmLogout() {
+    async function confirmLogout() {
         localStorage.removeItem('user');
-        
-        isOpen = false;
         clearCache();
+        await signOut();
+        isOpen = false;
         document.location.reload();
     }
 
@@ -34,7 +35,7 @@
                 <button class="cancel-btn" onclick={cancelLogout}>
                     Nej, stanna kvar
                 </button>
-                <button class="confirm-btn" onclick={confirmLogout}>
+                <button class="confirm-btn" onclick={async () => await confirmLogout()}>
                     Ja, logga ut
                 </button>
             </div>
