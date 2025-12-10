@@ -14,6 +14,8 @@
 	import { ApiService } from '$lib/services/apiService.js';
 	import { validateField, type IValidationResult } from '$lib/Validations/clientValidations.js';
 	import { onMount } from 'svelte';
+	import { signOut } from '$lib/services/singOut.js';
+
 
 	const apiService = new ApiService();
 	const menuService = new MenuService(apiService);
@@ -38,6 +40,7 @@
 			isLoginModalOpen = true;
 		}
 	}
+
 
 	// Function to change view with animation
 	function changeView(newView: typeof currentView) {

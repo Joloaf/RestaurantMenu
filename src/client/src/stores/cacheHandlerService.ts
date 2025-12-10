@@ -90,9 +90,10 @@ function saveToCache(cache: MemoryCache) {
 
 export function clearCache() {
     if (typeof window === 'undefined') return; // Skip on server
-
     try {
         localStorage.removeItem(CACHE_KEY);
+        loadFromCache();
+
     } catch (error) {
         console.error('Error clearing cache:', error);
     }

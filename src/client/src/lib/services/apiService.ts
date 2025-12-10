@@ -6,6 +6,13 @@ const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.
 
 const apiUrl = isAndroid ? import.meta.env.PUBLIC_API_URL_ANDROID : import.meta.env.PUBLIC_API_URL;
 
+
+export const apiUrlResolver= ()=>{
+    const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
+
+    return isAndroid ? import.meta.env.PUBLIC_API_URL_ANDROID : import.meta.env.PUBLIC_API_URL;
+}
+
 // Debug: log the API URL
 console.log('API URL:', apiUrl);
 console.log('All env vars:', import.meta.env);
@@ -67,6 +74,7 @@ export class ApiService {
     ): Promise<T | AppError> {
         try{
             let url = `${apiUrl}/${endpoint}`;
+            console.log("apiUrl :::::"+apiUrl+"GET SENT")
             if(params) {
                 const quesry= Object.entries(params)
                 .filter(([_, value]) => value !== undefined)
