@@ -32,7 +32,7 @@ public static class AccountFeatureExtensions
             Email = request.Email,
         };
 
-        var menu = new Menu
+        var menu = new Core.Models.Menu
         {
             MenuName = "Your first menu",
             UserName = request.Username,

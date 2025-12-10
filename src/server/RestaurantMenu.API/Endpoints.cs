@@ -20,7 +20,9 @@ public static class Endpoints
             .MapEndPoint<GetAllMenus>()
             .MapEndPoint<CreateMenu>()
             .MapEndPoint<UpdateMenu>()
-            .MapEndPoint<DeleteMenu>();
+            .MapEndPoint<DeleteMenu>()
+            .MapEndPoint<ChangeMenuTheme>();
+            
 
     }
     
@@ -31,7 +33,7 @@ public static class Endpoints
             .MapEndPoint<UpdateDish>()
             .MapEndPoint<GetAllDishes>()
             .MapEndPoint<CreateDish>()
-            .MapEndPoint<ChangeTheme>();
+            .MapEndPoint<ChangeDishTheme>();
     }
 
     public static void AccountEndpoints(this IEndpointRouteBuilder config)

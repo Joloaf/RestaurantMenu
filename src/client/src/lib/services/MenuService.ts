@@ -16,6 +16,9 @@ export interface ApiResponse{
     message: string;
     data?: unknown;
 }
+export interface UpdateThemeResponse {
+    oldTheme: string;
+}
 
 export class MenuService {
     constructor(private ApiService: ApiService) {}
@@ -58,12 +61,12 @@ export class MenuService {
         console.log("***************API**UPDATE**************")
         return response as Menu | ApiResponse;
     }
-        public async updateTheme(id: number, file: string): Promise<string> {
-        const response = await this.ApiService.patch(`Menu/theme${id}`, file);
-        console.log("***************API**UPDATE**************")
+        public async updateTheme(id: number, file: string): Promise<UpdateThemeResponse> {
+        const response = await this.ApiService.patch(`Menu/theme/${id}`,  {file} );
+        console.log("***************API**UPDATE-THEME**************")
         console.log(response)
-        console.log("***************API**UPDATE**************")
-        return response as string;
+        console.log("***************API**UPDATE-THEME**************")
+        return response as UpdateThemeResponse;
     }
 
 

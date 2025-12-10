@@ -64,7 +64,7 @@ public class DevelopmentSeedService : IDevelopmentSeedService
 
         try
         {
-            user.Menus.Add(new Menu()
+            user.Menus.Add(new Core.Models.Menu()
             {
                 MenuName = "Seedingmenu",
                 User = user,

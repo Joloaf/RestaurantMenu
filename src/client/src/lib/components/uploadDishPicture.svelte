@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Dish } from '$lib/services/DishService';
 
-    export let id: number;
+    export let id: number | null;
     export let menuId: string | null;
 
 

@@ -70,21 +70,23 @@ public class Program
         {
             options.AddPolicy("AllowAll", policy =>
             {
-                policy.WithOrigins("http://localhost:5173", "http://192.168.0.190:5173")
+                policy.WithOrigins("http://localhost:5173", "http://192.168.0.190:5173", "http://192.168.56.1:5173",
+                        "http://172.19.0.1:5173",
+                        "http://192.168.1.195:5173")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials();
                 
                 
-               // policy.WithOrigins("http://localhost:5173/*", "http://192.168.0.190:5173/*")
-               //     .AllowAnyMethod()
-               //     .AllowAnyHeader()
-               //     .AllowCredentials(); 
-               // 
-               // policy.WithOrigins("http://localhost:5173/*/*", "http://192.168.0.190:5173/*/*")
-               //     .AllowAnyMethod()
-               //     .AllowAnyHeader()
-               //     .AllowCredentials();  
+               policy.WithOrigins("http://localhost:5173/*", "http://192.168.0.190:5173/*")
+                 .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials(); 
+               
+              policy.WithOrigins("http://localhost:5173/*/*", "http://192.168.0.190:5173/*/*")
+                  .AllowAnyMethod()
+                   .AllowAnyHeader()
+                    .AllowCredentials();  
 
               //// policy.AllowAnyOrigin()
               //     .AllowAnyMethod()

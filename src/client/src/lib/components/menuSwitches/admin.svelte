@@ -190,6 +190,7 @@
                             <div class="dishes-list">
                                 {#if menu.dishes && menu.dishes.length > 0}
                                     {#each menu.dishes as dish}
+                                        <UploadDishPicture id={dish.id} menuId={menu.menuId}></UploadDishPicture>
                                         <div class="dish-card">
                                             <div class="dish-image-container">
                                                 <img 

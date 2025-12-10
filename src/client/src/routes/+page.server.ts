@@ -5,6 +5,7 @@
     import { MenuService } from "$lib/services/MenuService";
     import { DishService } from "$lib/services/DishService";
     import { cacheHandlerActions } from "../stores/cacheHandlerService";
+    import type { UpdateThemeResponse } from "$lib/services/MenuService";
 
 
 export const actions: Actions = {
@@ -29,21 +30,25 @@ export const actions: Actions = {
         
         for (const file of files) {
             const fileName = crypto.randomUUID();
+            console.log("Saving file: " + fileName);
             await writeFileSync(path + fileName, Buffer.from(await file.arrayBuffer()));
 
             // Here you can save the fileName to your database and cache if needed
+                console.log(type);
 
              if (type === "menu") {
-                const menuService = new MenuService(apiService);
+                console.log("Updating menu theme");
+/*                 const menuService = new MenuService(apiService);
                 id = parseInt(rawId as string);
-                const oldFile = await menuService.updateTheme(id, fileName);
-                    
                 
+                const oldFile = await menuService.updateTheme(id, fileName); */
             }
             if (type === "dish") {
+                console.log("Updating dish theme");
+/* 
                 const dishService = new DishService(apiService);
-
-                const updatedDish = await dishService.upDateTheme(id, fileName);
+                id = parseInt(rawId as string);
+                const updatedDish = await dishService.upDateTheme(id, fileName); */
             } 
         }
         return { success: true };

@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantMenu.Infrastructure.Data;
 
-namespace RestaurantMenu.API.Menu.Endpoints;
+namespace RestaurantMenu.API.Dish.Endpoints;
 
-public class ChangeTheme : IEndpoint
+public class ChangeDishTheme : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder config) =>
-        config.MapPatch("theme/{id}", Handler);
+        config.MapPatch("/theme/{id}", Handler);
 
     //public record PatchParams(string userid, int menuid);
     //define handler
     private record Request(string File);
+
     private record Response(string oldTheme);
 
     private static async Task<IResult> Handler(
@@ -33,16 +34,18 @@ public class ChangeTheme : IEndpoint
             {
                 return TypedResults.NotFound("File is empty");
             }
-            var menu = await context.Menus.Where(p=>p.Id == id).FirstOrDefaultAsync();
-            if (menu == null)
+
+            var dish = await context.Dishes.Where(p => p.Id == id).FirstOrDefaultAsync();
+            if (dish == null)
             {
                 return TypedResults.NotFound("Menu not found");
             }
-            string oldTheme = menu.Theme;
-            menu.Theme = request.File;
-            
+
+            string oldTheme = dish.FoodPicture;
+            dish.FoodPicture = request.File;
+
             await context.SaveChangesAsync();
-            return TypedResults.Ok(new  Response(oldTheme));
+            return TypedResults.Ok(new Response(oldTheme));
 
         }
         catch (Exception err)
