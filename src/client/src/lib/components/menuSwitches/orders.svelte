@@ -1,27 +1,29 @@
 <script lang="ts">
+    import '../../../app.css';
     import RestMenu from "../RestMenu.svelte";
-    import RestDish from "../RestDish.svelte";
     import type { Menu } from '$lib/services/MenuService';
-    import type { Ticket } from "../../../stores/cacheHandlerService"
+    import type Ticket from "../../../stores/cacheHandlerService";
     import { type Order} from "../../../stores/cacheHandlerService"
     import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
 
     let { currentMenu } = $props<{ currentMenu: Menu | null }>();
-    //bind to tickets
-    let i = -1;
     let orders : Order = $state(populateOrder())
-
+    
     function populateOrder() : Order{
-        let i = -1;
         const orders :Order = { } as Order;
-        orders.ticket = currentMenu.dishes.map(x => ({ dishes: x, id : i++, quantity: 0 } as Ticket))
+        orders.ticket = currentMenu.dishes.map(x  => {
+            return ({dishes: x, id: Math.floor(Math.random() * 1000), quantity: 0} as Ticket);
+        })
         orders.menuId = currentMenu.menuId;
-        orders.ticketNumber = 0;
+        orders.ticketNumber = Math.floor(Math.random() * 1000); 
 
         return orders;
     }
-    function onClickOrder(){
-
+    function onClickOrder(order: Order) : void {
+        order.ticket = order.ticket.filter(x => x.quantity !== 0)
+        console.log(order)
+        cacheHandlerActions.addOrder(order);
+        orders = populateOrder()
     }
 </script>
 
@@ -67,7 +69,7 @@
             {/each}
         </div>
         
-        <button class="place-order-btn" onclick={onClickOrder}>Beställ</button>
+        <button class="place-order-btn" onclick={() => onClickOrder(orders)}>Beställ</button>
     {:else}
         <p class="no-menu-msg">Ingen meny vald</p>
     {/if}
