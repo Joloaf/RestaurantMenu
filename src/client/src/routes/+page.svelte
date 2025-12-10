@@ -1,9 +1,11 @@
 <script lang="ts">
     import '../app.css';
+	import { onNavigate } from '$app/navigation';
 	import Admin from '$lib/components/menuSwitches/admin.svelte';
 	import Everymenu from '$lib/components/menuSwitches/everymenu.svelte';
 	import Orders from '$lib/components/menuSwitches/orders.svelte';
 	import TicketView from '$lib/components/menuSwitches/ticketView.svelte';
+	import LoginModal from '$lib/components/LoginModal.svelte';
 	import { cacheHandlerActions } from '../stores/cacheHandlerService';
 	import type { Menu } from '$lib/services/MenuService.js';
 	import { MenuService } from '$lib/services/MenuService.js';
@@ -20,6 +22,19 @@
 
 	const pagestate = $state(data);
 	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
+	let isLoginModalOpen = $state(false);
+
+	// Function to change view with animation
+	function changeView(newView: typeof currentView) {
+		if (!document.startViewTransition) {
+			currentView = newView;
+			return;
+		}
+
+		document.startViewTransition(() => {
+			currentView = newView;
+		});
+	}
 	//
 	//child handler for the swap event from admin page.
 	//capture method and data to update correctly
@@ -93,17 +108,20 @@
 	}
 </script>
 
+
 <div class="layout-wrapper">
     <header>
-        <img src="/img/logo.png" alt="logo" class="logo" />
+        <div class="header-top">
+            <img src="/img/logoNew.png" alt="logo" class="logo" />
+            {#if currentView === 'admin'}
+                <button class="login-btn" onclick={() => isLoginModalOpen = true}>👤</button>
+            {/if}
+        </div>
         <div class="navigation">
-            <button onclick={async () => { if (currentView === 'admin') await signalSwap(); currentView = 'everymenu'; }} class:active={currentView === 'everymenu'}>Everymenu</button>
-            <button onclick={async () => { if (currentView === 'admin') await signalSwap(); 
-			if(cacheHandlerActions.getActiveCache().currentMenu != null)
-				currentView = 'orders';
-			}} class:active={currentView === 'orders'}>Orders</button>
-            <button onclick={async () => { if (currentView === 'admin') await signalSwap(); currentView = 'tickets';   }} class:active={currentView === 'tickets'}>Tickets</button>
-            <button onclick={() => { currentView = 'admin'; }} class:active={currentView === 'admin'}>Admin</button>
+            <button class="nav-btn" onclick={async () => { if (currentView === 'admin') await signalSwap(); changeView('everymenu'); /*GetCurrentCacheData()*/}} class:active={currentView === 'everymenu'}>Välj Meny</button>
+            <button class="nav-btn" onclick={async () => { if (currentView === 'admin') await signalSwap(); changeView('orders');    /*GetCurrentCacheData()*/}} class:active={currentView === 'orders'}>Din Meny</button>
+            <button class="nav-btn" onclick={async () => { if (currentView === 'admin') await signalSwap(); changeView('tickets');   /*GetCurrentCacheData()*/}} class:active={currentView === 'tickets'}>Beställningar</button>
+            <button class="nav-btn" onclick={() => { changeView('admin'); /*GetCurrentCacheData()*/}} class:active={currentView === 'admin'}>Admin</button>
         </div>
     </header>
 
@@ -118,7 +136,7 @@
 			{:else if currentView === 'orders'}
 				<Orders currentMenu={cacheHandlerActions.getActiveCache().currentMenu} />
 			{:else if currentView === 'tickets'}
-				<TicketView currentOrders={cacheHandlerActions.getActiveCache().currentOrder} />
+				<TicketView currentOrders={cacheHandlerActions.loadAllOrders()} />
 			{:else if currentView === 'everymenu'}
 				<Everymenu menus={cacheHandlerActions.getActiveCache().menus} currentMenu={cacheHandlerActions.getActiveCache().currentMenu} />
 			{/if}
@@ -126,6 +144,8 @@
     </main>
     
     <footer>
-        <p>Cafe Lek</p>
+        <p>🌭🍔🍕  Café Lek  🎂🍧🧁</p>
     </footer>
 </div>
+
+<LoginModal bind:isOpen={isLoginModalOpen} />

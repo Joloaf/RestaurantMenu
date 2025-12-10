@@ -14,6 +14,10 @@ export interface Order {
     menuId: string;
 }
 
+export interface OrdersCache {
+    orders: Order[];
+}
+
 export interface MemoryCache {
     menus: Menu[];
     currentMenu: Menu | null;
@@ -27,6 +31,7 @@ export interface MemoryCache {
 
 const CacheDuration = 1000 * 60 * 15; // 15 minutes
 const CACHE_KEY = 'menuCache'; // This is the Cache name, 
+const ORDER_CACHE_KEY = 'orders';
 
 
 const activeCache: MemoryCache = {
@@ -41,8 +46,6 @@ const activeCache: MemoryCache = {
 };
 
 // When updating the cache, always update database. First database, then cache.
-
-
 function saveToCache(cache: MemoryCache) {
     if (typeof window === 'undefined') return; // Skip on server
 
@@ -51,6 +54,7 @@ function saveToCache(cache: MemoryCache) {
             menus: cache.menus,
             currentMenu: cache.currentMenu,
             orders: cache.orders,
+            currentOrder: cache.currentOrder,
             timestamp: Date.now()
         };
         localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
@@ -60,7 +64,7 @@ function saveToCache(cache: MemoryCache) {
     }
 }
 
-function loadFromCache(): Partial<MemoryCache> | null {
+ function loadFromCache(): Partial<MemoryCache> | null {
     if (typeof window === 'undefined') return null; // Skip on server
 
     try {
@@ -84,7 +88,7 @@ function loadFromCache(): Partial<MemoryCache> | null {
     }
 }
 
-function clearCache() {
+export function clearCache() {
     if (typeof window === 'undefined') return; // Skip on server
 
     try {
@@ -94,7 +98,68 @@ function clearCache() {
     }
 
 }
+function saveOrdersToCache(cache: Order) {
+    if (typeof window === 'undefined') return;
+    try {
+        const cachedData = localStorage.getItem(ORDER_CACHE_KEY);
+        let orders: Order[] = [];
 
+        if (cachedData) {
+            const parsedData = JSON.parse(cachedData);
+            orders = parsedData.orders || [];
+        }
+        
+        orders.push(cache);
+
+        const cacheData = {
+            orders,
+            timestamp: Date.now()
+        };
+        localStorage.setItem(ORDER_CACHE_KEY, JSON.stringify(cacheData));
+    } catch (error) {
+        console.error('Error saving orders to cache:', error);
+    }
+}
+
+function loadOrdersFromCache(): Order[] | null {
+    if (typeof window === 'undefined') return null; // Skip on server
+    try {
+        const cached = localStorage.getItem(ORDER_CACHE_KEY);
+        if (!cached) return null;
+
+        const cachedData = JSON.parse(cached);
+
+        return cachedData.orders ?? null;
+
+    } catch (error) {
+        console.error('Error loading from order cache:', error);
+        return null;
+    }
+}
+
+function deleteOrdersFromCache(ticketToRemoveId: number) {
+    if (typeof window === 'undefined') return;
+    try {
+        const cached = localStorage.getItem(ORDER_CACHE_KEY);
+        if (!cached) return;
+
+        const cachedData = JSON.parse(cached);
+        const orderIndex = cachedData.orders.findIndex((o: { ticket: Ticket[]; }) =>
+            o.ticket.some(t => t.id === ticketToRemoveId))
+
+        cachedData.orders[orderIndex].ticket =
+            cachedData.orders[orderIndex].ticket.filter((t: { id: number; }) => t.id !== ticketToRemoveId);
+
+        if (cachedData.orders[orderIndex].ticket.length == 0) {
+            cachedData.orders.splice(orderIndex, 1);
+        }
+        localStorage.setItem(ORDER_CACHE_KEY, JSON.stringify(cachedData));
+        return;
+    } catch (error) {
+        console.error('Error loading from order cache:', error);
+        return null;
+    }
+}
 export const cacheHandlerActions = {
     initializeCache: () => {
         const cached = loadFromCache();
@@ -221,27 +286,17 @@ export const cacheHandlerActions = {
 
     //
     //if order exists updates it silently.
-    addOrder(order: Order) {
-        console.log("I order")
-        console.log(order);
-        activeCache.orders.push(order)
-
-        activeCache.isLoading = true;
-        saveToCache(activeCache);
-        activeCache.isLoading = false;
-    },
-
     checkemptyOrder(orderId: number) {
         const res = activeCache.orders.findIndex((x) => x.ticketNumber === orderId)
-        
+
         if (res === -1)
             console.warn(`Could not locate ${orderId} in activeCache`)
-        
+
         console.log(res)
         console.log(activeCache.orders[res].ticket.length);
 
-        if(activeCache.orders[res].ticket.length != 0) return;
-        
+        if (activeCache.orders[res].ticket.length != 0) return;
+
         activeCache.orders = activeCache.orders.filter(x => x.ticketNumber !== orderId)
         saveToCache(activeCache);
     },
@@ -258,26 +313,21 @@ export const cacheHandlerActions = {
         ref.ticketNumber = updateOrder.ticketNumber;
         saveToCache(activeCache);
     },
-
-    removeTicket(ticketToRemoveId: number){
-        
-        const orderIndex = activeCache.orders.findIndex(o =>
-            o.ticket.some(t => t.id === ticketToRemoveId)
-        );
-        
-        if (orderIndex === -1) return;
-
-        activeCache.orders[orderIndex].ticket =
-            activeCache.orders[orderIndex].ticket.filter(t => t.id !== ticketToRemoveId);
-        
-        
-        if(activeCache.orders[orderIndex].ticket.length == 0)
-        {
-            activeCache.orders.splice(orderIndex, 1);
+    
+    addOrder(order: Order) {
+        if (order.ticket.length > 0) {
+            saveOrdersToCache(order);
         }
-        saveToCache(activeCache);
-        
-        return;
+    },
+    
+    removeTicket(ticketToRemoveId: number) {
+        if (ticketToRemoveId !== undefined) {
+        deleteOrdersFromCache(ticketToRemoveId)
+        }
+    },
+
+    loadAllOrders(): Order[]  {
+        return loadOrdersFromCache() ?? [];
     },
 
 

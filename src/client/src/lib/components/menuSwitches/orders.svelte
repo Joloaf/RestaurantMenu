@@ -2,21 +2,28 @@
     import '../../../app.css';
     import RestMenu from "../RestMenu.svelte";
     import type { Menu } from '$lib/services/MenuService';
-    import type { Ticket } from "../../../stores/cacheHandlerService"
+    import type Ticket from "../../../stores/cacheHandlerService";
     import { type Order} from "../../../stores/cacheHandlerService"
     import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
 
     let { currentMenu } = $props<{ currentMenu: Menu | null }>();
-    //bind to tickets
-    let i = -1;
     let orders : Order = $state(populateOrder())
     
+<<<<<<< HEAD
 
+=======
+>>>>>>> 891069fbfb6da83bcb4755693ae1dfc480ed7a8f
     function populateOrder() : Order{
         const orders :Order = { } as Order;
-        orders.ticket = currentMenu.dishes.map(x => ({ dishes: x, id : i++, quantity: 0 } as Ticket))
+        orders.ticket = currentMenu.dishes.map(x  => {
+            return ({dishes: x, id: Math.floor(Math.random() * 1000), quantity: 0} as Ticket);
+        })
         orders.menuId = currentMenu.menuId;
+<<<<<<< HEAD
         orders.ticketNumber = Math.floor(Math.random() * 100); // Need to change this to a sherd variabel, just random now so it works
+=======
+        orders.ticketNumber = Math.floor(Math.random() * 1000); 
+>>>>>>> 891069fbfb6da83bcb4755693ae1dfc480ed7a8f
 
         return orders;
     }
