@@ -7,6 +7,7 @@
 	import TicketView from '$lib/components/menuSwitches/ticketView.svelte';
 	import LoginModal from '$lib/components/LoginModal.svelte';
 	import LogoutModal from '$lib/components/LogoutModal.svelte';
+	import RegisterModal from '$lib/components/RegisterModal.svelte';
 	import { cacheHandlerActions } from '../stores/cacheHandlerService';
 	import type { Menu } from '$lib/services/MenuService.js';
 	import { MenuService } from '$lib/services/MenuService.js';
@@ -27,6 +28,7 @@
 	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
 	let isLoginModalOpen = $state(false);
 	let isLogoutModalOpen = $state(false);
+	let isRegisterModalOpen = $state(false);
 
 	function isLoggedIn() {
 		if (typeof window === 'undefined') return false;
@@ -39,6 +41,16 @@
 		} else {
 			isLoginModalOpen = true;
 		}
+	}
+
+	function switchToRegister() {
+		isLoginModalOpen = false;
+		isRegisterModalOpen = true;
+	}
+
+	function switchToLogin() {
+		isRegisterModalOpen = false;
+		isLoginModalOpen = true;
 	}
 
 
@@ -166,5 +178,6 @@
     </footer>
 </div>
 
-<LoginModal bind:isOpen={isLoginModalOpen} />
+<LoginModal bind:isOpen={isLoginModalOpen} onSwitchToRegister={switchToRegister} />
 <LogoutModal bind:isOpen={isLogoutModalOpen} />
+<RegisterModal bind:isOpen={isRegisterModalOpen} onSwitchToLogin={switchToLogin} />

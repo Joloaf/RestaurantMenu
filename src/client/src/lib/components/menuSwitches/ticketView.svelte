@@ -94,7 +94,7 @@
     
     .title {
         color: #FF6B6B;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         font-weight: bold;
         margin-bottom: 1.5rem;
         text-align: center;

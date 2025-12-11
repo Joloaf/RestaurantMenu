@@ -137,7 +137,7 @@ const DBUpdatePageData = () => {
 </script>
 
 <div class="admin-container">
-    <h2 class="admin-title">⚙️ Admin ⚙️</h2>
+    <h2 class="admin-title">📝 Admin</h2>
     
     <button class="create-menu-btn" onclick={createNewMenu}>
         <span class="btn-icon"> + </span>
@@ -259,9 +259,9 @@ const DBUpdatePageData = () => {
     .admin-container {
         padding: 1rem;
     }
-    
+
     .admin-title {
-        color: #9C27B0;
+        color: #FF6B6B;
         font-size: 2.2rem;
         font-weight: bold;
         margin-bottom: 1.5rem;
