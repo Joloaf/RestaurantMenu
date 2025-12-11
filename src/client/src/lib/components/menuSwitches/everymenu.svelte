@@ -3,15 +3,16 @@
     import type { Menu } from "$lib/services/MenuService";
     import { cacheHandlerActions } from "../../../stores/cacheHandlerService";
 
-    let { menus, currentMenu = $bindable() } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
+    let { menus, currentMenu } = $props<{ menus: Menu[], currentMenu: Menu | null }>();
     
     // Making good use of our cache to ensure we have nothing stale in this restaurant menu!
-    menus = cacheHandlerActions.getActiveCache().menus;
-    currentMenu = cacheHandlerActions.getActiveCache().currentMenu;
+    //menus = cacheHandlerActions.getActiveCache().menus;
+    //currentMenu = cacheHandlerActions.getActiveCache().currentMenu;
     
     // Local states for selected menu badge and animation
     let selectedMenuId = $state(currentMenu?.menuId || null);
     let justSelected = $state(false);
+    let selectedMenu = $state(currentMenu)
 
     function isActiveMenu(menu: Menu): boolean {
         return selectedMenuId === menu.menuId;
@@ -31,7 +32,7 @@
 </script>
 
 <div class="everymenu-container">
-    <h2 class="title">Antal menyer ({menus.length})</h2>
+    <h2 class="title">📚 Alla Menyer ({menus.length})</h2>
     
     {#if menus && menus.length > 0}
         <div class="menus-list">
@@ -80,7 +81,7 @@
     
     .title {
         color: #FF6B6B;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         font-weight: bold;
         margin-bottom: 1.5rem;
         text-align: center;

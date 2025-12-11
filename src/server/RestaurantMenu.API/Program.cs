@@ -24,7 +24,7 @@ public class Program
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             options.JsonSerializerOptions.MaxDepth = 32;
         });
-        
+        //builder.WebHost.UseUrls("http://0.0.0.0:5187", "http://192.168.1.195:5187");
         //TODO change requires after dev
         // add identity lower requirement for creation accounts/password
         builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -70,23 +70,29 @@ public class Program
         {
             options.AddPolicy("AllowAll", policy =>
             {
-                policy.WithOrigins("http://localhost:5173", "http://192.168.0.190:5173", "http://192.168.56.1:5173",
+                
+                /*➜  Local:   http://localhost:5173/
+  ➜  Network: http://172.19.0.1:5173/
+  ➜  Network: http://192.168.1.195:5173/
+  ➜  Network: http://192.168.56.1:5173/*/
+                
+                policy.WithOrigins("http://localhost:5173",
+                        "http://192.168.56.1:5173",
                         "http://172.19.0.1:5173",
                         "http://192.168.1.195:5173")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials();
-                
-                
-               policy.WithOrigins("http://localhost:5173/*", "http://192.168.0.190:5173/*")
-                 .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials(); 
-               
-              policy.WithOrigins("http://localhost:5173/*/*", "http://192.168.0.190:5173/*/*")
-                  .AllowAnyMethod()
-                   .AllowAnyHeader()
-                    .AllowCredentials();  
+
+               // policy.WithOrigins("http://localhost:5173/*", "http://192.168.0.190:5173/*")
+               //     .AllowAnyMethod()
+               //     .AllowAnyHeader()
+               //     .AllowCredentials(); 
+               // 
+               // policy.WithOrigins("http://localhost:5173/*/*", "http://192.168.0.190:5173/*/*")
+               //     .AllowAnyMethod()
+               //     .AllowAnyHeader()
+               //     .AllowCredentials();  
 
               //// policy.AllowAnyOrigin()
               //     .AllowAnyMethod()
@@ -103,6 +109,8 @@ public class Program
             app.MapOpenApi();
             app.MapScalarApiReference(); 
             await app.Seed();
+            //forgive me
+            app.MapPost("/logout", async (SignInManager<User> man) =>{ await man.SignOutAsync(); return Results.Ok(); });
         }
 
         app.UseHttpsRedirection();
@@ -122,7 +130,6 @@ public class Program
                   app.Environment);
         }
 
-        //
         app.Run();
     }
 }

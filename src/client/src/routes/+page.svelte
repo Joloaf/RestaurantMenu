@@ -6,20 +6,53 @@
 	import Orders from '$lib/components/menuSwitches/orders.svelte';
 	import TicketView from '$lib/components/menuSwitches/ticketView.svelte';
 	import LoginModal from '$lib/components/LoginModal.svelte';
+	import LogoutModal from '$lib/components/LogoutModal.svelte';
+	import RegisterModal from '$lib/components/RegisterModal.svelte';
 	import { cacheHandlerActions } from '../stores/cacheHandlerService';
 	import type { Menu } from '$lib/services/MenuService.js';
 	import { MenuService } from '$lib/services/MenuService.js';
 	import { DishService } from '$lib/services/DishService.js';
 	import { ApiService } from '$lib/services/apiService.js';
+	import { validateField, type IValidationResult } from '$lib/Validations/clientValidations.js';
+	import { onMount } from 'svelte';
+	import { signOut } from '$lib/services/singOut.js';
+
 
 	const apiService = new ApiService();
 	const menuService = new MenuService(apiService);
 	const dishService = new DishService(apiService);
 	//where is data defined/populated?
 	let { data } = $props();
-	
+
+	const pagestate = $state(data);
 	let currentView: 'admin' | 'everymenu' | 'orders' | 'tickets' = $state('everymenu');
 	let isLoginModalOpen = $state(false);
+	let isLogoutModalOpen = $state(false);
+	let isRegisterModalOpen = $state(false);
+
+	function isLoggedIn() {
+		if (typeof window === 'undefined') return false;
+		return localStorage.getItem('user') !== null;
+	}
+	
+	function handleAuthButtonClick() {
+		if (isLoggedIn()) {
+			isLogoutModalOpen = true;
+		} else {
+			isLoginModalOpen = true;
+		}
+	}
+
+	function switchToRegister() {
+		isLoginModalOpen = false;
+		isRegisterModalOpen = true;
+	}
+
+	function switchToLogin() {
+		isRegisterModalOpen = false;
+		isLoginModalOpen = true;
+	}
+
 
 	// Function to change view with animation
 	function changeView(newView: typeof currentView) {
@@ -60,7 +93,7 @@
 	//as the page gets swapped
 	async function signalSwap(){
 		//make sure cache is up to date
-		await childHandler?.();
+		childHandler?.();
 
 		//push to db, the children deal with creation and deletion in the db
 		//
@@ -74,14 +107,29 @@
 	}
 	async function PushDB(menus :Menu[]){
 		const pushMenus = async () => {
-			for(let i = 0; i < menus.length; i++)
-				await menuService.updateMenu(menus[i])
+			for(let i = 0; i < menus.length; i++){
+				console.log(`menuName:::${validateField.validateMenuName(menus[i].menuName).valid}`)
+				console.log(`username:::${validateField.validateUserName(menus[i].userName).valid}`)
+				console.log(`theme::::${validateField.validateThemeName(menus[i].theme).valid}`)
+				console.log(`menuId::::${validateField.validateId(menus[i].menuId!)}`)	
+
+				if(validateField.validateMenuName(menus[i].menuName).valid
+				&& validateField.validateUserName(menus[i].userName).valid
+				&& validateField.validateThemeName(menus[i].theme).valid
+				&& validateField.validateId(menus[i].menuId!)){
+
+					let res = await menuService.updateMenu(menus[i])
+					console.log(res)
+				}
+		}
 		};
 		const pushDishes = async ()=>{
 			const dishes =[ ...menus.flatMap((x) => x.dishes)]
 			for(let i =0; i < dishes.length; i++){
 				console.log(dishes[i]);
-				await dishService.upDateDish(dishes[i])
+				if(validateField.validateDishName(dishes[i].dishName).valid
+				&& validateField.validateId(dishes[i].id!))
+					await dishService.upDateDish(dishes[i])
 
 			}
 		}
@@ -96,7 +144,7 @@
         <div class="header-top">
             <img src="/img/logoNew.png" alt="logo" class="logo" />
             {#if currentView === 'admin'}
-                <button class="login-btn" onclick={() => isLoginModalOpen = true}>👤</button>
+                <button class="login-btn" onclick={handleAuthButtonClick}>👤</button>
             {/if}
         </div>
         <div class="navigation">
@@ -111,8 +159,8 @@
         <div class="currentView">
 			{#if currentView === 'admin'}
 				<Admin 
-					menus={data.menus} 
-					currentMenu={data.currentMenu}
+					menus={cacheHandlerActions.getActiveCache().menus} 
+					currentMenu={null}
 					assignHandler = {assignSwap}
 					/>
 			{:else if currentView === 'orders'}
@@ -120,7 +168,7 @@
 			{:else if currentView === 'tickets'}
 				<TicketView currentOrders={cacheHandlerActions.loadAllOrders()} />
 			{:else if currentView === 'everymenu'}
-				<Everymenu menus={data.menus} currentMenu={data.currentMenu} />
+				<Everymenu menus={cacheHandlerActions.getActiveCache().menus} currentMenu={cacheHandlerActions.getActiveCache().currentMenu} />
 			{/if}
         </div>
     </main>
@@ -130,4 +178,6 @@
     </footer>
 </div>
 
-<LoginModal bind:isOpen={isLoginModalOpen} />
+<LoginModal bind:isOpen={isLoginModalOpen} onSwitchToRegister={switchToRegister} />
+<LogoutModal bind:isOpen={isLogoutModalOpen} />
+<RegisterModal bind:isOpen={isRegisterModalOpen} onSwitchToLogin={switchToLogin} />

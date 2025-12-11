@@ -28,6 +28,8 @@
 </script>
 
 <div class="orders-container">
+    <h2 class="title">📋 Min Meny</h2>
+    
     {#if currentMenu}
         <RestMenu 
             theme = {currentMenu.theme}
@@ -40,7 +42,7 @@
                 <div class="dish-card">
                     <div class="dish-image-container">
                         <img 
-                            src={ticket.dishes?.dishPicture.length ?? -1 > 0 ? "/pictures/"+ticket.dishes.dishPicture : "/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a.png"}
+                            src={ticket.dishes?.dishPicture.length ?? -1 > 0 ? "/pictures/"+ticket.dishes.dishPicture : "/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a"}
                             alt={ticket.dishes.dishName}
                             class="dish-image"
                         />
@@ -78,6 +80,14 @@
 <style>
     .orders-container {
         padding: 1rem;
+    }
+    
+    .title {
+        color: #FF6B6B;
+        font-size: 2.2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-align: center;
     }
     
     .dishes-list {

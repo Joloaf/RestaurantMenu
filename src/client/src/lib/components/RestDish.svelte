@@ -78,7 +78,7 @@
                 <!-- Edit mode: show dish with editable name, image, and remove button -->
                 <div class='row' style="background-image:url('{picturePath}{dishes.theme}' ">
                     <img 
-                        src={(dish.dishPicture?.length ?? -1 ) > 0 ? '/pictures/'+dish.dishPicture : '/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a.png'}
+                        src={(dish.dishPicture?.length ?? -1 ) > 0 ? '/pictures/'+dish.dishPicture : '/pictures/a70a6112-964d-4f87-8853-0ad44b6d4a3a'}
                         alt={dish.dishName} 
                         class="dish-image" 
                         onclick={() => onImageClick(dish.id!)}

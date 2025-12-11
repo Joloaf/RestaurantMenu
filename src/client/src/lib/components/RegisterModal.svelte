@@ -1,43 +1,44 @@
 <script lang="ts">
     import { ApiService } from "$lib/services/apiService";
     import { AccountService } from "$lib/services/accountService";
-    import type { LoginRequest, UserResponse, ErrorResponse } from "$lib/services/accountService";
-    import { clearCache } from "../../stores/cacheHandlerService";
+    import type { RegisterRequest, UserResponse, ErrorResponse } from "$lib/services/accountService";
 
-    let { isOpen = $bindable(false), onSwitchToRegister = () => {} } = $props();
+    let { isOpen = $bindable(false), onSwitchToLogin = () => {} } = $props();
 
     const apiService = new ApiService();
     const accountService = new AccountService(apiService);
     
     let username = $state("");
     let password = $state("");
+    let email = $state("");
     let errorMessage = $state("");
     let loading = $state(false);
 
-    async function handleLogin() {
-        if(!username || !password){
-            errorMessage = "Username and Password are required.";
+    async function handleRegister() {
+        if(!username || !password || !email){
+            errorMessage = "All fields are required.";
             return;
         }
 
         loading = true;
         errorMessage = "";
 
-        const loginRequest: LoginRequest = {
+        const registerRequest: RegisterRequest = {
             Username: username,
-            Password: password
+            Password: password,
+            Email: email
         };
 
-        const response = await accountService.loginAccount(loginRequest);
-        console.log('Login response:', response);
+        const response = await accountService.registerAccount(registerRequest);
+        console.log('Register response:', response);
 
         if('Message' in response){
-            errorMessage = (response as ErrorResponse).Message;
-            console.error('Login error:', errorMessage);
+            errorMessage = (response as ErrorResponse).Details;
+            console.error('Register error:', errorMessage);
             loading = false;
             return;
         }
-        
+
         if('code' in response){
             errorMessage = (response as any).message || 'An error occurred';
             console.error('API error:', response);
@@ -46,18 +47,14 @@
         }
 
         const userResponse = response as UserResponse;
-        console.log("Logged in as user: " + userResponse.Username);
-        console.log("Logged in as user.Id: " + userResponse.Id);
-        console.log(userResponse);
+        console.log("Registered user: " + userResponse.Username);
 
-        localStorage.setItem('user', JSON.stringify(userResponse));
-        
         username = "";
         password = "";
+        email = "";
         loading = false;
         isOpen = false;
-        clearCache();
-        document.location.reload();
+        onSwitchToLogin();
     }
 
     function closeModal() {
@@ -65,17 +62,18 @@
         errorMessage = "";
         username = "";
         password = "";
-    }
-
-    function handleSwitchToRegister() {
-        closeModal();
-        onSwitchToRegister();
+        email = "";
     }
 
     function handleBackdropClick(e: MouseEvent) {
         if (e.target === e.currentTarget) {
             closeModal();
         }
+    }
+
+    function handleSwitchToLogin() {
+        closeModal();
+        onSwitchToLogin();
     }
 </script>
 
@@ -84,8 +82,8 @@
         <div class="modal-content">
             <button class="close-btn" onclick={closeModal}>✕</button>
             
-            <form onsubmit={(e) => { e.preventDefault(); handleLogin(); }}>
-                <h2>Inloggning</h2>
+            <form onsubmit={(e) => { e.preventDefault(); handleRegister(); }}>
+                <h2>Skapa konto</h2>
 
                 <div class="form-group">
                     <label for="username">Användarnamn</label>
@@ -93,6 +91,17 @@
                         type="text" 
                         id="username"
                         bind:value={username} 
+                        disabled={loading} 
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-post</label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        bind:value={email} 
                         disabled={loading} 
                         required
                     />
@@ -114,11 +123,11 @@
                 {/if}
 
                 <button type="submit" class="submit-btn" disabled={loading}>
-                    {loading ? 'Inloggning pågår...' : 'Logga in'}
+                    {loading ? 'Registrering pågår...' : 'Registrera'}
                 </button>
                 
-                <button type="button" class="register-link" onclick={handleSwitchToRegister}>
-                    Behöver du ett konto? Registrera dig!
+                <button type="button" class="login-link" onclick={handleSwitchToLogin}>
+                    Har du redan ett konto? Logga in!
                 </button>
             </form>
         </div>
@@ -260,7 +269,7 @@
         cursor: not-allowed;
     }
 
-    .register-link {
+    .login-link {
         display: block;
         width: 100%;
         text-align: center;
@@ -273,7 +282,7 @@
         padding: 0.5rem;
     }
 
-    .register-link:hover {
+    .login-link:hover {
         text-decoration: underline;
     }
 </style>
