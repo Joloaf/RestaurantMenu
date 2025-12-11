@@ -28,6 +28,8 @@
 </script>
 
 <div class="orders-container">
+    <h2 class="title">📋 Min Meny</h2>
+    
     {#if currentMenu}
         <RestMenu 
             theme = {currentMenu.theme}
@@ -78,6 +80,14 @@
 <style>
     .orders-container {
         padding: 1rem;
+    }
+    
+    .title {
+        color: #FF6B6B;
+        font-size: 2.2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-align: center;
     }
     
     .dishes-list {

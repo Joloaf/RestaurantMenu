@@ -32,7 +32,7 @@
 </script>
 
 <div class="everymenu-container">
-    <h2 class="title">Antal menyer ({menus.length})</h2>
+    <h2 class="title">📚 Alla Menyer ({menus.length})</h2>
     
     {#if menus && menus.length > 0}
         <div class="menus-list">
@@ -81,7 +81,7 @@
     
     .title {
         color: #FF6B6B;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         font-weight: bold;
         margin-bottom: 1.5rem;
         text-align: center;

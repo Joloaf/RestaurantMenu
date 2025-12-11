@@ -144,24 +144,30 @@
     }
 
     .cancel-btn:hover {
-        background: #4ECDC4;
+        background: linear-gradient(135deg, #a8ff78 0%, #00CED1 100%);
         color: white;
         transform: translateY(-2px);
+        text-shadow: 1px 1px 2px rgba(0, 168, 170, 0.4),
+        -1px -1px 2px rgba(0, 168, 170, 0.4),
+        1px -1px 2px rgba(0, 168, 170, 0.4),
+        -1px 1px 2px rgba(0, 168, 170, 0.4);
         box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
     }
 
     .confirm-btn {
-        background: linear-gradient(135deg, #FF6B6B 0%, #FFB347 100%);
-        color: white;
-        border-color: #D94A4A;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2),
-                     -1px -1px 2px rgba(0, 0, 0, 0.2),
-                     1px -1px 2px rgba(0, 0, 0, 0.2),
-                     -1px 1px 2px rgba(0, 0, 0, 0.2);
+        background: white;
+        color: #FF6B6B;
+        border-color: #FF6B6B;
     }
 
     .confirm-btn:hover {
+        background: linear-gradient(135deg, #FF6B6B 0%, #FFB347 100%);
+        color: white;
         transform: translateY(-2px);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2),
+        -1px -1px 2px rgba(0, 0, 0, 0.2),
+        1px -1px 2px rgba(0, 0, 0, 0.2),
+        -1px 1px 2px rgba(0, 0, 0, 0.2);
         box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
     }
 </style>
