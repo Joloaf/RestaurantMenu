@@ -85,10 +85,10 @@
             <button class="close-btn" onclick={closeModal}>✕</button>
             
             <form onsubmit={(e) => { e.preventDefault(); handleLogin(); }}>
-                <h2>Login</h2>
+                <h2>Inloggning</h2>
 
                 <div class="form-group">
-                    <label for="username">Username</label>
+                    <label for="username">Användarnamn</label>
                     <input 
                         type="text" 
                         id="username"
@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password">Lösenord</label>
                     <input 
                         type="password" 
                         id="password"
@@ -114,11 +114,11 @@
                 {/if}
 
                 <button type="submit" class="submit-btn" disabled={loading}>
-                    {loading ? 'Logging in...' : 'Login'}
+                    {loading ? 'Inloggning pågår...' : 'Logga in'}
                 </button>
                 
                 <button type="button" class="register-link" onclick={handleSwitchToRegister}>
-                    Need an account? Register
+                    Behöver du ett konto? Registrera dig!
                 </button>
             </form>
         </div>
